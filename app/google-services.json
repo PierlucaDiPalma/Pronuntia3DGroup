@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "673371926867",
+    "project_id": "pronuntiadb-58c18",
+    "storage_bucket": "pronuntiadb-58c18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673371926867:android:ff8787ebfae153fc31b1a6",
+        "android_client_info": {
+          "package_name": "com.uniba.pronuntia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP8k4BHNZGIMDfDuBjyA6DhBpXIqSpbRQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
