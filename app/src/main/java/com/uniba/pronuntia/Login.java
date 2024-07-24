@@ -46,6 +46,8 @@ public class Login extends AppCompatActivity {
         final Button logBtn = findViewById(R.id.log);
         final TextView regLink = findViewById(R.id.regButton);
 
+        DBHelper db = new DBHelper(this);
+
         logBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,35 +57,23 @@ public class Login extends AppCompatActivity {
                 if(email.isEmpty() || password.isEmpty()){
                     Toast.makeText(Login.this, "Inserire l'email o la password", Toast.LENGTH_SHORT).show();
                 }else{
-                    dbRef.child("users").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            //controlla che l'indirizzo email sia registrato
-                            Log.d(TAG, "Chiamato ");
 
-                            Log.d(TAG, snapshot.getValue().toString());
-
-                            for (DataSnapshot userData : snapshot.getChildren()) {
-                                Log.d(TAG, userData.getValue().toString());
-                                if (userData.child("email").getValue().toString().equals(email) ||
-                                        userData.child("password").getValue().toString().equals(password)) {
-                                    Log.d(TAG, "Loggato ");
-                                    Intent intent = new Intent(Login.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                    break;
-                                }
-
-                            }
-
-
+                    if(db.checkUser(email, password)){
+                        if(db.isLogopedista(email)){
+                            //Carica la pagina del logopedista
+                            Intent intent = new Intent(Login.this, Logopedista.class);
+                            startActivity(intent);
+                            finish();
+                        }else{
+                            //Carica la pagina del genitore
+                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
                         }
+                    }else{
+                        Toast.makeText(Login.this, "Email o password non corrette", Toast.LENGTH_SHORT).show();
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
                 }
             }
         });

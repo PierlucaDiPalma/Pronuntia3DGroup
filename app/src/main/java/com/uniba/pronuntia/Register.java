@@ -34,8 +34,9 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity {
 
-    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://pronuntiadb-58c18-default-rtdb.firebaseio.com/").child("users");
+    //DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://pronuntiadb-58c18-default-rtdb.firebaseio.com/");
     //DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+
     private EditText emailEdit;
     private EditText nomeEdit;
     private EditText cognomeEdit;
@@ -50,11 +51,7 @@ public class Register extends AppCompatActivity {
 
     private static final String TAG = "Register";
     private boolean emailIsPresent = false;
-   /*@Override
-    protected void onStart() {
-        super.onStart();
-        dbRef.child("users").setValue("marco");
-    }*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,16 +71,21 @@ public class Register extends AppCompatActivity {
         regBtn = findViewById(R.id.reg);
         logLink = findViewById(R.id.logButton);
 
-        isLogopedistaSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> isLogopedista = isChecked);
+        DBHelper db = new DBHelper(this);
 
-        if(isLogopedistaSwitch.isChecked()){
-            isLogopedista = true;
-            Toast.makeText(Register.this, "Sei un logopedista", Toast.LENGTH_SHORT).show();
-        }else{
-            isLogopedista = false;
-            Toast.makeText(Register.this, "Non sei un logopedista", Toast.LENGTH_SHORT).show();
 
-        }
+
+        isLogopedistaSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if(isChecked){
+                    Toast.makeText(Register.this, "Sei un logopedista", Toast.LENGTH_SHORT).show();
+                    isLogopedista = true;
+                }else{
+                    Toast.makeText(Register.this, "Non sei un logopedista", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,66 +100,26 @@ public class Register extends AppCompatActivity {
                 String conPassword = conPasswordEdit.getText().toString().trim();
 
 
-                Utente utente = new Utente(email, nome, cognome, telefono, password);
+                Utente utente = new Utente(email, nome, cognome, telefono, password, isLogopedista);
 
                 if(email.isEmpty() || nome.isEmpty() || cognome.isEmpty() || telefono.isEmpty() || password.isEmpty()){
                     Toast.makeText(Register.this, "Alcuni campi sono vuoti", Toast.LENGTH_SHORT).show();
                 }else if(!password.equals(conPassword)){
                     Toast.makeText(Register.this, "Le password non coincidono", Toast.LENGTH_SHORT).show();
                 }else {
+                    Log.d(TAG, "Passato");
+                    if(!db.isSigned(email)){
 
-                    //1-Accedere al DB e controllare la presenza della email
+                        if(db.addUser(utente)){
+                            Toast.makeText(Register.this, "Registrazione avvenuta", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Register.this, Login.class));
 
-                    //2-Se l'email è presente -> Errore altrimenti -> procede a scrivere i dati sul DB
-
-                    dbRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                            boolean isPresent = false;
-
-                            if (snapshot.exists()) {
-                                for (DataSnapshot userData : snapshot.getChildren()) {
-                                    Log.d(TAG, userData.getValue().toString());
-                                    if (userData.child("email").getValue().toString().equals(email)) {
-                                        isPresent = true;
-                                    }
-
-                                }
-                                if (isPresent) {
-                                    Toast.makeText(Register.this, "Email già presente", Toast.LENGTH_SHORT).show();
-
-                                    Log.d(TAG, "Utente già registrato");
-
-                                } else {
-                                    Log.d(TAG, "onClick: Validazione superata, scrittura sul database");
-                                    dbRef.child(email.replace(".", "")).setValue(utente).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Log.d(TAG, "Scrittura avvenuta con successo");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.d(TAG, "Scrittura non riuscita");
-                                                }
-                                            });
-                                    //3-Torna all'activity di login chiudendo quella di registrazione
-                                    finish();
-                                }
-                            }
+                        }else{
+                            Toast.makeText(Register.this, "Errore durante la registrazione", Toast.LENGTH_SHORT).show();
                         }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-
-
-
+                    }else{
+                        Toast.makeText(Register.this, "Email già presente", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             }
