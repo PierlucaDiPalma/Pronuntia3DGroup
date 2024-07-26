@@ -100,4 +100,39 @@ public class DBHelper extends SQLiteOpenHelper {
         return isLogopedista;
 
     }
+
+    public ArrayList<Utente> readData(){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+
+        ArrayList<Utente> users = new ArrayList<>();
+
+        if(db!= null){
+            Log.d(TAG, "readData: Lettura dati");
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+
+            Log.d(TAG, "readData: Lettura dati avvenuta");
+        }
+
+
+        while(cursor.moveToNext()){
+            String email = cursor.getString(0);
+            String nome = cursor.getString(1);
+            String cognome = cursor.getString(2);
+            String telefono = cursor.getString(3);
+            String password = cursor.getString(4);
+
+            boolean isLogopedista = false;
+
+            if (cursor.getInt(5) == 1) isLogopedista = true;
+
+            users.add(new Utente(email, nome, cognome, telefono, password, isLogopedista));
+        }
+        Log.d(TAG, "Ritorno array");
+        cursor.close();
+
+        return users;
+
+    }
 }

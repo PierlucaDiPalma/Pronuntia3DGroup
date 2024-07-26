@@ -21,6 +21,30 @@ public class Utente {
     public Utente() {
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setLogopedista(boolean logopedista) {
+        isLogopedista = logopedista;
+    }
+
     public String getEmail() {
         return email;
     }
