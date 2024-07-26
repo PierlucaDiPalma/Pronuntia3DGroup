@@ -2,16 +2,11 @@ package com.uniba.pronuntia;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -106,7 +101,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
 
-        ArrayList<Utente> users = new ArrayList<>();
+        ArrayList<Utente> pazienti = new ArrayList<>();
 
         if(db!= null){
             Log.d(TAG, "readData: Lettura dati");
@@ -127,12 +122,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
             if (cursor.getInt(5) == 1) isLogopedista = true;
 
-            users.add(new Utente(email, nome, cognome, telefono, password, isLogopedista));
+            if(cursor.getInt(5) == 0)
+                pazienti.add(new Utente(email, nome, cognome, telefono, password, isLogopedista));
         }
         Log.d(TAG, "Ritorno array");
         cursor.close();
 
-        return users;
+        return pazienti;
 
     }
 }

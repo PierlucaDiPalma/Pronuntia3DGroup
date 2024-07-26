@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.database.Cursor;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -49,34 +48,4 @@ public class Logopedista extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(Logopedista.this));
 
     }
-/*
-    void storeArray(){
-        Log.d(TAG, "storeArray: chiamato");
-        Cursor cursor = db.readData();
-        Log.d(TAG, "storeArray: cursore ottenuto");
-
-        while(cursor.moveToNext()) {
-            Log.d(TAG, cursor.getString(0));
-            Log.d(TAG, cursor.getString(1));
-            Log.d(TAG, cursor.getString(2));
-        }
-
-        Log.d(TAG, "Store entrato");
-        while(cursor.moveToNext()){
-            String email = cursor.getString(0);
-            String nome = cursor.getString(1);
-            String cognome = cursor.getString(2);
-            String telefono = cursor.getString(3);
-            String password = cursor.getString(4);
-
-            boolean isLogopedista = false;
-
-            if (cursor.getInt(5) == 1) isLogopedista = true;
-
-            users.add(new Utente(email, nome, cognome, telefono, password, isLogopedista));
-            Log.d(TAG, "storeArray: ");
-        }
-
-
-    }*/
 }
