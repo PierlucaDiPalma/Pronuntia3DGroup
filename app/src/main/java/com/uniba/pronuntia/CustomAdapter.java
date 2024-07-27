@@ -1,6 +1,7 @@
 package com.uniba.pronuntia;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,19 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         holder.nome.setText(String.valueOf(utente.get(position).getNome()));
         holder.cognome.setText(String.valueOf(utente.get(position).getCognome()));
         holder.telefono.setText(String.valueOf(utente.get(position).getTelefono()));
+
+        holder.itemView.findViewById(R.id.cardButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, UserDetails.class);
+                intent.putExtra("email", utente.get(holder.getAdapterPosition()).getEmail());
+                intent.putExtra("nome", utente.get(holder.getAdapterPosition()).getNome());
+                intent.putExtra("cognome", utente.get(holder.getAdapterPosition()).getCognome());
+                intent.putExtra("telefono", utente.get(holder.getAdapterPosition()).getTelefono());
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
