@@ -66,7 +66,7 @@ public class Login extends AppCompatActivity {
                             finish();
                         }else{
                             //Carica la pagina del genitore
-                            Intent intent = new Intent(Login.this, MainActivity.class);
+                            Intent intent = new Intent(Login.this, Genitore.class);
                             startActivity(intent);
                             finish();
                         }

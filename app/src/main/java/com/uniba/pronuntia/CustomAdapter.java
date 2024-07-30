@@ -42,7 +42,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         holder.itemView.findViewById(R.id.cardButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, UserDetails.class);
+                Intent intent = new Intent(context, CreazioneEsercizi.class);
                 intent.putExtra("email", utente.get(holder.getAdapterPosition()).getEmail());
                 intent.putExtra("nome", utente.get(holder.getAdapterPosition()).getNome());
                 intent.putExtra("cognome", utente.get(holder.getAdapterPosition()).getCognome());
