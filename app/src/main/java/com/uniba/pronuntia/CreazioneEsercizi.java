@@ -69,32 +69,20 @@ public class CreazioneEsercizi extends AppCompatActivity {
         telefonoText.setText(telefono);
 
 
-        durata = findViewById(R.id.date);
-        calendario = findViewById(R.id.calendar);
         addEsercizio = findViewById(R.id.add);
         recyclerView = findViewById(R.id.exercises);
 
+
+
         db = new DBHelper(this);
 
-        //esercizi = db.readExercises();
+        esercizi = db.readExercises(email);
 
 
-        MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.dateRangePicker().
-                setSelection(Pair.create(MaterialDatePicker.thisMonthInUtcMilliseconds(), MaterialDatePicker.todayInUtcMilliseconds())).build();
 
-        calendario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                materialDatePicker.show(getSupportFragmentManager(), "Tag_picker");
-                materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
-                    @Override
-                    public void onPositiveButtonClick(Object selection) {
-                        durata.setText("Durata: " + materialDatePicker.getHeaderText());
-                    }
-                });
-            }
-        });
-
+        customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, esercizi);
+        recyclerView.setAdapter(customAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
         addEsercizio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,9 +92,9 @@ public class CreazioneEsercizi extends AppCompatActivity {
     }
 
     private void showExerciseTypeDialog(String email) {
-        String[] exerciseTypes = {"Denominazione", "Indovinello", "Coppia"};
+        String[] exerciseTypes = {"Denominazione", "Sequenza", "Coppia"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Seleziona Tipo di Esercizio")
+        builder.setTitle("Seleziona tipo di esercizio")
                 .setItems(exerciseTypes, (dialog, which) -> {
                     Intent intent;
                     switch (which) {
@@ -115,7 +103,8 @@ public class CreazioneEsercizi extends AppCompatActivity {
                             intent.putExtra("email", email);
                             break;
                         case 1:
-                            intent = new Intent(CreazioneEsercizi.this, MainActivity.class);
+                            intent = new Intent(CreazioneEsercizi.this, RipetizioneSequenza.class);
+                            intent.putExtra("email", email);
                             break;
                         case 2:
                             intent = new Intent(CreazioneEsercizi.this, MainActivity.class);

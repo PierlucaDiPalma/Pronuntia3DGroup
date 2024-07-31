@@ -83,6 +83,7 @@ public class Register extends AppCompatActivity {
                     isLogopedista = true;
                 }else{
                     Toast.makeText(Register.this, "Non sei un logopedista", Toast.LENGTH_SHORT).show();
+                    isLogopedista = false;
                 }
             }
         });
@@ -113,6 +114,7 @@ public class Register extends AppCompatActivity {
                         if(db.addUser(utente)){
                             Toast.makeText(Register.this, "Registrazione avvenuta", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Register.this, Login.class));
+                            
 
                         }else{
                             Toast.makeText(Register.this, "Errore durante la registrazione", Toast.LENGTH_SHORT).show();
