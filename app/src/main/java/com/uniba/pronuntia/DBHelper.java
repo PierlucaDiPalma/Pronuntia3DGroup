@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "pronuntia.db";
+    private static final String DATABASE_NAME = "Pronuntia.db";
     private static final String TABLE_NAME = "UTENTI";
     private static final String EMAIL = "EMAIL";
     private static final String NOME = "NOME";
@@ -28,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 1);
     }
 
     private static final String TAG = "DBHelper";
@@ -36,8 +36,8 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE " + TABLE_NAME + "( " + EMAIL +" TEXT PRIMARY KEY, " + NOME + " TEXT, " +COGNOME + " TEXT,"+ TELEFONO + " TEXT, " +PASSWORD +" TEXT, " + ISLOGOPEDISTA+ "INTEGER)");
-        db.execSQL("CREATE TABLE " + TABLE_DENOMINAZIONE + " ( id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL + "TEXT, " +TITOLO +" TEXT)");
+        db.execSQL("CREATE TABLE " + TABLE_NAME + " ( " + EMAIL +" TEXT PRIMARY KEY, " + NOME + " TEXT, " +COGNOME + " TEXT,"+ TELEFONO + " TEXT, " +PASSWORD +" TEXT, " + ISLOGOPEDISTA+ " INTEGER )");
+        db.execSQL("CREATE TABLE " + TABLE_DENOMINAZIONE + " ( id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL + " TEXT, " +TITOLO +" TEXT )");
         //db.execSQL("CREATE TABLE " + TABLE_INDOVINA + "(id INTEGER PRIMARY KEY AUTOINCREMENT, " + EMAIL +" TEXT," + TITOLO + " TEXT)");
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
@@ -55,6 +55,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean addUser(Utente utente) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        Log.d(TAG, "addUser: " + utente.getEmail());
+        Log.d(TAG, "addUser: " + utente.getNome());
         contentValues.put(EMAIL, utente.getEmail());
         contentValues.put(NOME, utente.getNome());
         contentValues.put(COGNOME, utente.getCognome());
@@ -62,21 +64,19 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(PASSWORD, utente.getPassword());
         contentValues.put(ISLOGOPEDISTA, utente.isLogopedista() ? 1 : 0);
         long result = db.insert(TABLE_NAME, null, contentValues);
-
+        Log.d(TAG, "addUser: " + result);
         return result != -1;
     }
 
     public boolean isSigned(String email){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE EMAIL = ?", new String[]{email});
-
         return cursor.getCount()>0;
     }
 
     public boolean checkUser(String email, String password){
         SQLiteDatabase db  = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE EMAIL = ? AND PASSWORD = ?", new String[]{email, password});
-
         return cursor.getCount()>0;
 
     }
@@ -93,7 +93,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     isLogopedista = true;
                 }
             }
-            cursor.close();
         }
         return isLogopedista;
 
@@ -120,38 +119,40 @@ public class DBHelper extends SQLiteOpenHelper {
             String telefono = cursor.getString(3);
             String password = cursor.getString(4);
 
-            boolean isLogopedista = false;
-
-            if (cursor.getInt(5) == 1) isLogopedista = true;
+            boolean isLogopedista = cursor.getInt(5) == 1;
 
             if(cursor.getInt(5) == 0)
                 pazienti.add(new Utente(email, nome, cognome, telefono, password, isLogopedista));
         }
         Log.d(TAG, "Ritorno array");
         cursor.close();
-
         return pazienti;
 
     }
 
-    public ArrayList<Esercizio> readExercises(){
+    public ArrayList<Esercizio> readExercises(String user){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
         ArrayList<Esercizio> esercizi = new ArrayList<>();
+        Log.d(TAG, "readExercises: Array creato");
 
         if(db!=null){
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE, null);
+            Log.d(TAG, "readExercises: Entrato");
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE + " WHERE EMAIL = ?", new String[]{user});
+
+            Log.d(TAG, "readExercises: Esecuzione query");
 
         }
-        Log.d(TAG, "readExercises: " + cursor.getString(1));
+
 
         while(cursor.moveToNext()){
             String email = cursor.getString(1);
             String titolo = cursor.getString(2);
             esercizi.add(new Esercizio(email, titolo));
+            Log.d(TAG, "readExercises: " + cursor.getString(1));
+            Log.d(TAG, "readExercises: " + cursor.getString(2));
         }
-        cursor.close();
         return esercizi;
     }
 
@@ -168,7 +169,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d(TAG, "addDenominazione: Scritto");
         long result = db.insert(TABLE_DENOMINAZIONE, null, contentValues);
         Log.d(TAG, "addDenominazione: Ritorno");
-        Log.d(TAG, "addDenominazione: " + String.valueOf(result));
+        Log.d(TAG, "addDenominazione: " + result);
         return result != -1;
     }
 

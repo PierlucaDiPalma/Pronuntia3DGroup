@@ -76,7 +76,9 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
         db = new DBHelper(this);
 
-        //esercizi = db.readExercises();
+        esercizi = db.readExercises(email);
+
+
 
 
         MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.dateRangePicker().
@@ -94,7 +96,10 @@ public class CreazioneEsercizi extends AppCompatActivity {
                 });
             }
         });
-
+        
+        customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, esercizi);
+        recyclerView.setAdapter(customAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
         addEsercizio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,6 +129,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
                             return;
                     }
                     startActivity(intent);
+                    finish();
                 });
         builder.show();
     }

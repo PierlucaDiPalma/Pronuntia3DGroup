@@ -56,15 +56,18 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/exercises"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:scrollbars="vertical"
+
+        />
 
 
     <Button
         android:id="@+id/add"
         android:layout_width="61dp"
         android:layout_height="wrap_content"
-        android:text="+"
-        />
+        android:text="+" />
 
 
 </LinearLayout>

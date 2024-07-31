@@ -3,19 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="12dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:layout_margin="12dp">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/positionText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
@@ -32,10 +33,11 @@
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="8dp"
                 android:text="Titolo"
-                app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="@+id/textView2" />
+                app:layout_constraintStart_toEndOf="@+id/positionText"
+                app:layout_constraintTop_toTopOf="@+id/positionText" />
 
             <TextView
+                android:id="@+id/tipo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="200dp"

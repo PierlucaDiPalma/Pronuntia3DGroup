@@ -54,6 +54,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 if(db.addDenominazione(esercizio)){
                     Log.d(TAG, "onClick: Scrittura");
                     Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class));
                     finish();
 
                 }else{

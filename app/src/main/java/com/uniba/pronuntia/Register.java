@@ -113,6 +113,7 @@ public class Register extends AppCompatActivity {
                         if(db.addUser(utente)){
                             Toast.makeText(Register.this, "Registrazione avvenuta", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Register.this, Login.class));
+                            
 
                         }else{
                             Toast.makeText(Register.this, "Errore durante la registrazione", Toast.LENGTH_SHORT).show();

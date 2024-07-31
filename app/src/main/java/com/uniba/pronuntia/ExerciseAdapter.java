@@ -1,6 +1,8 @@
 package com.uniba.pronuntia;
 
+
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     private Context context;
     private ArrayList<Esercizio> exerciseList;
-
+    private static final String TAG = "ExerciseAdapter";
     public ExerciseAdapter(Context context, ArrayList<Esercizio> exerciseList) {
         this.context = context;
         this.exerciseList = exerciseList;
@@ -31,7 +33,9 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     @Override
     public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
 
-        holder.titolo.setText(String.valueOf(exerciseList.get(position).getName()));
+
+            holder.titolo.setText(exerciseList.get(position).getName());
+            holder.position.setText(String.valueOf(position + 1));
 
     }
 
@@ -42,11 +46,13 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     public class ExerciseViewHolder extends RecyclerView.ViewHolder {
         TextView titolo;
+        TextView position;
 
         public ExerciseViewHolder(@NonNull View itemView) {
             super(itemView);
             // Inizializza i tuoi componenti di vista qui
             titolo = itemView.findViewById(R.id.titleEx);
+            position = itemView.findViewById(R.id.positionText);
         }
 
 
