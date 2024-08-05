@@ -62,6 +62,13 @@
                 android:layout_height="wrap_content"
                 android:text="Carica immagine"
                 />
+
+            <Button
+                android:id="@+id/recordPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Record"/>
+
             <Button
                 android:id="@+id/createDen"
                 android:layout_width="wrap_content"

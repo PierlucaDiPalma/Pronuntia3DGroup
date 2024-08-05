@@ -45,6 +45,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private String titolo;
     private int day, month, year;
 
+    private Button record;
+
     ActivityResultLauncher<Intent> resultLauncher;
 
     private static final String TAG = "DenominazioneImmagini";
@@ -72,6 +74,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
         data = findViewById(R.id.date);
         db = new DBHelper(DenominazioneImmagini.this);
 
+        record = findViewById(R.id.recordPass);
 
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
@@ -141,6 +144,14 @@ public class DenominazioneImmagini extends AppCompatActivity {
             }
         });
 
+
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DenominazioneImmagini.this, MainActivityRecord.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
