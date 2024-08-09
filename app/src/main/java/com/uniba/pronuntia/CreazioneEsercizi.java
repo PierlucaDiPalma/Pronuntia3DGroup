@@ -32,7 +32,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
     private TextView durata;
     private Button calendario;
-    private Button addEsercizio;
+    private Button addEsercizio, prova;
     private RecyclerView recyclerView;
     private ExerciseAdapter customAdapter;
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
@@ -70,6 +70,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
 
         addEsercizio = findViewById(R.id.add);
+        prova = findViewById(R.id.tryImage);
         recyclerView = findViewById(R.id.exercises);
 
 
@@ -87,6 +88,15 @@ public class CreazioneEsercizi extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showExerciseTypeDialog(email);
+            }
+        });
+
+        prova.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CreazioneEsercizi.this, ImageActivity.class);
+                intent.putExtra(email, "email");
+                startActivity(intent);
             }
         });
     }

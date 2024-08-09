@@ -91,7 +91,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                Esercizio esercizio = new Esercizio(email, titolo, "Denominazione");
+                Esercizio esercizio = new Esercizio(email, titolo, "Sequenza", null, null, 0, 0, 0);
 
                 if(db.addExercises(esercizio)){
                     Log.d(TAG, "onClick: Scrittura");

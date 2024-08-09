@@ -54,8 +54,9 @@
 
             <ImageView
                 android:id="@+id/imageEx"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:visibility="gone"/>
             <Button
                 android:id="@+id/caricaImg"
                 android:layout_width="wrap_content"
@@ -63,18 +64,22 @@
                 android:text="Carica immagine"
                 />
 
-            <Button
-                android:id="@+id/recordPass"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/aiuto"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Record"/>
+                android:layout_marginTop="12dp"
+                android:hint="Contenuto dell'immagine"/>
 
             <Button
                 android:id="@+id/createDen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:text="Aggiungi"
                 />
         </LinearLayout>
+
+
     </ScrollView>
   </LinearLayout>

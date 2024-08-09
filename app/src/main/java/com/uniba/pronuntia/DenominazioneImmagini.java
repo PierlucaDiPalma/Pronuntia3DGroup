@@ -1,9 +1,21 @@
 package com.uniba.pronuntia;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +23,9 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,38 +33,40 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class DenominazioneImmagini extends AppCompatActivity {
 
-    private EditText titoloEdit;
+    private EditText titoloEdit, aiutoEdit;
     private TextView data;
     private ImageView immagine;
     private Button crea, calendario, imgLoad;
     private DBHelper db;
-    private String titolo;
+    private String titolo, aiuto;
     private int day, month, year;
-
-    private Button record;
+    private Esercizio esercizio = new Esercizio(null, null, "Denominazione", new byte[0], null, 0, 0,0);
 
     ActivityResultLauncher<Intent> resultLauncher;
 
+    private SeekBar audioBar;
     private static final String TAG = "DenominazioneImmagini";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,18 +83,23 @@ public class DenominazioneImmagini extends AppCompatActivity {
         titoloEdit = findViewById(R.id.titoloEsercizio);
         crea = findViewById(R.id.createDen);
         calendario = findViewById(R.id.calendar);
+        aiutoEdit = findViewById(R.id.aiuto);
 
         imgLoad = findViewById(R.id.caricaImg);
         immagine = findViewById(R.id.imageEx);
-        registerResult();
 
-        data = findViewById(R.id.date);
-        db = new DBHelper(DenominazioneImmagini.this);
 
-        record = findViewById(R.id.recordPass);
 
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
+
+        registerImageResult(email);
+
+
+        esercizio.setEmail(email);
+
+        data = findViewById(R.id.date);
+        db = new DBHelper(DenominazioneImmagini.this);
 
 
         Log.d(TAG, "onCreate: " + email);
@@ -94,15 +116,14 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
                         data.setText(dayOfMonthDP + " " + (monthDP+1) + " " + yearDP );
-                        //data temporanea, sostituire con un altro oggetto
-                        if(db.addData(dayOfMonthDP, monthDP+1, yearDP)){
-                            Log.d(TAG, "onCreate: " + day + " " + month+1 + " " + year);
-                            Toast.makeText(DenominazioneImmagini.this, "Data aggiunta", Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(DenominazioneImmagini.this, "Data non aggiunta", Toast.LENGTH_SHORT).show();
-                        }
+
                     }
                 }, day, month, year);
+
+                esercizio.setGiorno(day);
+                esercizio.setMese(month);
+                esercizio.setAnno(year);
+
                 datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis()-1000);
                 datePickerDialog.show();
             }
@@ -117,52 +138,80 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
         Log.d(TAG, "onPositiveButtonClick: " + day + " " + month + " " + year);
 
+
         crea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 titolo = titoloEdit.getText().toString().trim();
-                if(!titolo.isEmpty()){
-                    try {
-                        titolo = URLEncoder.encode(titolo, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+                aiuto = aiutoEdit.getText().toString().trim();
+                try {
+                    titolo = URLEncoder.encode(titolo, "UTF-8");
+                    aiuto = URLEncoder.encode(aiuto, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
 
-                    if(db.addExercises(new Esercizio(email, titolo, "Denominazione"))){
+                if(!titolo.isEmpty() || !aiuto.isEmpty() /*|| immagine.getDrawable()!=null*/){
+
+                    esercizio.setName(titolo);
+                    esercizio.setAiuto(aiuto);
+
+                    Log.d(TAG, esercizio.getName());
+                    Log.d(TAG, esercizio.getTipo());
+
+                    if(db.addDenominazione(esercizio) && db.addExercises(esercizio)){
                         Log.d(TAG, "onClick: Scrittura");
                         Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class));
-
                     }else{
                         Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
                     }
-
                 }else{
-                    Toast.makeText(DenominazioneImmagini.this, "Inserire il titolo", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DenominazioneImmagini.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
-
-
-        record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DenominazioneImmagini.this, MainActivityRecord.class);
-                startActivity(intent);
             }
         });
 
     }
 
-    private void registerResult(){
+    private void registerImageResult(String email){
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         try{
                             Uri imageUri = result.getData().getData();
+
+                            try {
+
+                                InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                immagine.setVisibility(View.VISIBLE);
+                                immagine.setImageURI(imageUri);
+                                imgLoad.setText("Cambia immagine");
+
+                                // Converti Bitmap in byte[]
+                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                                byte[] imageBytes = outputStream.toByteArray();
+
+                                esercizio.setImmagine(imageBytes);
+                                // Inserisci l'immagine nel database
+                                /*boolean isInserted = db.addImage(imageBytes, email);
+                                if (isInserted) {
+                                    Toast.makeText(DenominazioneImmagini.this, "Immagine caricata nel database", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(DenominazioneImmagini.this, "Errore nel caricamento dell'immagine", Toast.LENGTH_SHORT).show();
+                                }*/
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(DenominazioneImmagini.this, "Errore nel caricamento dell'immagine", Toast.LENGTH_SHORT).show();
+                            }
+                            immagine.setVisibility(View.VISIBLE);
                             immagine.setImageURI(imageUri);
+                            imgLoad.setText("Cambia immagine");
                         }catch (Exception e){
                             Toast.makeText(DenominazioneImmagini.this, "Nessuna immagine caricata", Toast.LENGTH_SHORT).show();
                         }
@@ -176,4 +225,5 @@ public class DenominazioneImmagini extends AppCompatActivity {
         Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
         resultLauncher.launch(intent);
     }
+
 }
