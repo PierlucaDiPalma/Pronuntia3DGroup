@@ -15,7 +15,7 @@
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="30dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="100dp"
         />
 
     <TextView
@@ -42,10 +42,45 @@
         android:hint="Titolo esercizio"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Crea una sequenza"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:layout_marginTop="12dp"
+        />
+
+    <EditText
+        android:id="@+id/parola1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Prima parola"
+        android:layout_marginTop="15dp"
+        />
+
+    <EditText
+        android:id="@+id/parola2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Seconda parola"
+        android:layout_marginTop="15dp"
+        />
+
+    <EditText
+        android:id="@+id/parola3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Terza parola"
+        android:layout_marginTop="15dp"
+        />
+
     <Button
         android:id="@+id/createSeq"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Aggiungi"
+        android:layout_marginTop="15dp"
         />
 </LinearLayout>

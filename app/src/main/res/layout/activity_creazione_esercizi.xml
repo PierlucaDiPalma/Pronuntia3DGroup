@@ -43,26 +43,38 @@
         android:textSize="25dp"
         android:textStyle="bold"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/exercises"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:scrollbars="vertical"
+        android:layout_height="wrap_content">
 
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/exercises"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:scrollbars="vertical"
+
+                />
 
 
-    <Button
-        android:id="@+id/add"
-        android:layout_width="61dp"
-        android:layout_height="wrap_content"
-        android:text="+" />
+            <Button
+                android:id="@+id/add"
+                android:layout_width="61dp"
+                android:layout_height="wrap_content"
+                android:text="+" />
 
-    <Button
-        android:id="@+id/tryImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Prova"
-        />
+            <Button
+                android:id="@+id/tryImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Prova"
+                />
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

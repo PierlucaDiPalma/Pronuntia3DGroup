@@ -31,6 +31,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TIPO = "TIPO";
 
     private static final String TABLE_DENOMINAZIONE = "DENOMINAZIONE";
+    private static final String TABLE_SEQUENZA = "SEQUENZA";
+    private static final String PAROLA_1 = "PRIMA_PAROLA";
+    private static final String PAROLA_2 = "SECONDA_PAROLA";
+    private static final String PAROLA_3 = "TERZA_PAROLA";
     private static final String IMMAGINE = "IMMAGINE";
     private static final String AIUTO = "AIUTO";
     private static final String MATCH = "MATCH";
@@ -39,8 +43,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String ANNO = "ANNO";
 
 
-    private static final String TABLE_SEQUENZA = "SEQUENZA";
     private static final String TABLE_COPPIA = "COPPIA";
+    private static final String IMMAGINE_1 = "IMMAGINE_1";
+    private static final String IMMAGINE_2 = "IMMAGINE_2";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -78,7 +83,30 @@ public class DBHelper extends SQLiteOpenHelper {
                 + ANNO + " INTEGER )");
 
 
-        //db.execSQL("CREATE TABLE " + TABLE_SEQUENZA + "(id INTEGER PRIMARY KEY AUTOINCREMENT, " + EMAIL + " TEXT, " + TITOLO + " TEXT, " + TIPO + " TEXT )");
+        db.execSQL("CREATE TABLE " + TABLE_SEQUENZA
+                + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + EMAIL + " TEXT, "
+                + TITOLO +" TEXT, "
+                + TIPO +" TEXT, "
+                + PAROLA_1 + " TEXT, "
+                + PAROLA_2 + " TEXT, "
+                + PAROLA_3 + " TEXT, "
+                + GIORNO + " INTEGER, "
+                + MESE + " INTEGER, "
+                + ANNO + " INTEGER )");
+
+        db.execSQL("CREATE TABLE " + TABLE_COPPIA
+                + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + EMAIL + " TEXT, "
+                + TITOLO +" TEXT, "
+                + TIPO +" TEXT, "
+                + IMMAGINE_1 + " BLOB, "
+                + IMMAGINE_2 + " BLOB, "
+                + AIUTO + " TEXT, "
+                + GIORNO + " INTEGER, "
+                + MESE + " INTEGER, "
+                + ANNO + " INTEGER )");
+
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
     }
@@ -88,7 +116,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ESERCIZI);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DENOMINAZIONE);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEQUENZA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COPPIA);
 
         onCreate(db);
     }
@@ -129,13 +158,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public Bitmap getAllImages(int id) {
+    public Bitmap getAllImages(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Bitmap bt = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM IMAGES WHERE ID = ?", new String[]{String.valueOf(id)});
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_DENOMINAZIONE +" WHERE ID = ?", new String[]{String.valueOf(id)});
 
         if(cursor.moveToNext()){
-            byte[] image = cursor.getBlob(2);
+            byte[] image = cursor.getBlob(4);
             bt = BitmapFactory.decodeByteArray(image, 0, image.length);
         }
         return bt;
@@ -224,7 +253,7 @@ public class DBHelper extends SQLiteOpenHelper {
             String titolo = cursor.getString(2).replace("+", " ");
             String tipo = cursor.getString(3);
 
-            esercizi.add(new Esercizio(email, titolo, tipo, null, null, 0, 0, 0));
+            esercizi.add(new Esercizio(email, titolo, tipo, null, null, null, null, 0, 0, 0));
             Log.d(TAG, "readExercises: " + cursor.getString(1));
             Log.d(TAG, "readExercises: " + cursor.getString(2));
         }
@@ -257,7 +286,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(EMAIL, esercizio.getEmail());
         contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
-        contentValues.put(IMMAGINE, esercizio.getImmagine());
+        contentValues.put(IMMAGINE, esercizio.getImmagine1());
         contentValues.put(AIUTO, esercizio.getAiuto().replace("+", " "));
         contentValues.put(GIORNO, esercizio.getGiorno());
         contentValues.put(MESE, esercizio.getMese());
@@ -268,31 +297,39 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    /*public void updateDenominazione(byte[] immagine){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
 
-        contentValues.put(IMMAGINE, immagine);
-
-        db.update(TABLE_DENOMINAZIONE, contentValues, )
-    }*/
-
-    public boolean addIndovinello(Esercizio esercizio) {
+    public boolean addSequenza(Esercizio esercizio) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(EMAIL, esercizio.getEmail());
-        contentValues.put(TITOLO, esercizio.getName());
+        contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
+        contentValues.put(PAROLA_1, esercizio.getSequenza()[0]);
+        contentValues.put(PAROLA_2, esercizio.getSequenza()[1]);
+        contentValues.put(PAROLA_3, esercizio.getSequenza()[2]);
+        contentValues.put(GIORNO, esercizio.getGiorno());
+        contentValues.put(MESE, esercizio.getMese());
+        contentValues.put(ANNO, esercizio.getAnno());
+
         long result = db.insert(TABLE_SEQUENZA, null, contentValues);
         return result != -1;
     }
 
-    public boolean addCoppia(String email, String titolo) {
+    public boolean addCoppia(Esercizio esercizio) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(EMAIL, email);
-        contentValues.put(TITOLO, titolo);
+
+        contentValues.put(EMAIL, esercizio.getEmail());
+        contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
+        contentValues.put(TIPO, esercizio.getTipo());
+        contentValues.put(IMMAGINE_1, esercizio.getImmagine1());
+        contentValues.put(IMMAGINE_2, esercizio.getImmagine2());
+        contentValues.put(AIUTO, esercizio.getAiuto());
+        contentValues.put(GIORNO, esercizio.getGiorno());
+        contentValues.put(MESE, esercizio.getMese());
+        contentValues.put(ANNO, esercizio.getAnno());
+
         long result = db.insert(TABLE_COPPIA, null, contentValues);
         return result != -1;
     }

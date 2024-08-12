@@ -117,7 +117,8 @@ public class CreazioneEsercizi extends AppCompatActivity {
                             intent.putExtra("email", email);
                             break;
                         case 2:
-                            intent = new Intent(CreazioneEsercizi.this, MainActivity.class);
+                            intent = new Intent(CreazioneEsercizi.this, Coppia.class);
+                            intent.putExtra("email", email);
                             break;
                         default:
                             return;

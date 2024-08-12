@@ -1,5 +1,7 @@
 package com.uniba.pronuntia;
 
+import static androidx.activity.result.ActivityResultCallerKt.registerForActivityResult;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -45,6 +47,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -60,7 +63,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private DBHelper db;
     private String titolo, aiuto;
     private int day, month, year;
-    private Esercizio esercizio = new Esercizio(null, null, "Denominazione", new byte[0], null, 0, 0,0);
+    private Esercizio esercizio = new Esercizio(null, null, "Denominazione", new byte[0], null, null, null, 0, 0, 0);
 
     ActivityResultLauncher<Intent> resultLauncher;
 
@@ -89,11 +92,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
         immagine = findViewById(R.id.imageEx);
 
 
-
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
-
-        registerImageResult(email);
 
 
         esercizio.setEmail(email);
@@ -115,7 +115,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(DenominazioneImmagini.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
-                        data.setText(dayOfMonthDP + " " + (monthDP+1) + " " + yearDP );
+                        monthDP = monthDP + 1;
+                        data.setText(dayOfMonthDP + " " + (monthDP) + " " + yearDP);
 
                     }
                 }, day, month, year);
@@ -124,10 +125,12 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 esercizio.setMese(month);
                 esercizio.setAnno(year);
 
-                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis()-1000);
+                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis() - 1000);
                 datePickerDialog.show();
             }
         });
+
+        registerImageResult(email);
 
         imgLoad.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +155,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                if(!titolo.isEmpty() || !aiuto.isEmpty() /*|| immagine.getDrawable()!=null*/){
+
+                if (!titolo.isEmpty() || !aiuto.isEmpty() || immagine.getDrawable() != null) {
 
                     esercizio.setName(titolo);
                     esercizio.setAiuto(aiuto);
@@ -160,14 +164,14 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     Log.d(TAG, esercizio.getName());
                     Log.d(TAG, esercizio.getTipo());
 
-                    if(db.addDenominazione(esercizio) && db.addExercises(esercizio)){
+                    if (db.addDenominazione(esercizio) && db.addExercises(esercizio)) {
                         Log.d(TAG, "onClick: Scrittura");
                         Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class));
-                    }else{
+                    } else {
                         Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
                     }
-                }else{
+                } else {
                     Toast.makeText(DenominazioneImmagini.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -175,12 +179,54 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
     }
 
-    private void registerImageResult(String email){
+/*
+    private void loadImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        gallery.launch(intent);
+    }
+
+    ActivityResultLauncher<Intent> gallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == AppCompatActivity.RESULT_OK) {
+                        Uri imageUri = result.getData().getData();
+
+                        imgLoad.setVisibility(View.VISIBLE);
+                        imgLoad.setText("Cambia immagine");
+                        immagine.setImageURI(imageUri);
+
+
+                        InputStream inputStream = null;
+                        try {
+                            inputStream = getContentResolver().openInputStream(imageUri);
+
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                        immagine.setImageBitmap(bitmap);
+
+                        ByteArrayOutputStream outputStreamCorrect = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStreamCorrect);
+                        byte[] imageBytes = outputStreamCorrect.toByteArray();
+
+
+                        esercizio.setImmagine1(imageBytes);
+
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+    );*/
+
+
+    private void registerImageResult(String email) {
         resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        try{
+                        try {
                             Uri imageUri = result.getData().getData();
 
                             try {
@@ -196,14 +242,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                                 byte[] imageBytes = outputStream.toByteArray();
 
-                                esercizio.setImmagine(imageBytes);
-                                // Inserisci l'immagine nel database
-                                /*boolean isInserted = db.addImage(imageBytes, email);
-                                if (isInserted) {
-                                    Toast.makeText(DenominazioneImmagini.this, "Immagine caricata nel database", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(DenominazioneImmagini.this, "Errore nel caricamento dell'immagine", Toast.LENGTH_SHORT).show();
-                                }*/
+                                esercizio.setImmagine1(imageBytes);
+
 
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -212,7 +252,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                             immagine.setVisibility(View.VISIBLE);
                             immagine.setImageURI(imageUri);
                             imgLoad.setText("Cambia immagine");
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Toast.makeText(DenominazioneImmagini.this, "Nessuna immagine caricata", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -220,10 +260,9 @@ public class DenominazioneImmagini extends AppCompatActivity {
         );
     }
 
-    private void loadImage(){
+    private void loadImage() {
 
         Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
         resultLauncher.launch(intent);
     }
-
 }

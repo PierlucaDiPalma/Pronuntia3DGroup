@@ -5,19 +5,24 @@ public class Esercizio {
     private String email;
     private String name;
     private String tipo;
-    private byte[] immagine;
+    private byte[] immagine1;
+    private byte[] immagine2;
     private String aiuto;
+    private String[] sequenza = new String[3];
     private int giorno, mese, anno;
 
-    public Esercizio(String email, String name, String tipo, byte[] immagine, String aiuto, int giorno, int mese, int anno) {
+    public Esercizio(String email, String name, String tipo, byte[] immagine1, byte[] immagine2, String aiuto, String[] sequenza, int giorno, int mese, int anno) {
         this.email = email;
         this.name = name;
         this.tipo = tipo;
-        this.immagine = immagine;
+        this.immagine1 = immagine1;
+        this.immagine2 = immagine2;
+        this.sequenza = sequenza;
         this.aiuto = aiuto;
         this.giorno = giorno;
         this.mese = mese;
         this.anno = anno;
+
     }
 
     public String getEmail() {
@@ -44,16 +49,33 @@ public class Esercizio {
         this.tipo = tipo;
     }
 
-    public byte[] getImmagine() {
-        return immagine;
+    public byte[] getImmagine1() {
+        return immagine1;
     }
 
-    public void setImmagine(byte[] immagine) {
-        this.immagine = immagine;
+    public void setImmagine1(byte[] immagine) {
+        this.immagine1 = immagine1;
     }
 
     public String getAiuto() {
         return aiuto;
+    }
+
+    public byte[] getImmagine2() {
+        return immagine2;
+    }
+
+    public void setImmagine2(byte[] immagine2) {
+        this.immagine2 = immagine2;
+    }
+
+    public String[] getSequenza() {
+        return sequenza;
+    }
+
+
+    public void setSequenza(String[] sequenza) {
+        this.sequenza = sequenza;
     }
 
     public void setAiuto(String aiuto) {

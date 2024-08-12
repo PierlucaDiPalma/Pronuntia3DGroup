@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,10 +38,8 @@ public class ImageActivity extends AppCompatActivity {
     private TextView emailText;
     private ImageView image;
     private DBHelper db;
-    private MediaPlayer mediaPlayer;
-    private ProgressBar progressBar;
-    private Handler handler = new Handler();
-    private Runnable runnable;
+    private EditText idEdit;
+    private String id;
 
     private static final int PERMISSION_REQUEST_CODE = 100;
 
@@ -59,7 +58,9 @@ public class ImageActivity extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
         emailText = findViewById(R.id.email);
-        image = findViewById(R.id.imageView);
+        image = findViewById(R.id.imageEx);
+        idEdit = findViewById(R.id.idEx);
+
 
         db = new DBHelper(this);
 
@@ -69,106 +70,12 @@ public class ImageActivity extends AppCompatActivity {
         String email = intent.getStringExtra("email");
 
         emailText.setText(email);
-        image.setImageBitmap(db.getAllImages(2));
+        id = idEdit.getText().toString().trim();
+        image.setImageBitmap(db.getAllImages("1"));
 
         Button playButton = findViewById(R.id.playButton);
-        progressBar = findViewById(R.id.progressBar);
-
-        mediaPlayer = new MediaPlayer();
-
-       playButton.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               //Uri audioFileUri = Uri.fromFile(new File("/storage/emulated/0/Recordings/Voice Recorder/Voce 015.m4a"));
-
-               try {
-                   mediaPlayer.setDataSource("/storage/emulated/0/Recordings/Voice Recorder/Voce 015.m4a");
-                   mediaPlayer.prepare();
-                   mediaPlayer.start();
-               } catch (IOException e) {
-                   throw new RuntimeException(e);
-               }
-
-           }
-       });
-
-        mediaPlayer.setOnCompletionListener(mp -> {
-            progressBar.setProgress(0);
-            handler.removeCallbacks(runnable);
-        });
 
 
-    }
 
-    private void updateProgressBar() {
-        progressBar.setMax(mediaPlayer.getDuration() / 1000);
-
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mediaPlayer.isPlaying()) {
-                    progressBar.setProgress(mediaPlayer.getCurrentPosition() / 1000);
-                    handler.postDelayed(this, 1000);
-                }
-            }
-        };
-        handler.postDelayed(runnable, 1000);
-    }
-
-    // Metodo per ottenere i dati audio dal database
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        handler.removeCallbacks(runnable);
-    }
-    private void playRecording(Uri audioFileUri) {
-        if (audioFileUri != null) {
-            mediaPlayer = new MediaPlayer();
-            try {
-                mediaPlayer.setDataSource(this, audioFileUri);
-                mediaPlayer.prepare();
-                mediaPlayer.start();
-
-                progressBar.setVisibility(View.VISIBLE);
-                progressBar.setMax(mediaPlayer.getDuration());
-                updateProgressBar();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    progressBar.setVisibility(View.GONE);
-                    progressBar.setProgress(0);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                try {
-                    mediaPlayer.setDataSource("/storage/emulated/0/Recordings/Voice Recorder/Voce 015.m4a");
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                Toast.makeText(this, "Permesso di lettura negato", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 }

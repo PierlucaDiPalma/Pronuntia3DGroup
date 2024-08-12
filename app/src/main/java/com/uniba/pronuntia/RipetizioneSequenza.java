@@ -1,10 +1,12 @@
 package com.uniba.pronuntia;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,11 +26,14 @@ import java.util.Calendar;
 
 public class RipetizioneSequenza extends AppCompatActivity {
 
-    private EditText titoloEdit;
+    private EditText titoloEdit, parola1Edit, parola2Edit, parola3Edit;
     private TextView data;
     private Button crea, calendario;
     private DBHelper db;
     private String titolo;
+    private int day, month, year;
+    private Esercizio esercizio = new Esercizio(null, null, "Sequenza", null, null,  null, null, 0, 0,0);
+
     private static final String TAG = "RipetzioneSequenza";
 
     @Override
@@ -43,6 +48,10 @@ public class RipetizioneSequenza extends AppCompatActivity {
         });
         Log.d(TAG, "onCreate: Entrato");
         titoloEdit = findViewById(R.id.titoloEsercizio2);
+        parola1Edit = findViewById(R.id.parola1);
+        parola2Edit = findViewById(R.id.parola2);
+        parola3Edit = findViewById(R.id.parola3);
+
         crea = findViewById(R.id.createSeq);
         calendario = findViewById(R.id.calendar);
         data = findViewById(R.id.date);
@@ -52,27 +61,49 @@ public class RipetizioneSequenza extends AppCompatActivity {
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
 
+
+
+        Log.d(TAG, "onCreate: " + titolo);
+
+
+
+
+
+
+
+
+
+
         Log.d(TAG, "onCreate: " + email);
 
         MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker().build();
 
 
-
         calendario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                materialDatePicker.show(getSupportFragmentManager(), "DATE_PICKER");
-                materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
-                    @Override
-                    public void onPositiveButtonClick(Object selection) {
-                        data.setText("Data: " + materialDatePicker.getHeaderText());
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTimeInMillis((Long) selection);
 
-                        Log.d(TAG, "onPositiveButtonClick: ");
+                final Calendar calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(RipetizioneSequenza.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
+                        monthDP += 1;
+                        data.setText(dayOfMonthDP + " " + (monthDP) + " " + yearDP );
 
                     }
-                });
+                }, day, month, year);
+
+                esercizio.setGiorno(day);
+                esercizio.setMese(month);
+                esercizio.setAnno(year);
+
+
+                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis()-1000);
+                datePickerDialog.show();
             }
 
         });
@@ -81,25 +112,46 @@ public class RipetizioneSequenza extends AppCompatActivity {
         crea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean isNull = false;
 
                 titolo = titoloEdit.getText().toString().trim();
+                String[] sequenza = new String[3];
 
+                sequenza[0] = parola1Edit.getText().toString().trim();
 
-                try {
-                    titolo = URLEncoder.encode(titolo, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                sequenza[1] = parola2Edit.getText().toString().trim();
+
+                sequenza[2] = parola3Edit.getText().toString().trim();
+
+                for(int i = 0;i<sequenza.length;i++){
+                    if(sequenza[i].isEmpty() || sequenza[i].equals(null)){
+                        isNull = true;
+                        break;
+                    }
+                    Log.d(TAG, "onClick: " + sequenza[i]);
                 }
 
-                Esercizio esercizio = new Esercizio(email, titolo, "Sequenza", null, null, 0, 0, 0);
+                esercizio.setName(titolo);
+                esercizio.setEmail(email);
+                esercizio.setSequenza(sequenza);
 
-                if(db.addExercises(esercizio)){
-                    Log.d(TAG, "onClick: Scrittura");
-                    Toast.makeText(RipetizioneSequenza.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(RipetizioneSequenza.this, CreazioneEsercizi.class));
+                if(!titolo.isEmpty() || !isNull){
+                    try {
+                        titolo = URLEncoder.encode(titolo, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if(db.addExercises(esercizio) && db.addSequenza(esercizio)){
+                            Log.d(TAG, "onClick: Scrittura");
+                            Toast.makeText(RipetizioneSequenza.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RipetizioneSequenza.this, CreazioneEsercizi.class));
+
+                        }else{
+                            Toast.makeText(RipetizioneSequenza.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
+                        }
 
                 }else{
-                    Toast.makeText(RipetizioneSequenza.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RipetizioneSequenza.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();
                 }
             }
         });
