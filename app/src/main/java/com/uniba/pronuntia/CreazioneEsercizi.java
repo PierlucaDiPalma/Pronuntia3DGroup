@@ -1,10 +1,12 @@
 package com.uniba.pronuntia;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -68,17 +70,14 @@ public class CreazioneEsercizi extends AppCompatActivity {
         emailText.setText(email);
         telefonoText.setText(telefono);
 
-
         addEsercizio = findViewById(R.id.add);
         prova = findViewById(R.id.tryImage);
         recyclerView = findViewById(R.id.exercises);
 
 
-
         db = new DBHelper(this);
 
         esercizi = db.readExercises(email);
-
 
 
         customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, esercizi);
@@ -94,7 +93,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
         prova.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CreazioneEsercizi.this, ImageActivity.class);
+                Intent intent = new Intent(CreazioneEsercizi.this, CoupleActivity.class);
                 intent.putExtra(email, "email");
                 startActivity(intent);
             }
@@ -110,19 +109,18 @@ public class CreazioneEsercizi extends AppCompatActivity {
                     switch (which) {
                         case 0:
                             intent = new Intent(CreazioneEsercizi.this, DenominazioneImmagini.class);
-                            intent.putExtra("email", email);
                             break;
                         case 1:
                             intent = new Intent(CreazioneEsercizi.this, RipetizioneSequenza.class);
-                            intent.putExtra("email", email);
                             break;
                         case 2:
                             intent = new Intent(CreazioneEsercizi.this, Coppia.class);
-                            intent.putExtra("email", email);
+
                             break;
                         default:
                             return;
                     }
+                    intent.putExtra("email", email);
                     startActivity(intent);
                 });
         builder.show();

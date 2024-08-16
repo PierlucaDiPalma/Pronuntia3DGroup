@@ -41,7 +41,6 @@ public class ImageActivity extends AppCompatActivity {
     private EditText idEdit;
     private String id;
 
-    private static final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,16 +53,12 @@ public class ImageActivity extends AppCompatActivity {
             return insets;
         });
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-
         emailText = findViewById(R.id.email);
         image = findViewById(R.id.imageEx);
         idEdit = findViewById(R.id.idEx);
 
 
         db = new DBHelper(this);
-
 
 
         Intent intent = getIntent();

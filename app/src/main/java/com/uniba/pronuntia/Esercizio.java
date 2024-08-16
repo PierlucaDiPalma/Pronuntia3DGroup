@@ -1,5 +1,7 @@
 package com.uniba.pronuntia;
 
+import android.graphics.Bitmap;
+
 public class Esercizio {
 
     private String email;
@@ -49,16 +51,16 @@ public class Esercizio {
         this.tipo = tipo;
     }
 
+    public String getAiuto() {
+        return aiuto;
+    }
+
     public byte[] getImmagine1() {
         return immagine1;
     }
 
-    public void setImmagine1(byte[] immagine) {
+    public void setImmagine1(byte[] immagine1) {
         this.immagine1 = immagine1;
-    }
-
-    public String getAiuto() {
-        return aiuto;
     }
 
     public byte[] getImmagine2() {

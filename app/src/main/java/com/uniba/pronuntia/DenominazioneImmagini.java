@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,11 +64,16 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private DBHelper db;
     private String titolo, aiuto;
     private int day, month, year;
-    private Esercizio esercizio = new Esercizio(null, null, "Denominazione", new byte[0], null, null, null, 0, 0, 0);
+    private Esercizio esercizio = new Esercizio(null, null, "Denominazione", null, null, null, null, 0, 0, 0);
 
     ActivityResultLauncher<Intent> resultLauncher;
 
     private SeekBar audioBar;
+
+    private Uri imagePath;
+    private Bitmap image;
+
+    private static final int PICK_IMAGE_REQUEST = 99;
     private static final String TAG = "DenominazioneImmagini";
 
 
@@ -115,30 +121,29 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(DenominazioneImmagini.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
-                        monthDP = monthDP + 1;
-                        data.setText(dayOfMonthDP + " " + (monthDP) + " " + yearDP);
-
+                        data.setText(dayOfMonthDP + " " + (monthDP+ 1) + " " + yearDP);
+                        esercizio.setGiorno(dayOfMonthDP);
+                        esercizio.setMese(monthDP+1);
+                        esercizio.setAnno(yearDP);
                     }
                 }, day, month, year);
 
-                esercizio.setGiorno(day);
-                esercizio.setMese(month);
-                esercizio.setAnno(year);
+
 
                 datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis() - 1000);
                 datePickerDialog.show();
             }
         });
 
-        registerImageResult(email);
 
-        imgLoad.setOnClickListener(new View.OnClickListener() {
+
+        immagine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadImage();
+                choseImage();
             }
         });
-
+        //registerImageResult(email);
         Log.d(TAG, "onPositiveButtonClick: " + day + " " + month + " " + year);
 
 
@@ -156,7 +161,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 }
 
 
-                if (!titolo.isEmpty() || !aiuto.isEmpty() || immagine.getDrawable() != null) {
+                if (!titolo.isEmpty() || !aiuto.isEmpty() || titolo!= null || aiuto != null || immagine.getDrawable() != null) {
 
                     esercizio.setName(titolo);
                     esercizio.setAiuto(aiuto);
@@ -179,90 +184,43 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
     }
 
-/*
-    private void loadImage() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        gallery.launch(intent);
+    private void choseImage(){
+        try{
+
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
+
+        }catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
-    ActivityResultLauncher<Intent> gallery = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == AppCompatActivity.RESULT_OK) {
-                        Uri imageUri = result.getData().getData();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        try{
 
-                        imgLoad.setVisibility(View.VISIBLE);
-                        imgLoad.setText("Cambia immagine");
-                        immagine.setImageURI(imageUri);
+            super.onActivityResult(requestCode, resultCode, data);
+            if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null ){
 
+                imagePath = data.getData();
+                image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
+                immagine.setImageBitmap(image);
+                imgLoad.setText("Cambia immagine");
 
-                        InputStream inputStream = null;
-                        try {
-                            inputStream = getContentResolver().openInputStream(imageUri);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                        immagine.setImageBitmap(bitmap);
-
-                        ByteArrayOutputStream outputStreamCorrect = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStreamCorrect);
-                        byte[] imageBytes = outputStreamCorrect.toByteArray();
-
-
-                        esercizio.setImmagine1(imageBytes);
-
-                        } catch (FileNotFoundException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
+                esercizio.setImmagine1(imageBytes);
             }
-    );*/
 
-
-    private void registerImageResult(String email) {
-        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        try {
-                            Uri imageUri = result.getData().getData();
-
-                            try {
-
-                                InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                immagine.setVisibility(View.VISIBLE);
-                                immagine.setImageURI(imageUri);
-                                imgLoad.setText("Cambia immagine");
-
-                                // Converti Bitmap in byte[]
-                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                                byte[] imageBytes = outputStream.toByteArray();
-
-                                esercizio.setImmagine1(imageBytes);
-
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(DenominazioneImmagini.this, "Errore nel caricamento dell'immagine", Toast.LENGTH_SHORT).show();
-                            }
-                            immagine.setVisibility(View.VISIBLE);
-                            immagine.setImageURI(imageUri);
-                            imgLoad.setText("Cambia immagine");
-                        } catch (Exception e) {
-                            Toast.makeText(DenominazioneImmagini.this, "Nessuna immagine caricata", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-        );
+        }catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void loadImage() {
 
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
-        resultLauncher.launch(intent);
-    }
 }

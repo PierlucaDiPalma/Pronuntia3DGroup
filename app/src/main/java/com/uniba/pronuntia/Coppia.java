@@ -45,14 +45,19 @@ public class Coppia extends AppCompatActivity {
 
     private int day, month, year;
 
-    private static final int REQUEST_CODE_IMAGE1 = 1;
-    private static final int REQUEST_CODE_IMAGE2 = 2;
+    private static final int PICK_IMAGE_REQUEST_1 = 1;
+    private static final int PICK_IMAGE_REQUEST_2 = 2;
+
+    private Uri imagePath;
+    private Bitmap image;
+
+    //private static final int PICK_IMAGE_REQUEST = 99;
 
     ActivityResultLauncher<Intent> resultLauncher;
     private ActivityResultLauncher<Intent> loadImage1Launcher;
     private ActivityResultLauncher<Intent> loadImage2Launcher;
 
-    private Esercizio esercizio = new Esercizio(null, null, "Coppia", new byte[0], new byte[0],  null, null, 0, 0,0);
+    private Esercizio esercizio = new Esercizio(null, null, "Coppia", null, null,  null, null, 0, 0,0);
 
 
     @Override
@@ -94,33 +99,32 @@ public class Coppia extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(Coppia.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
-                        monthDP = monthDP+1;
-                        data.setText(dayOfMonthDP + " " + (monthDP) + " " + yearDP );
 
+                        data.setText(dayOfMonthDP + " " + (monthDP+1) + " " + yearDP );
+                        esercizio.setGiorno(dayOfMonthDP);
+                        esercizio.setMese(monthDP+1);
+                        esercizio.setAnno(yearDP);
                     }
                 }, day, month, year);
 
-                esercizio.setGiorno(day);
-                esercizio.setMese(month);
-                esercizio.setAnno(year);
+
 
                 datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis()-1000);
                 datePickerDialog.show();
             }
         });
-/*
-        loadImage1Launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        esercizio.setImmagine1(handleImageResult(result.getData(), immagine1, imageLoad1));
-                    }
-                });
 
-*/
+        immagine1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                choseImage(PICK_IMAGE_REQUEST_1);
+            }
+        });
+
         imageLoad1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadImage1();
+                choseImage(PICK_IMAGE_REQUEST_1);
             }
         });
 /*
@@ -132,10 +136,17 @@ public class Coppia extends AppCompatActivity {
                     }
                 });*/
 
+        immagine2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                choseImage(PICK_IMAGE_REQUEST_2);
+            }
+        });
+
         imageLoad2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadImage2();
+                choseImage(PICK_IMAGE_REQUEST_2);
             }
         });
 
@@ -149,15 +160,12 @@ public class Coppia extends AppCompatActivity {
                 try {
                     titolo = URLEncoder.encode(titolo, "UTF-8");
 
-
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
 
-
                 esercizio.setName(titolo);
                 esercizio.setAiuto(soluzione);
-
 
                 if(!titolo.isEmpty() || !soluzione.isEmpty() || immagine1.getDrawable()!=null || immagine2.getDrawable()!=null){
 
@@ -236,7 +244,6 @@ public class Coppia extends AppCompatActivity {
                         }
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-
                         ByteArrayOutputStream outputStreamCorrect = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStreamCorrect);
                         byte[] imageBytes = outputStreamCorrect.toByteArray();
@@ -248,6 +255,58 @@ public class Coppia extends AppCompatActivity {
                 }
             }
     );
+
+    private void choseImage(int PICK_IMAGE_REQUEST){
+        try{
+
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
+
+        }catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        try{
+
+            super.onActivityResult(requestCode, resultCode, data);
+            if(resultCode == RESULT_OK && data != null && data.getData() != null ) {
+                if (requestCode == PICK_IMAGE_REQUEST_1) {
+
+                    imagePath = data.getData();
+                    image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
+                    immagine1.setImageBitmap(image);
+                    imageLoad1.setText("Cambia immagine");
+
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                    byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+                    esercizio.setImmagine1(imageBytes);
+
+                }else if(requestCode == PICK_IMAGE_REQUEST_2){
+                    imagePath = data.getData();
+                    image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
+                    immagine2.setImageBitmap(image);
+                    imageLoad2.setText("Cambia immagine");
+
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                    byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
+                    esercizio.setImmagine2(imageBytes);
+                }
+            }
+        }catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
 

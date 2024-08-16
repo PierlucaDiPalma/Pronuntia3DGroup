@@ -168,7 +168,18 @@ public class DBHelper extends SQLiteOpenHelper {
             bt = BitmapFactory.decodeByteArray(image, 0, image.length);
         }
         return bt;
+    }
 
+    public Bitmap getCoupleImage1(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Bitmap bt = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_COPPIA +" WHERE ID = ?", new String[]{String.valueOf(id)});
+
+        if(cursor.moveToNext()){
+            byte[] image = cursor.getBlob(4);
+            bt = BitmapFactory.decodeByteArray(image, 0, image.length);
+        }
+        return bt;
     }
 
     public boolean isSigned(String email){
@@ -286,6 +297,13 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(EMAIL, esercizio.getEmail());
         contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
+/*
+        Bitmap bitmap = esercizio.getImmagine1();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+        byte[] immagine = byteArrayOutputStream.toByteArray();
+*/
         contentValues.put(IMMAGINE, esercizio.getImmagine1());
         contentValues.put(AIUTO, esercizio.getAiuto().replace("+", " "));
         contentValues.put(GIORNO, esercizio.getGiorno());
@@ -323,7 +341,9 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(EMAIL, esercizio.getEmail());
         contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
+
         contentValues.put(IMMAGINE_1, esercizio.getImmagine1());
+
         contentValues.put(IMMAGINE_2, esercizio.getImmagine2());
         contentValues.put(AIUTO, esercizio.getAiuto());
         contentValues.put(GIORNO, esercizio.getGiorno());
@@ -332,6 +352,75 @@ public class DBHelper extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_COPPIA, null, contentValues);
         return result != -1;
+    }
+
+    public Esercizio getCoppia(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        //Bitmap bt = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE ID = ?", new String[]{String.valueOf(id)});
+
+        Esercizio esercizio = null;
+
+        //Log.d(TAG, "getImage1: " + cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2));
+
+        cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE ID = ?", new String[]{String.valueOf(id)});
+
+        // Controllo del numero di colonne nel Cursor
+        Log.d(TAG, "Numero di colonne nel cursor: " + cursor.getColumnCount());
+
+        // Controlla se il cursore ha dei risultati
+        if (cursor != null && cursor.moveToFirst()) {
+            Log.d(TAG, "getCoppia: Trovata la prima riga");
+
+            // Verifica che tutte le colonne siano accessibili
+            Log.d(TAG, "Colonna 1 (email): " + cursor.getString(1));
+            Log.d(TAG, "Colonna 2 (titolo): " + cursor.getString(2));
+            Log.d(TAG, "Colonna 4 (immagine1): " + (cursor.getBlob(4) != null));
+            Log.d(TAG, "Colonna 5 (immagine2): " + (cursor.getBlob(5) != null));
+            Log.d(TAG, "Colonna 6 (aiuto): " + cursor.getString(6));
+            Log.d(TAG, "Colonna 7 (sequenza): " + cursor.getString(7));
+            Log.d(TAG, "Colonna 8 (giorno): " + cursor.getInt(7));
+            Log.d(TAG, "Colonna 9 (mese): " + cursor.getInt(8));
+            Log.d(TAG, "Colonna 10 (anno): " + cursor.getInt(9));
+
+            // Estrai i dati dalla riga
+            String email = cursor.getString(1);
+            String titolo = cursor.getString(2);
+            byte[] immagine1 = cursor.getBlob(4);  // Verifica che la colonna esista
+            byte[] immagine2 = cursor.getBlob(5);  // Verifica che la colonna esista
+            String aiuto = cursor.getString(6);
+            String[] sequenza = new String[]{cursor.getString(7)};
+            int giorno = cursor.getInt(7);
+            int mese = cursor.getInt(8);
+            int anno = cursor.getInt(9);
+
+            // Crea l'oggetto Esercizio
+            esercizio = new Esercizio(email, titolo, "Coppia", immagine1, immagine2, aiuto, sequenza, giorno, mese, anno);
+
+            Log.d(TAG, "getCoppia: " + esercizio.getEmail() + esercizio.getAiuto());
+
+        } else {
+            Log.d(TAG, "getCoppia: Nessun risultato trovato");
+        }
+        Log.d(TAG, "getCoppia: " + esercizio.getEmail() + esercizio.getAiuto());
+
+        return esercizio;
+    }
+
+    public String getImage2(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Bitmap bt = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_COPPIA +" WHERE id = ?", new String[]{String.valueOf(id)});
+        String image = null;
+
+        if(cursor.moveToNext()){
+             image = cursor.getString(2);
+            //bt = BitmapFactory.decodeByteArray(image, 0, image.length);
+            return image;
+        }
+
+        Log.d(TAG, "getImage2: " + bt.toString() );
+        return image;
     }
 
     public void deleteAllDataFromTable(String tableName) {
