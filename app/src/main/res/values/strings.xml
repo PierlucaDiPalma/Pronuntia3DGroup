@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">pronuntia</string>
     <string name="registrati">Registrati</string>
+
+
+    <string-array name="Weeks">
+        <item>1 settimana </item>
+        <item>2 settimane</item>
+        <item>3 settimane</item>
+        <item>4 settimane</item>
+    </string-array>
+    
+    
+    
+    
+    
 </resources>

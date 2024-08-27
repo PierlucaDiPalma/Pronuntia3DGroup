@@ -1,6 +1,7 @@
 package com.uniba.pronuntia;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -65,7 +66,12 @@ public class Login extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         }else{
-                            //Carica la pagina del genitore
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("userEmail", email);
+                            editor.apply();
+
                             Intent intent = new Intent(Login.this, HomeUtente.class);
                             startActivity(intent);
                             finish();

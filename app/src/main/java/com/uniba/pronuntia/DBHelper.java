@@ -47,6 +47,18 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String IMMAGINE_1 = "IMMAGINE_1";
     private static final String IMMAGINE_2 = "IMMAGINE_2";
 
+
+    private static final String TABLE_TERAPIE = "Terapie";
+    private static final String ID = "id";
+    private static final String nome_bambino = "nome_bambino";
+    private static final String motivo_richiesta = "motivo_richiesta";
+    private static final String durata_terapia = "durata_terapia";
+    private static final String contenuti_terapia = "contenuti_terapia";
+    private static final String email_genitore = "email_genitore";
+
+
+
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -107,6 +119,18 @@ public class DBHelper extends SQLiteOpenHelper {
                 + MESE + " INTEGER, "
                 + ANNO + " INTEGER )");
 
+
+        String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
+                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + nome_bambino + " TEXT,"
+                + motivo_richiesta + " TEXT,"
+                + durata_terapia + " INTEGER,"
+                + contenuti_terapia + " TEXT,"
+                + email_genitore + " TEXT,"
+                + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                + ")";
+        db.execSQL(CREATE_TABLE_TERAPIE);
+
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
     }
@@ -118,9 +142,38 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DENOMINAZIONE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEQUENZA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COPPIA);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
         onCreate(db);
     }
+
+    public void addTerapia(String nomeBambino, String motivoRichiesta, int durata, String contenutiTerapia, String emailGenitore) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(nome_bambino, nomeBambino);
+        values.put(motivo_richiesta, motivoRichiesta);
+        values.put(durata_terapia, durata);
+        values.put(contenuti_terapia, contenutiTerapia);
+        values.put(email_genitore, emailGenitore);
+
+        long result = db.insert(TABLE_TERAPIE, null, values);
+        if (result == -1) {
+            Log.e(TAG, "Errore nell'inserimento della terapia");
+        } else {
+            Log.d(TAG, "Terapia inserita con successo, ID: " + result);
+        }
+        db.close();
+    }
+
+
+
+
+
+
+
+
+
+
+
     public boolean addData(int giorno, int mese, int anno) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
