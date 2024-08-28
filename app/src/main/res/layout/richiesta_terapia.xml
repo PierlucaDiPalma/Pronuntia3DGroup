@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/lineraLayoutEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="110dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome bambino:"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="45dp"
+            tools:layout_editor_absoluteY="121dp" />
+
+        <EditText
+            android:id="@+id/CampoNomeBambino"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="inserire nome"
+            android:inputType="textPersonName"
+            android:padding="16dp"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="45dp"
+            tools:layout_editor_absoluteY="140dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Motivo richiesta:"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="51dp"
+            tools:layout_editor_absoluteY="206dp" />
+
+        <EditText
+            android:id="@+id/CampoMotivoRichiesta"
+            android:layout_width="247dp"
+            android:layout_height="81dp"
+            android:hint="inserire motivazione della richiesta"
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:padding="16dp"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="51dp"
+            tools:layout_editor_absoluteY="225dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="238dp"
+        android:text="Inserire durata terapia"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineraLayoutcheckboxes" />
+
+    <Spinner
+        android:id="@+id/Spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="238dp"
+        android:padding="16dp"
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <LinearLayout
+        android:id="@+id/lineraLayoutcheckboxes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="139dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lineraLayoutEditText">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inserire contenuti terapia"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="54dp"
+            tools:layout_editor_absoluteY="331dp" />
+
+
+        <CheckBox
+            android:id="@+id/checkboxRiconoscimentoCoppieMinime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Riconoscimento coppie minime"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="53dp"
+            tools:layout_editor_absoluteY="353dp" />
+
+        <CheckBox
+            android:id="@+id/checkboxRipetizioneSeqParole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ripetizione di sequenze di parole"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="52dp"
+            tools:layout_editor_absoluteY="401dp" />
+
+        <CheckBox
+            android:id="@+id/checkboxDenominazImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Denominazione immagini"
+            android:textSize="12dp"
+            tools:layout_editor_absoluteX="52dp"
+            tools:layout_editor_absoluteY="452dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/InviaRichiestabtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="259dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="96dp"
+        android:text="Invia"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent">
+        </Button>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
