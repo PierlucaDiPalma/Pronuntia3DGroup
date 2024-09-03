@@ -23,12 +23,6 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Game"
-            android:exported="false" />
-        <activity
-            android:name=".GameAdapter"
-            android:exported="false" />
-        <activity
             android:name=".ImageActivity"
             android:exported="false" />
         <activity
@@ -36,6 +30,9 @@
             android:exported="false" />
         <activity
             android:name=".DenominazioneImmagini"
+            android:exported="false" />
+        <activity
+            android:name=".Coppia"
             android:exported="false" />
         <activity
             android:name=".CreazioneEsercizi"

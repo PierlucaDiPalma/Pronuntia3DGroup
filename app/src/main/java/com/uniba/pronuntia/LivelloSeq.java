@@ -1,12 +1,18 @@
 package com.uniba.pronuntia;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.speech.RecognizerIntent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -56,7 +62,13 @@ public class LivelloSeq extends Fragment {
         }
     }
 
-    private TextView parola1Text, parola2Text, parola3Text, titolo;
+    private TextView parola1Text, parola2Text, parola3Text, titolo, giudizio;
+    private Button parla;
+    private int punteggio = 0;
+
+    private String parola1, parola2, parola3;
+    private static final String TAG = "LivelloSeq";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,18 +80,71 @@ public class LivelloSeq extends Fragment {
         parola1Text = view.findViewById(R.id.parola1);
         parola2Text = view.findViewById(R.id.parola2);
         parola3Text = view.findViewById(R.id.parola3);
+        giudizio = view.findViewById(R.id.giudizio);
+        parla = view.findViewById(R.id.speakButton);
 
-        String parola1, parola2, parola3;
+
+
+        parola1 = getArguments().getString("Parola1");
+        parola2 = getArguments().getString("Parola2");
+        parola3 = getArguments().getString("Parola3");
 
         if(getArguments() != null){
+
             titolo.setText(getArguments().getString("Titolo"));
 
-            parola1Text.setText(getArguments().getString("Parola1"));
-            parola2Text.setText(getArguments().getString("Parola2"));
-            parola3Text.setText(getArguments().getString("Parola3"));
+            parola1Text.setText(parola1);
+            parola2Text.setText(parola2);
+            parola3Text.setText(parola3);
 
         }
 
+        parla.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                speak(view, parola1, parola2, parola3);
+            }
+        });
+
         return view;
+    }
+
+    public void speak(View view, String parola1, String parola2, String parola3 ){
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Parla");
+        intent.putExtra("parola1", parola1);
+        intent.putExtra("parola2", parola2);
+        intent.putExtra("parola3", parola3);
+
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 100 && resultCode == AppCompatActivity.RESULT_OK){
+            String input = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).get(0);
+            String[] content = {parola1, parola2, parola3};
+
+
+            String[] inputSplitted = input.split(" ");
+
+            Log.d(TAG, "onActivityResult: " + inputSplitted[0]);
+            Log.d(TAG, "onActivityResult: " + inputSplitted[1]);
+            Log.d(TAG, "onActivityResult: " + inputSplitted[2]);
+
+
+            for(int i = 0; i<content.length;i++){
+                if(inputSplitted[i].toUpperCase().equals(content[i].toUpperCase())){
+                    giudizio.setText("Giusto");
+                }else{
+                    giudizio.setText("Sbagliato");
+
+                }
+            }
+
+        }
     }
 }

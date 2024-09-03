@@ -1,5 +1,7 @@
 package com.uniba.pronuntia;
 
+import static com.uniba.pronuntia.R.*;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -30,7 +32,7 @@ public class RichiestaTerapia extends AppCompatActivity {
 
         setContentView(R.layout.richiesta_terapia);
         Spinner spinner=findViewById(R.id.Spinner);
-
+/*
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.Weeks,
@@ -38,7 +40,7 @@ public class RichiestaTerapia extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
+*/
 
         databaseHelper = new DBHelper(this);
         nomeBambinoEditText = findViewById(R.id.CampoNomeBambino);

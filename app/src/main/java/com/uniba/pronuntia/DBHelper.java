@@ -467,8 +467,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while(cursor.moveToNext()){
 
-            Log.d(TAG, "getDenominazione: " + cursor.getString(1));
-            Log.d(TAG, "getDenominazione: " + cursor.getString(2));
 
             String email = cursor.getString(1);
             String titolo = cursor.getString(2).replace("+", " ");
@@ -489,46 +487,44 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
             esercizi.add(new Esercizio(email, titolo, tipo, null, null, null, sequenza, giorno, mese, anno));
-            Log.d(TAG, "readExercises: " + cursor.getString(1));
-            Log.d(TAG, "readExercises: " + cursor.getString(2));
+
         }
         return esercizi;
     }
 
-
-    public ArrayList<Esercizio> getCoppia(String user) {
+    public ArrayList<Esercizio> getCoppia(String user){
         SQLiteDatabase db = this.getReadableDatabase();
-        //Bitmap bt = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE ID = ?", new String[]{user});
+        Cursor cursor = null;
 
         ArrayList<Esercizio> esercizi = new ArrayList<>();
 
-        //Log.d(TAG, "getImage1: " + cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2));
+        if(db!=null){
 
-        Log.d(TAG, "Numero di colonne nel cursor: " + cursor.getColumnCount());
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE EMAIL = ?", new String[]{user});
+      }
 
 
         while(cursor.moveToNext()){
-            Log.d(TAG, "getCoppia: Trovata la prima riga");
 
 
-            // Estrai i dati dalla riga
             String email = cursor.getString(1);
-            String titolo = cursor.getString(2);
+            String titolo = cursor.getString(2).replace("+", " ");
+            String tipo = cursor.getString(3);
+
             byte[] immagine1 = cursor.getBlob(4);
             byte[] immagine2 = cursor.getBlob(5);
             String aiuto = cursor.getString(6);
+
             int giorno = cursor.getInt(7);
             int mese = cursor.getInt(8);
             int anno = cursor.getInt(9);
 
-            // Crea l'oggetto Esercizio
-            esercizi.add(new Esercizio(email, titolo, "Coppia", immagine1, immagine2, aiuto, null, giorno, mese, anno));
+
+            esercizi.add(new Esercizio(email, titolo, tipo, immagine1, immagine2, aiuto, null, giorno, mese, anno));
 
         }
         return esercizi;
     }
-
 
 
     public String getImage2(int id) {

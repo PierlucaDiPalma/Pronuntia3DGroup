@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
     private Button avanti;
     private static final String TAG = "MainActivity";
     int i = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +41,15 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
 
         String email = "paoloneri@gmail.com";
 
-        ArrayList<Esercizio> esercizi = db.getSequenza(email);
+        ArrayList<Esercizio> esercizi = db.getDenominazione(email);
 
-        esercizi.addAll(db.getDenominazione(email));
+        Log.d(TAG, "onCreate: " + esercizi.get(0).getTipo());
+        Log.d(TAG, "onCreate: " + esercizi.get(0).getName());
+
+        esercizi.addAll(db.getSequenza(email));
         esercizi.addAll(db.getCoppia(email));
 
-        //shuffleArrayList(esercizi);
+        shuffleArrayList(esercizi);
 
         Bundle args = new Bundle();
 
@@ -63,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
                 }
             }
         });
-
 
     }
 

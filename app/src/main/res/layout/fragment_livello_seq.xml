@@ -50,7 +50,7 @@
                 android:id="@+id/parola3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="seconda parola"
+                android:text="terza parola"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 android:layout_marginTop="20dp"
@@ -58,6 +58,17 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/giudizio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giudizio"/>
+
+        <Button
+            android:id="@+id/speakButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parla"/>
 
         <Button
             android:id="@+id/aiuto"
