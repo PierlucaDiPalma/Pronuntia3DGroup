@@ -77,7 +77,7 @@ public class LivelloDen extends Fragment {
     private TextView titolo, contenuto;
     private int punteggio = 0;
 
-    TextToSpeech tts;
+    private TextToSpeech tts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,7 +117,16 @@ public class LivelloDen extends Fragment {
                     public void onInit(int i) {
                         if(i==TextToSpeech.SUCCESS){
                             tts.setLanguage(Locale.ITALIAN);
-                            tts.setSpeechRate(0.9f);
+                            tts.setSpeechRate(1f);
+
+                            for (Voice voice : tts.getVoices()) {
+                                if (voice.getName().contains("it-it-x") && voice.getName().contains("male")) {
+                                    tts.setVoice(voice);
+                                    break;
+                                }
+                            }
+
+
                             tts.speak(parola.toString(), TextToSpeech.QUEUE_ADD, null);
                         }
                     }

@@ -8,12 +8,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.speech.RecognizerIntent;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,7 +68,8 @@ public class LivelloSeq extends Fragment {
     }
 
     private TextView parola1Text, parola2Text, parola3Text, titolo, giudizio;
-    private Button parla;
+    private Button parla, aiuto;
+    private TextToSpeech tts;
     private int punteggio = 0;
 
     private String parola1, parola2, parola3;
@@ -82,22 +88,52 @@ public class LivelloSeq extends Fragment {
         parola3Text = view.findViewById(R.id.parola3);
         giudizio = view.findViewById(R.id.giudizio);
         parla = view.findViewById(R.id.speakButton);
-
+        aiuto = view.findViewById(R.id.aiuto);
 
 
         parola1 = getArguments().getString("Parola1");
         parola2 = getArguments().getString("Parola2");
         parola3 = getArguments().getString("Parola3");
 
-        if(getArguments() != null){
 
-            titolo.setText(getArguments().getString("Titolo"));
+        titolo.setText(getArguments().getString("Titolo"));
 
-            parola1Text.setText(parola1);
-            parola2Text.setText(parola2);
-            parola3Text.setText(parola3);
+        parola1Text.setText(parola1);
+        parola2Text.setText(parola2);
+        parola3Text.setText(parola3);
 
-        }
+        aiuto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int i) {
+                        if(i==TextToSpeech.SUCCESS){
+                            tts.setLanguage(Locale.ITALIAN);
+                            tts.setSpeechRate(1f);
+
+                            for (Voice voice : tts.getVoices()) {
+                                if (voice.getName().contains("it-it-x") && voice.getName().contains("male")) {
+                                    tts.setVoice(voice);
+                                    break;
+                                }
+                            }
+
+                            try {
+                                tts.speak(parola1.toString(), TextToSpeech.QUEUE_ADD, null);
+                                TimeUnit.SECONDS.sleep(1);
+                                tts.speak(parola2.toString(), TextToSpeech.QUEUE_ADD, null);
+                                TimeUnit.SECONDS.sleep(1);
+                                tts.speak(parola3.toString(), TextToSpeech.QUEUE_ADD, null);
+
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                });
+            }
+        });
 
         parla.setOnClickListener(new View.OnClickListener() {
             @Override

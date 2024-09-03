@@ -6,11 +6,19 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.Voice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Random;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +69,8 @@ public class LivelloCop extends Fragment {
 
     private TextView titolo, contenuto;
     private ImageView immagine1, immagine2;
+    private Button aiuto;
+    private TextToSpeech tts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,27 +79,91 @@ public class LivelloCop extends Fragment {
 
         titolo = view.findViewById(R.id.livello);
         contenuto = view.findViewById(R.id.contenuto);
+        aiuto = view.findViewById(R.id.aiuto);
+        String parola;
+
+        Random random = new Random();
+        int rand = random.nextInt(2);
+
+        //Mescola casualmente le immagini
         immagine1 = view.findViewById(R.id.img1);
         immagine2 = view.findViewById(R.id.img2);
+
+        ArrayList<byte[]> immagini = new ArrayList<>();
 
         if(getArguments() != null){
 
             titolo.setText(getArguments().getString("Titolo"));
+            parola = getArguments().getString("Aiuto");
             contenuto.setText(getArguments().getString("Aiuto"));
 
-            byte[] byteArray = getArguments().getByteArray("Immagine1");
-            Bitmap image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            byte[] correctImage = getArguments().getByteArray("Immagine1");
+            byte[] incorrectImage = getArguments().getByteArray("Immagine2");
+
+            if(rand == 0) {
+                immagini.add(correctImage);
+                immagini.add(incorrectImage);
+            }else{
+                immagini.add(incorrectImage);
+                immagini.add(correctImage);
+            }
+
+
+            Bitmap image = BitmapFactory.decodeByteArray(immagini.get(0), 0, immagini.get(0).length);
             immagine1.setImageBitmap(image);
 
-            byteArray = getArguments().getByteArray("Immagine2");
-            image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+            image = BitmapFactory.decodeByteArray(immagini.get(1), 0, immagini.get(1).length);
             immagine2.setImageBitmap(image);
 
+            immagine1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    checkAnswer(immagini.get(0), correctImage, contenuto);
+                }
+            });
+
+            immagine2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    checkAnswer(immagini.get(1), correctImage, contenuto);
+                }
+            });
+
+            aiuto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
+                        @Override
+                        public void onInit(int i) {
+                            if(i==TextToSpeech.SUCCESS){
+                                tts.setLanguage(Locale.ITALIAN);
+                                tts.setSpeechRate(1f);
+
+                                for (Voice voice : tts.getVoices()) {
+                                    if (voice.getName().contains("it-it-x") && voice.getName().contains("male")) {
+                                        tts.setVoice(voice);
+                                        break;
+                                    }
+                                }
+
+                                tts.speak(parola.toString(), TextToSpeech.QUEUE_ADD, null);
+                            }
+                        }
+                    });
+                }
+            });
 
         }
 
-
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void checkAnswer(byte[] selectedImageUrl, byte[] correctImage, TextView giudizio) {
+        if (selectedImageUrl.equals(correctImage)) {
+            giudizio.setText("Giusto!");
+        } else {
+            giudizio.setText("Sbagliato!");
+        }
     }
 }

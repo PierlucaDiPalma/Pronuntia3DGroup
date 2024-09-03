@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
             getSupportFragmentManager().beginTransaction().replace(R.id.level, fragment).commit();
 
         }else if(esercizi.get(i).getTipo().equals("Sequenza")){
-
             args.putString("Titolo", esercizi.get(i).getName());
             args.putString("Parola1", esercizi.get(i).getSequenza()[0]);
             args.putString("Parola2", esercizi.get(i).getSequenza()[1]);
