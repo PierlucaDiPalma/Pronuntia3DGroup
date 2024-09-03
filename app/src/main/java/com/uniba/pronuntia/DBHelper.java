@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -290,6 +291,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
             if(cursor.getInt(5) == 0)
                 pazienti.add(new Utente(email, nome, cognome, telefono, password, isLogopedista));
+
+
         }
         Log.d(TAG, "Ritorno array");
         cursor.close();
@@ -318,9 +321,11 @@ public class DBHelper extends SQLiteOpenHelper {
             String tipo = cursor.getString(3);
 
             esercizi.add(new Esercizio(email, titolo, tipo, null, null, null, null, 0, 0, 0));
+
             Log.d(TAG, "readExercises: " + cursor.getString(1));
             Log.d(TAG, "readExercises: " + cursor.getString(2));
         }
+
         return esercizi;
     }
 
@@ -407,58 +412,124 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public Esercizio getCoppia(int id) {
+    public ArrayList<Esercizio> getDenominazione(String user){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        ArrayList<Esercizio> esercizi = new ArrayList<>();
+        Log.d(TAG, "denominazione: Array creato");
+
+        if(db!=null){
+            Log.d(TAG, "denominazione: Entrato");
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE + " WHERE EMAIL = ?", new String[]{user});
+
+            Log.d(TAG, "denominazione: Esecuzione query");
+        }
+
+
+        while(cursor.moveToNext()){
+
+            Log.d(TAG, "getDenominazione: " + cursor.getString(1));
+            Log.d(TAG, "getDenominazione: " + cursor.getString(2));
+
+            String email = cursor.getString(1);
+            String titolo = cursor.getString(2).replace("+", " ");
+            String tipo = cursor.getString(3);
+            byte[] immagine1 = cursor.getBlob(4);
+            String aiuto = cursor.getString(5);
+            int giorno = cursor.getInt(6);
+            int mese = cursor.getInt(7);
+            int anno = cursor.getInt(8);
+
+
+            esercizi.add(new Esercizio(email, titolo, tipo, immagine1, null, aiuto, null, giorno, mese, 0));
+            Log.d(TAG, "readExercises: " + cursor.getString(1));
+            Log.d(TAG, "readExercises: " + cursor.getString(2));
+        }
+        return esercizi;
+    }
+
+
+    public ArrayList<Esercizio> getSequenza(String user){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        ArrayList<Esercizio> esercizi = new ArrayList<>();
+        Log.d(TAG, "denominazione: Array creato");
+
+        if(db!=null){
+            Log.d(TAG, "denominazione: Entrato");
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_SEQUENZA + " WHERE EMAIL = ?", new String[]{user});
+
+            Log.d(TAG, "denominazione: Esecuzione query");
+        }
+
+
+        while(cursor.moveToNext()){
+
+            Log.d(TAG, "getDenominazione: " + cursor.getString(1));
+            Log.d(TAG, "getDenominazione: " + cursor.getString(2));
+
+            String email = cursor.getString(1);
+            String titolo = cursor.getString(2).replace("+", " ");
+            String tipo = cursor.getString(3);
+
+            String[] sequenza = new String[3];
+            sequenza[0] = cursor.getString(4);
+            sequenza[1] = cursor.getString(5);
+            sequenza[2] = cursor.getString(6);
+
+            Log.d(TAG, "getSequenza: " + sequenza[0]);
+            Log.d(TAG, "getSequenza: " + sequenza[1]);
+            Log.d(TAG, "getSequenza: " + sequenza[2]);
+
+            int giorno = cursor.getInt(7);
+            int mese = cursor.getInt(8);
+            int anno = cursor.getInt(9);
+
+
+            esercizi.add(new Esercizio(email, titolo, tipo, null, null, null, sequenza, giorno, mese, anno));
+            Log.d(TAG, "readExercises: " + cursor.getString(1));
+            Log.d(TAG, "readExercises: " + cursor.getString(2));
+        }
+        return esercizi;
+    }
+
+
+    public ArrayList<Esercizio> getCoppia(String user) {
         SQLiteDatabase db = this.getReadableDatabase();
         //Bitmap bt = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE ID = ?", new String[]{String.valueOf(id)});
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE ID = ?", new String[]{user});
 
-        Esercizio esercizio = null;
+        ArrayList<Esercizio> esercizi = new ArrayList<>();
 
         //Log.d(TAG, "getImage1: " + cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2));
 
-        cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE ID = ?", new String[]{String.valueOf(id)});
-
-        // Controllo del numero di colonne nel Cursor
         Log.d(TAG, "Numero di colonne nel cursor: " + cursor.getColumnCount());
 
-        // Controlla se il cursore ha dei risultati
-        if (cursor != null && cursor.moveToFirst()) {
+
+        while(cursor.moveToNext()){
             Log.d(TAG, "getCoppia: Trovata la prima riga");
 
-            // Verifica che tutte le colonne siano accessibili
-            Log.d(TAG, "Colonna 1 (email): " + cursor.getString(1));
-            Log.d(TAG, "Colonna 2 (titolo): " + cursor.getString(2));
-            Log.d(TAG, "Colonna 4 (immagine1): " + (cursor.getBlob(4) != null));
-            Log.d(TAG, "Colonna 5 (immagine2): " + (cursor.getBlob(5) != null));
-            Log.d(TAG, "Colonna 6 (aiuto): " + cursor.getString(6));
-            Log.d(TAG, "Colonna 7 (sequenza): " + cursor.getString(7));
-            Log.d(TAG, "Colonna 8 (giorno): " + cursor.getInt(7));
-            Log.d(TAG, "Colonna 9 (mese): " + cursor.getInt(8));
-            Log.d(TAG, "Colonna 10 (anno): " + cursor.getInt(9));
 
             // Estrai i dati dalla riga
             String email = cursor.getString(1);
             String titolo = cursor.getString(2);
-            byte[] immagine1 = cursor.getBlob(4);  // Verifica che la colonna esista
-            byte[] immagine2 = cursor.getBlob(5);  // Verifica che la colonna esista
+            byte[] immagine1 = cursor.getBlob(4);
+            byte[] immagine2 = cursor.getBlob(5);
             String aiuto = cursor.getString(6);
-            String[] sequenza = new String[]{cursor.getString(7)};
             int giorno = cursor.getInt(7);
             int mese = cursor.getInt(8);
             int anno = cursor.getInt(9);
 
             // Crea l'oggetto Esercizio
-            esercizio = new Esercizio(email, titolo, "Coppia", immagine1, immagine2, aiuto, sequenza, giorno, mese, anno);
+            esercizi.add(new Esercizio(email, titolo, "Coppia", immagine1, immagine2, aiuto, null, giorno, mese, anno));
 
-            Log.d(TAG, "getCoppia: " + esercizio.getEmail() + esercizio.getAiuto());
-
-        } else {
-            Log.d(TAG, "getCoppia: Nessun risultato trovato");
         }
-        Log.d(TAG, "getCoppia: " + esercizio.getEmail() + esercizio.getAiuto());
-
-        return esercizio;
+        return esercizi;
     }
+
+
 
     public String getImage2(int id) {
         SQLiteDatabase db = this.getReadableDatabase();

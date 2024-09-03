@@ -83,6 +83,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
         customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, esercizi);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
+
         addEsercizio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

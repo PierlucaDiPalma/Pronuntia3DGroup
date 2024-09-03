@@ -9,33 +9,43 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class HomeUtente extends AppCompatActivity {
 
+    private Button genitoreBTN, bambinoBTN;
 
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
 
-@Override
-protected void onCreate(Bundle savedInstanceState){
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_homeutente);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_homeutente);
 
-    Button genitoreBTN=findViewById(R.id.pulsanteGenitore);
+        genitoreBTN = findViewById(R.id.pulsanteGenitore);
+        bambinoBTN = findViewById(R.id.pulsanteBambino);
 
-    genitoreBTN.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+        Intent intent = getIntent();
+        String email = intent.getStringExtra("email");
 
-            Intent intent=new Intent(HomeUtente.this,HomeGenitore.class);
-            startActivity(intent);
+        genitoreBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-
-        }
-    });
-
-
-}
+                Intent intent=new Intent(HomeUtente.this,HomeGenitore.class);
+                startActivity(intent);
 
 
+            }
+        });
 
+        bambinoBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeUtente.this, HomeBambino.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
 
+            }
+        });
+
+    }
 
 }
 

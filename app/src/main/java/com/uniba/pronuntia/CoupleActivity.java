@@ -47,7 +47,7 @@ public class CoupleActivity extends AppCompatActivity {
 
 
         //id = idEdit.getText().toString().trim();
-        Esercizio esercizio = db.getCoppia(1);
+        /*Esercizio esercizio = db.getCoppia(email);
 
         byte[] image = esercizio.getImmagine1();
         Bitmap imageCorrect = BitmapFactory.decodeByteArray(image, 0, image.length);
@@ -62,6 +62,6 @@ public class CoupleActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: "+ String.valueOf(esercizio.getImmagine1()));
 
 
-        contenuto.setText(esercizio.getName());
+        contenuto.setText(esercizio.getName());*/
     }
 }

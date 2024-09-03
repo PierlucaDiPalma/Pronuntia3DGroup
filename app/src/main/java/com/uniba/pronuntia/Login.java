@@ -73,7 +73,9 @@ public class Login extends AppCompatActivity {
                             editor.apply();
 
                             Intent intent = new Intent(Login.this, HomeUtente.class);
+                            intent.putExtra("email", email);
                             startActivity(intent);
+
                             finish();
                         }
                     }else{
