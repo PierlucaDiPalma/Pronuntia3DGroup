@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -57,7 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String contenuti_terapia = "contenuti_terapia";
     private static final String email_genitore = "email_genitore";
 
-
+    private static final String email_logopedista = "email_logopedista";
 
 
     public DBHelper(Context context) {
@@ -128,6 +129,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + durata_terapia + " INTEGER,"
                 + contenuti_terapia + " TEXT,"
                 + email_genitore + " TEXT,"
+                + email_logopedista + " TEXT,"
+                + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
                 + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
                 + ")";
         db.execSQL(CREATE_TABLE_TERAPIE);
@@ -146,8 +149,22 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
         onCreate(db);
     }
+    public List<String> getLogopedisti() {
+        List<String> logopedisti = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
 
-    public void addTerapia(String nomeBambino, String motivoRichiesta, int durata, String contenutiTerapia, String emailGenitore) {
+        Cursor cursor = db.rawQuery("SELECT EMAIL FROM UTENTI WHERE ISLOGOPEDISTA = 1", null);
+        if (cursor.moveToFirst()) {
+            do {
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("EMAIL"));
+                logopedisti.add(email);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return logopedisti;
+    }
+
+    public void addTerapia(String nomeBambino, String motivoRichiesta, int durata, String contenutiTerapia, String emailGenitore,String emailLogopedista) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(nome_bambino, nomeBambino);
@@ -155,7 +172,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(durata_terapia, durata);
         values.put(contenuti_terapia, contenutiTerapia);
         values.put(email_genitore, emailGenitore);
-
+        values.put(email_logopedista,emailLogopedista);
         long result = db.insert(TABLE_TERAPIE, null, values);
         if (result == -1) {
             Log.e(TAG, "Errore nell'inserimento della terapia");

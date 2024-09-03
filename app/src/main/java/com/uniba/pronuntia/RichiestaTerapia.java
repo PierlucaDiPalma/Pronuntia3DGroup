@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 public class RichiestaTerapia extends AppCompatActivity {
 
     private EditText nomeBambinoEditText;
@@ -22,7 +24,7 @@ public class RichiestaTerapia extends AppCompatActivity {
     private Spinner durataSpinner;
     private CheckBox checkbox1, checkbox2, checkbox3;
     private Button inviaButton;
-
+    private Spinner spinnerLogopedisti;
     private DBHelper databaseHelper;
 
 
@@ -32,7 +34,7 @@ public class RichiestaTerapia extends AppCompatActivity {
 
         setContentView(R.layout.richiesta_terapia);
         Spinner spinner=findViewById(R.id.Spinner);
-/*
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.Weeks,
@@ -40,9 +42,12 @@ public class RichiestaTerapia extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-*/
+
 
         databaseHelper = new DBHelper(this);
+
+        spinnerLogopedisti = findViewById(R.id.spinnerLogopedisti);
+
         nomeBambinoEditText = findViewById(R.id.CampoNomeBambino);
         motivoRichiestaEditText = findViewById(R.id.CampoMotivoRichiesta);
         durataSpinner = findViewById(R.id.Spinner);
@@ -50,6 +55,7 @@ public class RichiestaTerapia extends AppCompatActivity {
         checkbox2 = findViewById(R.id.checkboxRipetizioneSeqParole);
         checkbox3 = findViewById(R.id.checkboxDenominazImg);
         inviaButton = findViewById(R.id.InviaRichiestabtn);
+        caricaLogopedisti();
 
         inviaButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,9 +90,9 @@ public class RichiestaTerapia extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String emailGenitore = sharedPreferences.getString("userEmail", "default@example.com");
+        String emailLogopedista = spinnerLogopedisti.getSelectedItem().toString();
 
-
-        databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, contenutiTerapia.toString(), emailGenitore);
+        databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, contenutiTerapia.toString(), emailGenitore,emailLogopedista);
 
         Toast.makeText(this, "Terapia inserita con successo", Toast.LENGTH_SHORT).show();
 
@@ -97,6 +103,20 @@ public class RichiestaTerapia extends AppCompatActivity {
         checkbox1.setChecked(false);
         checkbox2.setChecked(false);
         checkbox3.setChecked(false);
+    }
+    private void caricaLogopedisti() {
+
+        List<String> logopedisti = databaseHelper.getLogopedisti();
+
+
+        if (logopedisti.isEmpty()) {
+            logopedisti.add("Nessun logopedista disponibile");
+        }
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, logopedisti);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLogopedisti.setAdapter(adapter);
     }
     }
 
