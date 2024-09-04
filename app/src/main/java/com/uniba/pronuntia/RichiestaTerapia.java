@@ -1,30 +1,25 @@
 package com.uniba.pronuntia;
 
-import static com.uniba.pronuntia.R.*;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.List;
-
 public class RichiestaTerapia extends AppCompatActivity {
 
     private EditText nomeBambinoEditText;
     private EditText motivoRichiestaEditText;
     private Spinner durataSpinner;
-    private CheckBox checkbox1, checkbox2, checkbox3;
+    private String emailLogopedista;
     private Button inviaButton;
-    private Spinner spinnerLogopedisti;
+
     private DBHelper databaseHelper;
 
 
@@ -46,16 +41,16 @@ public class RichiestaTerapia extends AppCompatActivity {
 
         databaseHelper = new DBHelper(this);
 
-        spinnerLogopedisti = findViewById(R.id.spinnerLogopedisti);
+
 
         nomeBambinoEditText = findViewById(R.id.CampoNomeBambino);
         motivoRichiestaEditText = findViewById(R.id.CampoMotivoRichiesta);
         durataSpinner = findViewById(R.id.Spinner);
-        checkbox1 = findViewById(R.id.checkboxRiconoscimentoCoppieMinime);
-        checkbox2 = findViewById(R.id.checkboxRipetizioneSeqParole);
-        checkbox3 = findViewById(R.id.checkboxDenominazImg);
+
         inviaButton = findViewById(R.id.InviaRichiestabtn);
-        caricaLogopedisti();
+        emailLogopedista = getIntent().getStringExtra("EMAIL_LOGOPEDISTA");
+        Log.d("RichiestaTerapia", "Email Logopedista: " + emailLogopedista);
+
 
         inviaButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,49 +71,19 @@ public class RichiestaTerapia extends AppCompatActivity {
         String[] parts = durataString.split(" ");
         int durata = Integer.parseInt(parts[0]);
 
-
-
-        StringBuilder contenutiTerapia = new StringBuilder();
-        if (checkbox1.isChecked()) contenutiTerapia.append("Riconoscimento coppie minime, ");
-        if (checkbox2.isChecked()) contenutiTerapia.append("Ripetizione di sequenze di parole, ");
-        if (checkbox3.isChecked()) contenutiTerapia.append("Denominazione immagini, ");
-
-        // Rimuovere l'ultima virgola e spazio
-        if (contenutiTerapia.length() > 0) {
-            contenutiTerapia.setLength(contenutiTerapia.length() - 2);
+        if (emailLogopedista == null || emailLogopedista.isEmpty()) {
+            Toast.makeText(this, "Errore: email del logopedista non trovata", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         String emailGenitore = sharedPreferences.getString("userEmail", "default@example.com");
-        String emailLogopedista = spinnerLogopedisti.getSelectedItem().toString();
 
-        databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, contenutiTerapia.toString(), emailGenitore,emailLogopedista);
+        databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, emailGenitore, emailLogopedista);
 
         Toast.makeText(this, "Terapia inserita con successo", Toast.LENGTH_SHORT).show();
-
-        // Pulisci i campi
-        nomeBambinoEditText.setText("");
-        motivoRichiestaEditText.setText("");
-        durataSpinner.setSelection(0);
-        checkbox1.setChecked(false);
-        checkbox2.setChecked(false);
-        checkbox3.setChecked(false);
     }
-    private void caricaLogopedisti() {
-
-        List<String> logopedisti = databaseHelper.getLogopedisti();
-
-
-        if (logopedisti.isEmpty()) {
-            logopedisti.add("Nessun logopedista disponibile");
-        }
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, logopedisti);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerLogopedisti.setAdapter(adapter);
-    }
-    }
+}
 
 
 

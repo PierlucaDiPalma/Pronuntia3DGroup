@@ -7,15 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -39,7 +33,6 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String PAROLA_3 = "TERZA_PAROLA";
     private static final String IMMAGINE = "IMMAGINE";
     private static final String AIUTO = "AIUTO";
-    private static final String MATCH = "MATCH";
     private static final String GIORNO = "GIORNO";
     private static final String MESE = "MESE";
     private static final String ANNO = "ANNO";
@@ -127,7 +120,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 + nome_bambino + " TEXT,"
                 + motivo_richiesta + " TEXT,"
                 + durata_terapia + " INTEGER,"
-                + contenuti_terapia + " TEXT,"
                 + email_genitore + " TEXT,"
                 + email_logopedista + " TEXT,"
                 + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
@@ -149,28 +141,13 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
         onCreate(db);
     }
-    public List<String> getLogopedisti() {
-        List<String> logopedisti = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT EMAIL FROM UTENTI WHERE ISLOGOPEDISTA = 1", null);
-        if (cursor.moveToFirst()) {
-            do {
-                String email = cursor.getString(cursor.getColumnIndexOrThrow("EMAIL"));
-                logopedisti.add(email);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return logopedisti;
-    }
-
-    public void addTerapia(String nomeBambino, String motivoRichiesta, int durata, String contenutiTerapia, String emailGenitore,String emailLogopedista) {
+    public void addTerapia(String nomeBambino, String motivoRichiesta, int durata, String emailGenitore, String emailLogopedista) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(nome_bambino, nomeBambino);
         values.put(motivo_richiesta, motivoRichiesta);
         values.put(durata_terapia, durata);
-        values.put(contenuti_terapia, contenutiTerapia);
         values.put(email_genitore, emailGenitore);
         values.put(email_logopedista,emailLogopedista);
         long result = db.insert(TABLE_TERAPIE, null, values);
@@ -181,27 +158,22 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
     }
+    public ArrayList<Utente> getLogopedisti() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ISLOGOPEDISTA + " = 1", null);
 
+        ArrayList<Utente> logopedisti = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String email = cursor.getString(cursor.getColumnIndexOrThrow(EMAIL));
+            String nome = cursor.getString(cursor.getColumnIndexOrThrow(NOME));
+            String cognome = cursor.getString(cursor.getColumnIndexOrThrow(COGNOME));
+            String telefono = cursor.getString(cursor.getColumnIndexOrThrow(TELEFONO));
+            String password = cursor.getString(cursor.getColumnIndexOrThrow(PASSWORD));
 
-
-
-
-
-
-
-
-
-
-    public boolean addData(int giorno, int mese, int anno) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put("GIORNO", giorno);
-        contentValues.put("MESE", mese);
-        contentValues.put("ANNO",anno);
-        long result = db.insert("DATA_ES", null, contentValues);
-        Log.d(TAG, "addData: " + result);
-        return result != -1;
+            logopedisti.add(new Utente(email, nome, cognome, telefono, password, true));
+        }
+        cursor.close();
+        return logopedisti;
     }
 
     public boolean addUser(Utente utente) {
@@ -220,31 +192,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public boolean addImage(byte[] image, String email) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("EMAIL", email);
-        contentValues.put("IMMAGINE", image);
-        long result = db.insert("IMAGES", null, contentValues);
-        return result != -1;
-    }
-
     public Bitmap getAllImages(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Bitmap bt = null;
         Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_DENOMINAZIONE +" WHERE ID = ?", new String[]{String.valueOf(id)});
-
-        if(cursor.moveToNext()){
-            byte[] image = cursor.getBlob(4);
-            bt = BitmapFactory.decodeByteArray(image, 0, image.length);
-        }
-        return bt;
-    }
-
-    public Bitmap getCoupleImage1(String id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Bitmap bt = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_COPPIA +" WHERE ID = ?", new String[]{String.valueOf(id)});
 
         if(cursor.moveToNext()){
             byte[] image = cursor.getBlob(4);
@@ -543,27 +494,5 @@ public class DBHelper extends SQLiteOpenHelper {
         return esercizi;
     }
 
-
-    public String getImage2(int id) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Bitmap bt = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_COPPIA +" WHERE id = ?", new String[]{String.valueOf(id)});
-        String image = null;
-
-        if(cursor.moveToNext()){
-             image = cursor.getString(2);
-            //bt = BitmapFactory.decodeByteArray(image, 0, image.length);
-            return image;
-        }
-
-        Log.d(TAG, "getImage2: " + bt.toString() );
-        return image;
-    }
-
-    public void deleteAllDataFromTable(String tableName) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + tableName);
-        Log.d(TAG, "deleteAllDataFromTable: All data deleted from " + tableName);
-    }
 
 }

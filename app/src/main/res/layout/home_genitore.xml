@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -41,6 +40,23 @@
             android:padding="8dp"
             android:src="@drawable/baseline_account_circle_24" />
     </androidx.appcompat.widget.Toolbar>
+
+
+    <LinearLayout
+        android:id="@+id/logopedisti_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/BottomNavigationView"
+        android:padding="16dp">
+    </LinearLayout>
+
+
+
+
 
 
 
