@@ -75,8 +75,8 @@ public class LivelloDen extends Fragment {
     private String parola;
     private Button aiuto, parla;
     private TextView titolo, contenuto;
-    private int punteggio = 0;
-
+    private int punteggio;
+    private int canClick = 3;
     private TextToSpeech tts;
 
     @Override
@@ -93,7 +93,7 @@ public class LivelloDen extends Fragment {
 
         if(getArguments() != null){
             titolo.setText(getArguments().getString("Titolo"));
-
+            punteggio = getArguments().getInt("Punteggio");
             byte[] byteArray = getArguments().getByteArray("Immagine");
             Bitmap image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
             immagine.setImageBitmap(image);
@@ -112,44 +112,38 @@ public class LivelloDen extends Fragment {
         aiuto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int i) {
-                        if(i==TextToSpeech.SUCCESS){
-                            tts.setLanguage(Locale.ITALIAN);
-                            tts.setSpeechRate(1f);
+                if(canClick != 0) {
+                    tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
+                        @Override
+                        public void onInit(int i) {
+                            if (i == TextToSpeech.SUCCESS) {
+                                tts.setLanguage(Locale.ITALIAN);
+                                tts.setSpeechRate(1f);
 
-                            for (Voice voice : tts.getVoices()) {
-                                if (voice.getName().contains("it-it-x") && voice.getName().contains("male")) {
-                                    tts.setVoice(voice);
-                                    break;
+                                for (Voice voice : tts.getVoices()) {
+                                    if (voice.getName().contains("it-it-x") && voice.getName().contains("male")) {
+                                        tts.setVoice(voice);
+                                        break;
+                                    }
                                 }
+
+
+                                tts.speak(parola.toString(), TextToSpeech.QUEUE_ADD, null);
                             }
-
-
-                            tts.speak(parola.toString(), TextToSpeech.QUEUE_ADD, null);
                         }
-                    }
-                });
-                    mListener.sendPoints(punteggio);
+                    });
+                    canClick--;
+                }else{
+                    Toast.makeText(getContext(), "Aiuti esauriti", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         return view;
     }
 
-    HomeListener mListener;
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
 
-        mListener = (HomeListener) context;
-    }
-
-    public interface HomeListener{
-        void sendPoints(int points);
-    }
 
     public void speak(View view){
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -167,9 +161,20 @@ public class LivelloDen extends Fragment {
             if(input.toUpperCase().equals(parola.toUpperCase())) {
                 contenuto.setText("Giusto");
                 punteggio += 10;
+
             }else{
                 contenuto.setText("Sbagliato");
+                punteggio-=3;
+
             }
+            passResultToActivity(punteggio);
+        }
+    }
+
+
+    private void passResultToActivity(int points) {
+        if (getActivity() instanceof OnDataPassListener) {
+            ((OnDataPassListener) getActivity()).onDataPass(points);
         }
     }
 }

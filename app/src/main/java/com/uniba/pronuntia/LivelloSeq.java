@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -70,11 +71,12 @@ public class LivelloSeq extends Fragment {
     private TextView parola1Text, parola2Text, parola3Text, titolo, giudizio;
     private Button parla, aiuto;
     private TextToSpeech tts;
-    private int punteggio = 0;
+    private int punteggio;
 
     private String parola1, parola2, parola3;
     private static final String TAG = "LivelloSeq";
-
+    private boolean isRight = false;
+    private int canClick = 3;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,43 +99,52 @@ public class LivelloSeq extends Fragment {
 
 
         titolo.setText(getArguments().getString("Titolo"));
+        punteggio = getArguments().getInt("Punteggio");
 
         parola1Text.setText(parola1);
         parola2Text.setText(parola2);
         parola3Text.setText(parola3);
 
+
         aiuto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
-                    @Override
-                    public void onInit(int i) {
-                        if(i==TextToSpeech.SUCCESS){
-                            tts.setLanguage(Locale.ITALIAN);
-                            tts.setSpeechRate(1f);
+                if(canClick != 0){
+                    tts = new TextToSpeech(getActivity().getApplicationContext(), new TextToSpeech.OnInitListener() {
+                        @Override
+                        public void onInit(int i) {
+                            if(i==TextToSpeech.SUCCESS){
+                                tts.setLanguage(Locale.ITALIAN);
+                                tts.setSpeechRate(1f);
 
-                            for (Voice voice : tts.getVoices()) {
-                                if (voice.getName().contains("it-it-x") && voice.getName().contains("male")) {
-                                    tts.setVoice(voice);
-                                    break;
+                                for (Voice voice : tts.getVoices()) {
+                                    if (voice.getName().contains("it-it-x") && voice.getName().contains("male")) {
+                                        tts.setVoice(voice);
+                                        break;
+                                    }
+                                }
+
+                                try {
+                                    tts.speak(parola1.toString(), TextToSpeech.QUEUE_ADD, null);
+                                    TimeUnit.SECONDS.sleep(1);
+                                    tts.speak(parola2.toString(), TextToSpeech.QUEUE_ADD, null);
+                                    TimeUnit.SECONDS.sleep(1);
+                                    tts.speak(parola3.toString(), TextToSpeech.QUEUE_ADD, null);
+
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
                                 }
                             }
-
-                            try {
-                                tts.speak(parola1.toString(), TextToSpeech.QUEUE_ADD, null);
-                                TimeUnit.SECONDS.sleep(1);
-                                tts.speak(parola2.toString(), TextToSpeech.QUEUE_ADD, null);
-                                TimeUnit.SECONDS.sleep(1);
-                                tts.speak(parola3.toString(), TextToSpeech.QUEUE_ADD, null);
-
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
                         }
-                    }
-                });
+
+                    });
+                    canClick--;
+                }else{
+                    Toast.makeText(getContext(), "Aiuti esauriti", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
         parla.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,12 +186,27 @@ public class LivelloSeq extends Fragment {
             for(int i = 0; i<content.length;i++){
                 if(inputSplitted[i].toUpperCase().equals(content[i].toUpperCase())){
                     giudizio.setText("Giusto");
+                    isRight = true;
+
                 }else{
                     giudizio.setText("Sbagliato");
-
+                    isRight = false;
+                    break;
                 }
             }
 
+            if(isRight){
+                punteggio += 10;
+            }else{
+                punteggio -= 3;
+            }
+
+            passResultToActivity(punteggio);
+        }
+    }
+    private void passResultToActivity(int points) {
+        if (getActivity() instanceof OnDataPassListener) {
+            ((OnDataPassListener) getActivity()).onDataPass(points);
         }
     }
 }

@@ -43,22 +43,22 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
         int[] positions = { -500, -300, -100, 0, 100, 300, 500};
         Random random = new Random();
 
-        int lastPosition = -1;  // Inizialmente non esiste un valore precedente
+        int lastPosition = -1;
         int newPosition;
 
         do {
             newPosition = positions[random.nextInt(positions.length)];
+
         } while (newPosition == lastPosition);
-
-
-
+        lastPosition = newPosition;
 
         params.rightMargin = newPosition;
-        lastPosition = newPosition;
+
 
         holder.levelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(context, MainActivity.class);
                 context.startActivity(intent);
 

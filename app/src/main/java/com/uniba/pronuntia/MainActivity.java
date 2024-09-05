@@ -14,15 +14,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class MainActivity extends AppCompatActivity implements LivelloDen.HomeListener {
+public class MainActivity extends AppCompatActivity implements OnDataPassListener{
 
     private DBHelper db;
     private Button avanti;
+    private int punteggio = 0;
     private static final String TAG = "MainActivity";
+    private TextView punteggioText;
     int i = 0;
 
     @Override
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
         });
 
         avanti = findViewById(R.id.avanti);
+        punteggioText = findViewById(R.id.punteggio);
         db = new DBHelper(this);
 
         String email = "paoloneri@gmail.com";
@@ -54,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
         Bundle args = new Bundle();
 
         loadFragment(i, esercizi, args);
+
+
 
         avanti.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
             args.putString("Titolo", esercizi.get(i).getName());
             args.putByteArray("Immagine", esercizi.get(i).getImmagine1());
             args.putString("Aiuto", esercizi.get(i).getAiuto());
+            args.putInt("Punteggio", punteggio);
 
             LivelloDen fragment = new LivelloDen();
             fragment.setArguments(args);
@@ -86,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
             args.putString("Parola1", esercizi.get(i).getSequenza()[0]);
             args.putString("Parola2", esercizi.get(i).getSequenza()[1]);
             args.putString("Parola3", esercizi.get(i).getSequenza()[2]);
-
+            args.putInt("Punteggio", punteggio);
 
             LivelloSeq fragment = new LivelloSeq();
             fragment.setArguments(args);
@@ -98,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
             args.putByteArray("Immagine1", esercizi.get(i).getImmagine1());
             args.putByteArray("Immagine2", esercizi.get(i).getImmagine2());
             args.putString("Aiuto", esercizi.get(i).getAiuto());
+            args.putInt("Punteggio", punteggio);
 
             LivelloCop fragment = new LivelloCop();
             fragment.setArguments(args);
@@ -110,7 +119,11 @@ public class MainActivity extends AppCompatActivity implements LivelloDen.HomeLi
     }
 
     @Override
-    public void sendPoints(int points) {
-        Log.d(TAG, "sendPoints: " + points);
+    public void onDataPass(int points) {
+        // Ricevi il dato elaborato e fai qualcosa con esso (ad esempio, stampalo)
+        punteggio = points;
+        punteggioText.setText(String.valueOf(punteggio));
+        Log.d("MainActivity", "Dato elaborato dal Fragment: " + punteggio);
     }
+
 }
