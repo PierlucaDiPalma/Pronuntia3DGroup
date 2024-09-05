@@ -55,7 +55,7 @@ public class HomeBambino extends AppCompatActivity {
         avanti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeBambino.this, MainActivity.class);
+                Intent intent = new Intent(HomeBambino.this, GamePath.class);
                 startActivity(intent);
             }
         });

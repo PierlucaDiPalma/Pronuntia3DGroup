@@ -18,6 +18,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     private Context context;
     private ArrayList<Esercizio> exerciseList;
     private static final String TAG = "ExerciseAdapter";
+
     public ExerciseAdapter(Context context, ArrayList<Esercizio> exerciseList) {
         this.context = context;
         this.exerciseList = exerciseList;
@@ -33,11 +34,9 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
     @Override
     public void onBindViewHolder(@NonNull ExerciseViewHolder holder, int position) {
 
-
             holder.titolo.setText(exerciseList.get(position).getName());
             holder.position.setText(String.valueOf(position + 1));
             holder.tipo.setText(exerciseList.get(position).getTipo());
-
 
     }
 

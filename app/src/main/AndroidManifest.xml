@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Pronuntia"
         tools:targetApi="31">
         <activity
+            android:name=".GamePath"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
@@ -57,8 +60,7 @@
             android:exported="false" />
         <activity
             android:name=".RichiestaTerapia"
-            android:exported="false"
-            />
+            android:exported="false" />
         <activity
             android:name=".Login"
             android:exported="true">
