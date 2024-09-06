@@ -56,7 +56,8 @@ public class HomeBambino extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeBambino.this, GamePath.class);
-                startActivity(intent);
+                intent.putExtra("Email", email);
+                startActivityForResult(intent, 1);
             }
         });
     }

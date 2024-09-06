@@ -13,5 +13,15 @@
         android:id="@+id/levelView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/punteggio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Punteggio"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        />
 
 </LinearLayout>

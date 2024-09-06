@@ -174,6 +174,8 @@ public class LivelloCop extends Fragment {
             giudizio.setText("Sbagliato!");
             punteggio -= 3;
         }
+        immagine1.setClickable(false);
+        immagine2.setClickable(false);
         passResultToActivity(punteggio);
     }
 

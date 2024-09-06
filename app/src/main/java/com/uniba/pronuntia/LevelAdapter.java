@@ -1,6 +1,7 @@
 package com.uniba.pronuntia;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -22,10 +23,13 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
     private Context context;
     private ArrayList<Esercizio> exerciseList;
     private static final String TAG = "LevelAdapter";
+    private int punteggio;
+    private int livello;
 
-    public LevelAdapter(Context context, ArrayList<Esercizio> exerciseList) {
+    public LevelAdapter(Context context, ArrayList<Esercizio> exerciseList, int livello) {
         this.context = context;
         this.exerciseList = exerciseList;
+        this.livello = livello;
     }
 
     @NonNull
@@ -40,35 +44,51 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
         holder.levelButton.setText(String.valueOf(getItemCount()-position));
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.levelButton.getLayoutParams();
 
-        int[] positions = { -500, -300, -100, 0, 100, 300, 500};
         Random random = new Random();
+        int i = position;
 
-        int lastPosition = -1;
-        int newPosition;
+        int[] positionX = { -500, -300, -100, 0, 100, 300, 500};
 
-        do {
-            newPosition = positions[random.nextInt(positions.length)];
+        params.rightMargin = positionX[random.nextInt(positionX.length)];
 
-        } while (newPosition == lastPosition);
-        lastPosition = newPosition;
 
-        params.rightMargin = newPosition;
 
+        if (livello != getItemCount() - position) {
+            holder.levelButton.setEnabled(false);
+
+        } else {
+            holder.levelButton.setEnabled(true);
+        }
 
         holder.levelButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
 
+                livello++;
+
+
+
                 Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
+                intent.putExtra("Posizione", i);
+                intent.putExtra("Punteggio", punteggio);
+                intent.putExtra("Livello", livello);
+                intent.putExtra("Email", exerciseList.get(i).getEmail());
+
+                ((Activity) context).startActivityForResult(intent, 2);
 
             }
         });
 
 
         Log.d(TAG, "onBindViewHolder: " + params.rightMargin);
+
     }
 
+
+    public void setLivello(int nuovoLivello) {
+        this.livello = nuovoLivello;
+    }
     @Override
     public int getItemCount() {
         return exerciseList.size();
@@ -80,7 +100,6 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
             super(itemView);
             levelButton = itemView.findViewById(R.id.levelButton);
         }
-
 
     }
 }

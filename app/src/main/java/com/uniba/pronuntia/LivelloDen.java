@@ -144,7 +144,6 @@ public class LivelloDen extends Fragment {
 
 
 
-
     public void speak(View view){
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -158,6 +157,7 @@ public class LivelloDen extends Fragment {
 
         if(requestCode == 100 && resultCode == AppCompatActivity.RESULT_OK){
             String input = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).get(0);
+
             if(input.toUpperCase().equals(parola.toUpperCase())) {
                 contenuto.setText("Giusto");
                 punteggio += 10;
@@ -167,6 +167,7 @@ public class LivelloDen extends Fragment {
                 punteggio-=3;
 
             }
+            parla.setEnabled(false);
             passResultToActivity(punteggio);
         }
     }

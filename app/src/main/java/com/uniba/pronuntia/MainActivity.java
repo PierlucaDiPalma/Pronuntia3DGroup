@@ -1,6 +1,7 @@
 package com.uniba.pronuntia;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
     private int punteggio = 0;
     private static final String TAG = "MainActivity";
     private TextView punteggioText;
-    int i = 0;
+    private String email;
+    private int i;
+    private int livello;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,20 +44,19 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
         });
 
         avanti = findViewById(R.id.avanti);
+
         punteggioText = findViewById(R.id.punteggio);
         db = new DBHelper(this);
 
-        String email = "paoloneri@gmail.com";
+        email = getIntent().getStringExtra("Email");
+        i = getIntent().getIntExtra("Posizione", 0);
+        punteggio = getIntent().getIntExtra("Punteggio", 0);
+        livello = getIntent().getIntExtra("Livello", 0);
 
         ArrayList<Esercizio> esercizi = db.getDenominazione(email);
-
-        Log.d(TAG, "onCreate: " + esercizi.get(0).getTipo());
-        Log.d(TAG, "onCreate: " + esercizi.get(0).getName());
-
         esercizi.addAll(db.getSequenza(email));
         esercizi.addAll(db.getCoppia(email));
 
-        shuffleArrayList(esercizi);
 
         Bundle args = new Bundle();
 
@@ -65,18 +67,17 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
         avanti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                i++;
 
-                if(i<esercizi.size()) {
-                    loadFragment(i, esercizi, args);
-                }else{
-                    Toast.makeText(MainActivity.this, "Esercizi finiti", Toast.LENGTH_SHORT).show();
-                }
+                Intent intent = new Intent();
+                intent.putExtra("Livello", livello);
+                intent.putExtra("Punteggio", punteggio);
+                setResult(RESULT_OK, intent); // Imposta il risultato come RESULT_OK
+                finish();
+
             }
         });
 
     }
-
     private void loadFragment(int i, ArrayList<Esercizio> esercizi, Bundle args){
         if(esercizi.get(i).getTipo().equals("Denominazione")){
 
@@ -114,15 +115,11 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
         }
     }
 
-    public static <T> void shuffleArrayList(ArrayList<T> list) {
-        Collections.shuffle(list); // Mescola casualmente l'ArrayList
-    }
-
     @Override
     public void onDataPass(int points) {
         // Ricevi il dato elaborato e fai qualcosa con esso (ad esempio, stampalo)
         punteggio = points;
-        punteggioText.setText(String.valueOf(punteggio));
+        punteggioText.setText("Punteggio: " + punteggio);
         Log.d("MainActivity", "Dato elaborato dal Fragment: " + punteggio);
     }
 
