@@ -381,6 +381,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Esercizio> getDenominazione(String user){
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
@@ -414,6 +415,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Log.d(TAG, "readExercises: " + cursor.getString(1));
             Log.d(TAG, "readExercises: " + cursor.getString(2));
         }
+        db.close();
         return esercizi;
     }
 

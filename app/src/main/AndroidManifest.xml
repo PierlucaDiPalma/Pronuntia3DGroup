@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Pronuntia"
         tools:targetApi="31">
         <activity
+            android:name=".RisultatoFinale"
+            android:exported="false" />
+        <activity
             android:name=".GamePath"
             android:exported="false" />
         <activity

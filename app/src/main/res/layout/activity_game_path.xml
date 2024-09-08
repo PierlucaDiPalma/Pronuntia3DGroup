@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
     android:background="@drawable/jungle_background"
     tools:context=".GamePath">
 
@@ -22,6 +23,46 @@
         android:textSize="20dp"
         android:textStyle="bold"
         android:textColor="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/aiuti"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Numero aiuti"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        />
+    <TextView
+        android:id="@+id/corretti"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Esercizi corretti"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        />
+    <TextView
+        android:id="@+id/sbagliati"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Esercizi sbagliati"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        />
+
+    <Button
+        android:id="@+id/fine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Risultato finale"
         />
 
 </LinearLayout>

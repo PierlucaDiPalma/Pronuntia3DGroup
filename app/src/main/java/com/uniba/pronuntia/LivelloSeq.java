@@ -77,6 +77,11 @@ public class LivelloSeq extends Fragment {
     private static final String TAG = "LivelloSeq";
     private boolean isRight = false;
     private int canClick = 3;
+    private boolean isDone = false;
+
+    private int numeroAiuti = 0;
+    private int corretti = 0;
+    private int sbagliati = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -138,6 +143,7 @@ public class LivelloSeq extends Fragment {
                         }
 
                     });
+                    numeroAiuti++;
                     canClick--;
                 }else{
                     Toast.makeText(getContext(), "Aiuti esauriti", Toast.LENGTH_SHORT).show();
@@ -197,16 +203,20 @@ public class LivelloSeq extends Fragment {
 
             if(isRight){
                 punteggio += 10;
+                isDone = true;
+                corretti++;
             }else{
                 punteggio -= 3;
+                isDone = true;
+                sbagliati++;
             }
 
-            passResultToActivity(punteggio);
+            passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati);
         }
     }
-    private void passResultToActivity(int points) {
+    private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati) {
         if (getActivity() instanceof OnDataPassListener) {
-            ((OnDataPassListener) getActivity()).onDataPass(points);
+            ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati);
         }
     }
 }

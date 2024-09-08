@@ -78,6 +78,10 @@ public class LivelloDen extends Fragment {
     private int punteggio;
     private int canClick = 3;
     private TextToSpeech tts;
+    private boolean isDone = false;
+    private int numeroAiuti = 0;
+    private int corretti = 0;
+    private int sbagliati = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,6 +136,7 @@ public class LivelloDen extends Fragment {
                             }
                         }
                     });
+                    numeroAiuti++;
                     canClick--;
                 }else{
                     Toast.makeText(getContext(), "Aiuti esauriti", Toast.LENGTH_SHORT).show();
@@ -161,21 +166,23 @@ public class LivelloDen extends Fragment {
             if(input.toUpperCase().equals(parola.toUpperCase())) {
                 contenuto.setText("Giusto");
                 punteggio += 10;
-
+                isDone = true;
+                corretti++;
             }else{
                 contenuto.setText("Sbagliato");
                 punteggio-=3;
-
+                isDone = true;
+                sbagliati++;
             }
             parla.setEnabled(false);
-            passResultToActivity(punteggio);
+            passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati);
         }
     }
 
 
-    private void passResultToActivity(int points) {
+    private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati) {
         if (getActivity() instanceof OnDataPassListener) {
-            ((OnDataPassListener) getActivity()).onDataPass(points);
+            ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati);
         }
     }
 }

@@ -63,6 +63,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private Button crea, calendario, imgLoad;
     private DBHelper db;
     private String titolo, aiuto;
+    private String email;
     private int day, month, year;
     private Esercizio esercizio = new Esercizio(null, null, "Denominazione", null, null, null, null, 0, 0, 0);
 
@@ -99,7 +100,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
+        email = intent.getStringExtra("email");
 
 
         esercizio.setEmail(email);
@@ -211,7 +212,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 imgLoad.setText("Cambia immagine");
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
                 esercizio.setImmagine1(imageBytes);

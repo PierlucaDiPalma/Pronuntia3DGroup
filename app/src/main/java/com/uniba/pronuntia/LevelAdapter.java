@@ -49,36 +49,83 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
 
         int[] positionX = { -500, -300, -100, 0, 100, 300, 500};
 
-        params.rightMargin = positionX[random.nextInt(positionX.length)];
-
-
-
-        if (livello != getItemCount() - position) {
-            holder.levelButton.setEnabled(false);
-
-        } else {
-            holder.levelButton.setEnabled(true);
+        if(((getItemCount()-position)/6%2)==0) {
+            switch ((getItemCount()-position) % 6) {
+                case 0:
+                    params.rightMargin = positionX[3];
+                    break;
+                case 1:
+                case 5:
+                    params.rightMargin = positionX[2];
+                    break;
+                case 2:
+                case 4:
+                    params.rightMargin = positionX[1];
+                    break;
+                case 3:
+                    params.rightMargin = positionX[0];
+                    break;
+                default: break;
+            }
+        }else{
+            switch (position % 6) {
+                case 0:
+                    params.rightMargin = positionX[3];
+                    break;
+                case 1:
+                case 5:
+                    params.rightMargin = positionX[4];
+                    break;
+                case 2:
+                case 4:
+                    params.rightMargin = positionX[5];
+                    break;
+                case 3:
+                    params.rightMargin = positionX[6];
+                    break;
+                default: break;
+            }
         }
 
-        holder.levelButton.setOnClickListener(new View.OnClickListener() {
+        if(getItemCount() - position<livello){
 
-            @Override
-            public void onClick(View view) {
+            holder.levelButton.setEnabled(true);
+            holder.levelButton.setClickable(false);
 
-                livello++;
+        }else if (livello == getItemCount() - position) {
+
+            holder.levelButton.setEnabled(true);
+            holder.levelButton.setClickable(true);
+            holder.levelButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    livello++;
+
+
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.putExtra("Posizione", i);
+                    intent.putExtra("Punteggio", punteggio);
+                    intent.putExtra("Livello", livello);
+                    intent.putExtra("Esercizio", exerciseList.get(i));
+                    intent.putExtra("Email", exerciseList.get(i).getEmail());
+
+                    Log.d(TAG, "onClick: " + exerciseList.get(i).getName() + " " + exerciseList.get(i).getTipo() );
+
+                    ((Activity) context).startActivityForResult(intent, 2);
+
+                }
+            });
+
+        } else {
+            holder.levelButton.setEnabled(false);
+            holder.levelButton.setClickable(false);
+        }
 
 
 
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtra("Posizione", i);
-                intent.putExtra("Punteggio", punteggio);
-                intent.putExtra("Livello", livello);
-                intent.putExtra("Email", exerciseList.get(i).getEmail());
 
-                ((Activity) context).startActivityForResult(intent, 2);
-
-            }
-        });
 
 
         Log.d(TAG, "onBindViewHolder: " + params.rightMargin);

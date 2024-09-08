@@ -31,6 +31,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
     private Button crea, calendario;
     private DBHelper db;
     private String titolo;
+    private String email;
     private int day, month, year;
     private Esercizio esercizio = new Esercizio(null, null, "Sequenza", null, null,  null, null, 0, 0,0);
 
@@ -59,7 +60,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
+        email = intent.getStringExtra("email");
 
 
 

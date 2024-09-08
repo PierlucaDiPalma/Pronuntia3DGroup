@@ -55,6 +55,9 @@ public class Coppia extends AppCompatActivity {
     private ActivityResultLauncher<Intent> loadImage1Launcher;
     private ActivityResultLauncher<Intent> loadImage2Launcher;
 
+    private String titolo;
+    private String soluzione;
+    private String email;
     private Esercizio esercizio = new Esercizio(null, null, "Coppia", null, null,  null, null, 0, 0,0);
 
 
@@ -82,7 +85,7 @@ public class Coppia extends AppCompatActivity {
         soluzioneEdit = findViewById(R.id.soluzione);
 
         Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
+        email = intent.getStringExtra("email");
 
         esercizio.setEmail(email);
 
@@ -152,8 +155,8 @@ public class Coppia extends AppCompatActivity {
         crea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String titolo = titoloEdit.getText().toString().trim();
-                String soluzione = soluzioneEdit.getText().toString().trim();
+                titolo = titoloEdit.getText().toString().trim();
+                soluzione = soluzioneEdit.getText().toString().trim();
 
                 try {
                     titolo = URLEncoder.encode(titolo, "UTF-8");
@@ -207,7 +210,7 @@ public class Coppia extends AppCompatActivity {
 
 
                         ByteArrayOutputStream outputStreamCorrect = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStreamCorrect);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStreamCorrect);
                         byte[] imageBytes = outputStreamCorrect.toByteArray();
 
 
@@ -243,7 +246,7 @@ public class Coppia extends AppCompatActivity {
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
                         ByteArrayOutputStream outputStreamCorrect = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStreamCorrect);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStreamCorrect);
                         byte[] imageBytes = outputStreamCorrect.toByteArray();
 
 
@@ -282,7 +285,7 @@ public class Coppia extends AppCompatActivity {
                     imageLoad1.setText("Cambia immagine");
 
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                    image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
                     byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
                     esercizio.setImmagine1(imageBytes);
@@ -294,7 +297,7 @@ public class Coppia extends AppCompatActivity {
                     imageLoad2.setText("Cambia immagine");
 
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                    image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                    image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
                     byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
                     esercizio.setImmagine2(imageBytes);

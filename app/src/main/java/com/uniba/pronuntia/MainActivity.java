@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
     private String email;
     private int i;
     private int livello;
+    private boolean isDone;
+    private int numeroAiuti = 0;
+    private int corretti = 0;
+    private int sbagliati = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +53,24 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
         punteggioText = findViewById(R.id.punteggio);
         db = new DBHelper(this);
 
-        email = getIntent().getStringExtra("Email");
-        i = getIntent().getIntExtra("Posizione", 0);
+        //email = getIntent().getStringExtra("Email");
+        //i = getIntent().getIntExtra("Posizione", 0);
         punteggio = getIntent().getIntExtra("Punteggio", 0);
         livello = getIntent().getIntExtra("Livello", 0);
+        Esercizio esercizio = getIntent().getParcelableExtra("Esercizio");
 
-        ArrayList<Esercizio> esercizi = db.getDenominazione(email);
+        Log.d(TAG, "Livello: " + livello);
+        Log.d(TAG, "Tipo: " + esercizio.getTipo() + " " + esercizio.getName());
+        /*ArrayList<Esercizio> esercizi = db.getDenominazione(email);
         esercizi.addAll(db.getSequenza(email));
         esercizi.addAll(db.getCoppia(email));
-
+*/
 
         Bundle args = new Bundle();
 
-        loadFragment(i, esercizi, args);
+        loadFragment(i, esercizio, args);
 
-
+        avanti.setVisibility(View.GONE);
 
         avanti.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +79,10 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
                 Intent intent = new Intent();
                 intent.putExtra("Livello", livello);
                 intent.putExtra("Punteggio", punteggio);
+                intent.putExtra("Aiuti", numeroAiuti);
+                intent.putExtra("Corretti", corretti);
+                intent.putExtra("Sbagliati", sbagliati);
+
                 setResult(RESULT_OK, intent); // Imposta il risultato come RESULT_OK
                 finish();
 
@@ -78,35 +90,36 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
         });
 
     }
-    private void loadFragment(int i, ArrayList<Esercizio> esercizi, Bundle args){
-        if(esercizi.get(i).getTipo().equals("Denominazione")){
 
-            args.putString("Titolo", esercizi.get(i).getName());
-            args.putByteArray("Immagine", esercizi.get(i).getImmagine1());
-            args.putString("Aiuto", esercizi.get(i).getAiuto());
+    private void loadFragment(int i, Esercizio esercizio, Bundle args){
+        if(esercizio.getTipo().equals("Denominazione")){
+
+            args.putString("Titolo", esercizio.getName());
+            args.putByteArray("Immagine", esercizio.getImmagine1());
+            args.putString("Aiuto", esercizio.getAiuto());
             args.putInt("Punteggio", punteggio);
 
             LivelloDen fragment = new LivelloDen();
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction().replace(R.id.level, fragment).commit();
 
-        }else if(esercizi.get(i).getTipo().equals("Sequenza")){
-            args.putString("Titolo", esercizi.get(i).getName());
-            args.putString("Parola1", esercizi.get(i).getSequenza()[0]);
-            args.putString("Parola2", esercizi.get(i).getSequenza()[1]);
-            args.putString("Parola3", esercizi.get(i).getSequenza()[2]);
+        }else if(esercizio.getTipo().equals("Sequenza")){
+            args.putString("Titolo", esercizio.getName());
+            args.putString("Parola1", esercizio.getSequenza()[0]);
+            args.putString("Parola2", esercizio.getSequenza()[1]);
+            args.putString("Parola3", esercizio.getSequenza()[2]);
             args.putInt("Punteggio", punteggio);
 
             LivelloSeq fragment = new LivelloSeq();
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction().replace(R.id.level, fragment).commit();
 
-        }else if(esercizi.get(i).getTipo().equals("Coppia")){
+        }else if(esercizio.getTipo().equals("Coppia")){
 
-            args.putString("Titolo", esercizi.get(i).getName());
-            args.putByteArray("Immagine1", esercizi.get(i).getImmagine1());
-            args.putByteArray("Immagine2", esercizi.get(i).getImmagine2());
-            args.putString("Aiuto", esercizi.get(i).getAiuto());
+            args.putString("Titolo", esercizio.getName());
+            args.putByteArray("Immagine1", esercizio.getImmagine1());
+            args.putByteArray("Immagine2",esercizio.getImmagine2());
+            args.putString("Aiuto", esercizio.getAiuto());
             args.putInt("Punteggio", punteggio);
 
             LivelloCop fragment = new LivelloCop();
@@ -116,11 +129,20 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
     }
 
     @Override
-    public void onDataPass(int points) {
+    public void onDataPass(int points, boolean done, int numeroAiuti, int corretti, int sbagliati) {
         // Ricevi il dato elaborato e fai qualcosa con esso (ad esempio, stampalo)
         punteggio = points;
+        isDone = done;
         punteggioText.setText("Punteggio: " + punteggio);
         Log.d("MainActivity", "Dato elaborato dal Fragment: " + punteggio);
+
+        this.numeroAiuti = numeroAiuti;
+        this.corretti = corretti;
+        this.sbagliati = sbagliati;
+
+        if(isDone){
+            avanti.setVisibility(View.VISIBLE);
+        }
     }
 
 }

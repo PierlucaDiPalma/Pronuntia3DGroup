@@ -74,6 +74,11 @@ public class LivelloCop extends Fragment {
     private TextToSpeech tts;
     private int punteggio;
     private int canCLick = 3;
+    private boolean isDone = false;
+    private int numeroAiuti = 0;
+    private int corretti = 0;
+    private int sbagliati = 0;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -154,6 +159,7 @@ public class LivelloCop extends Fragment {
                                 }
                             }
                         });
+                        numeroAiuti++;
                     }else{
                         Toast.makeText(getContext(), "Aiuti esauriti", Toast.LENGTH_SHORT).show();
                     }
@@ -170,18 +176,25 @@ public class LivelloCop extends Fragment {
         if (selectedImageUrl.equals(correctImage)) {
             giudizio.setText("Giusto!");
             punteggio +=  10;
+            immagine1.setClickable(false);
+            immagine2.setClickable(false);
+            isDone = true;
+            corretti++;
         } else {
             giudizio.setText("Sbagliato!");
             punteggio -= 3;
+            immagine1.setClickable(false);
+            immagine2.setClickable(false);
+            isDone = true;
+            sbagliati++;
         }
-        immagine1.setClickable(false);
-        immagine2.setClickable(false);
-        passResultToActivity(punteggio);
+
+        passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati);
     }
 
-    private void passResultToActivity(int points) {
+    private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati) {
         if (getActivity() instanceof OnDataPassListener) {
-            ((OnDataPassListener) getActivity()).onDataPass(points);
+            ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati);
         }
     }
 }

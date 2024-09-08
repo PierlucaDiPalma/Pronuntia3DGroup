@@ -1,8 +1,13 @@
 package com.uniba.pronuntia;
 
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Esercizio {
+import androidx.annotation.NonNull;
+
+public class Esercizio implements Parcelable {
 
     private String email;
     private String name;
@@ -26,6 +31,34 @@ public class Esercizio {
         this.anno = anno;
 
     }
+
+    protected Esercizio(Parcel in) {
+        email = in.readString();
+        name = in.readString();
+        tipo = in.readString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            immagine1 = in.readBlob();
+            immagine2 = in.readBlob();
+        }
+
+        aiuto = in.readString();
+        sequenza = in.createStringArray();
+        giorno = in.readInt();
+        mese = in.readInt();
+        anno = in.readInt();
+    }
+
+    public static final Creator<Esercizio> CREATOR = new Creator<Esercizio>() {
+        @Override
+        public Esercizio createFromParcel(Parcel in) {
+            return new Esercizio(in);
+        }
+
+        @Override
+        public Esercizio[] newArray(int size) {
+            return new Esercizio[size];
+        }
+    };
 
     public String getEmail() {
         return email;
@@ -106,5 +139,27 @@ public class Esercizio {
 
     public void setAnno(int anno) {
         this.anno = anno;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(email);
+        parcel.writeString(name);
+        parcel.writeString(tipo);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            parcel.writeBlob(immagine1);
+            parcel.writeBlob(immagine2);
+        }
+
+        parcel.writeString(aiuto);
+        parcel.writeStringArray(sequenza);
+        parcel.writeInt(giorno);
+        parcel.writeInt(mese);
+        parcel.writeInt(anno);
     }
 }
