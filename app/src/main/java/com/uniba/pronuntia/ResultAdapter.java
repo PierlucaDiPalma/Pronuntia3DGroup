@@ -37,7 +37,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ResultView
         holder.posizione.setText(String.valueOf(position+1));
         holder.titolo.setText(resultList.get(position).getEsercizio().getName());
         holder.tipo.setText(resultList.get(position).getEsercizio().getTipo());
-        holder.numeroAiuti.setText(String.valueOf(resultList.get(position).getAiuti()));
+        holder.numeroAiuti.setText("Aiuti usati: " + resultList.get(position).getAiuti());
 
         if(resultList.get(position).getCorretti() == 1) {
             holder.esito.setImageResource(R.drawable.ok_icon );

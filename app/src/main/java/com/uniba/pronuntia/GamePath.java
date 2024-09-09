@@ -109,7 +109,7 @@ public class GamePath extends AppCompatActivity {
 
                 //resoconto = data.getParcelableExtra("Resoconto");
 
-                if(livello == esercizi.size()){
+                if(livello > esercizi.size()){
                     risultato.setVisibility(View.VISIBLE);
                 }
                 // Notifica l'Adapter per aggiornare la RecyclerView
