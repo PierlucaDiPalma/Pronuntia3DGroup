@@ -1,6 +1,11 @@
 package com.uniba.pronuntia;
 
-public class Resoconto {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class Resoconto implements Parcelable {
 
     private String bambino;
     private String genitore;
@@ -21,6 +26,29 @@ public class Resoconto {
         this.sbagliati = sbagliati;
         this.aiuti = aiuti;
     }
+
+    protected Resoconto(Parcel in) {
+        bambino = in.readString();
+        genitore = in.readString();
+        logopedista = in.readString();
+        esercizio = in.readParcelable(Esercizio.class.getClassLoader());
+        punteggio = in.readInt();
+        corretti = in.readInt();
+        sbagliati = in.readInt();
+        aiuti = in.readInt();
+    }
+
+    public static final Creator<Resoconto> CREATOR = new Creator<Resoconto>() {
+        @Override
+        public Resoconto createFromParcel(Parcel in) {
+            return new Resoconto(in);
+        }
+
+        @Override
+        public Resoconto[] newArray(int size) {
+            return new Resoconto[size];
+        }
+    };
 
     public String getBambino() {
         return bambino;
@@ -84,5 +112,22 @@ public class Resoconto {
 
     public void setAiuti(int aiuti) {
         this.aiuti = aiuti;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeString(bambino);
+        parcel.writeString(genitore);
+        parcel.writeString(logopedista);
+        parcel.writeParcelable(esercizio, i);
+        parcel.writeInt(punteggio);
+        parcel.writeInt(corretti);
+        parcel.writeInt(sbagliati);
+        parcel.writeInt(aiuti);
     }
 }

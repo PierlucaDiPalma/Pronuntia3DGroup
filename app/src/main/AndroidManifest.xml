@@ -26,7 +26,7 @@
             android:name=".GamePath"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Game"
             android:exported="false" />
         <activity
             android:name=".ImageActivity"

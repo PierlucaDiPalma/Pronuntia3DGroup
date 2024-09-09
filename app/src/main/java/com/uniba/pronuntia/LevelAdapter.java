@@ -104,7 +104,7 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
                     livello++;
 
 
-                    Intent intent = new Intent(context, MainActivity.class);
+                    Intent intent = new Intent(context, Game.class);
                     intent.putExtra("Posizione", i);
                     intent.putExtra("Punteggio", punteggio);
                     intent.putExtra("Livello", livello);

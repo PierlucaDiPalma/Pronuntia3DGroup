@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-public class MainActivity extends AppCompatActivity implements OnDataPassListener{
+public class Game extends AppCompatActivity implements OnDataPassListener{
 
     private DBHelper db;
     private Button avanti;
@@ -35,14 +35,15 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
     private int numeroAiuti = 0;
     private int corretti = 0;
     private int sbagliati = 0;
-
+    private Esercizio esercizio;
+    private Resoconto resoconto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        setContentView(R.layout.activity_game);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.game), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -57,14 +58,10 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
         //i = getIntent().getIntExtra("Posizione", 0);
         punteggio = getIntent().getIntExtra("Punteggio", 0);
         livello = getIntent().getIntExtra("Livello", 0);
-        Esercizio esercizio = getIntent().getParcelableExtra("Esercizio");
+        esercizio = getIntent().getParcelableExtra("Esercizio");
 
         Log.d(TAG, "Livello: " + livello);
         Log.d(TAG, "Tipo: " + esercizio.getTipo() + " " + esercizio.getName());
-        /*ArrayList<Esercizio> esercizi = db.getDenominazione(email);
-        esercizi.addAll(db.getSequenza(email));
-        esercizi.addAll(db.getCoppia(email));
-*/
 
         Bundle args = new Bundle();
 
@@ -85,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
 
                 setResult(RESULT_OK, intent); // Imposta il risultato come RESULT_OK
                 finish();
-
             }
+
         });
 
     }
@@ -139,6 +136,19 @@ public class MainActivity extends AppCompatActivity implements OnDataPassListene
         this.numeroAiuti = numeroAiuti;
         this.corretti = corretti;
         this.sbagliati = sbagliati;
+
+        resoconto = new Resoconto("Luigi", "paoloneri@gmail.com", "marcorossi@gmail.com",
+                esercizio, punteggio, this.corretti, this.sbagliati, this.numeroAiuti);
+
+        boolean isInserted = db.addResoconto(resoconto);
+        if (isInserted) {
+            Log.d(TAG, "Resoconto salvato con successo");
+        } else {
+            Log.d(TAG, "Errore durante il salvataggio del resoconto");
+        }
+
+        Log.d(TAG, "Esercizio: " + resoconto.getEsercizio().getName() + " Numero aiuti: " + resoconto.getAiuti()
+                + " Numero errori: " + resoconto.getSbagliati() + " Numero corretti " + resoconto.getCorretti());
 
         if(isDone){
             avanti.setVisibility(View.VISIBLE);

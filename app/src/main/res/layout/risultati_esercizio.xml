@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"/>
+
+    <TextView
+        android:id="@+id/titolo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Titolo esercizio"/>
+
+    <TextView
+        android:id="@+id/tipo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipo esercizio"/>
+
+    <TextView
+        android:id="@+id/numeroAiuti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aiuti usati"/>
+
+    <ImageView
+        android:id="@+id/esito"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ok_icon" />
+
+
+</LinearLayout>

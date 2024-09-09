@@ -53,6 +53,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String email_logopedista = "email_logopedista";
 
+    private static final String TABLE_RESOCONTO = "RISULTATI_ESERCIZI";
+    private static final String BAMBINO = "BAMBINO";
+    private static final String PUNTEGGIO = "PUNTEGGIO";
+    private static final String LOGOPEDISTA = "LOGOPEDISTA";
+    private static final String GENITORE = "GENITORE";
+    private static final String CORRETTO = "CORRETTO";
+    private static final String SBAGLIATO = "SBAGLIATO";
+    private static final String AIUTI = "AIUTI";
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -114,6 +123,21 @@ public class DBHelper extends SQLiteOpenHelper {
                 + MESE + " INTEGER, "
                 + ANNO + " INTEGER )");
 
+        db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
+                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + GENITORE + " TEXT, "
+                + BAMBINO + " TEXT, "
+                + LOGOPEDISTA + " TEXT, "
+                + TITOLO + " TEXT, "
+                + TIPO + " TEXT, "
+                + GIORNO + " INTEGER, "
+                + MESE + " INTEGER, "
+                + ANNO + " INTEGER, "
+                + PUNTEGGIO + " INTEGER, "
+                + CORRETTO + " INTEGER, "
+                + SBAGLIATO + " INTEGER, "
+                + AIUTI + " INTEGER )");
+
 
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -138,6 +162,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DENOMINAZIONE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEQUENZA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COPPIA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESOCONTO);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
         onCreate(db);
     }
@@ -380,6 +405,60 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public boolean addResoconto(Resoconto resoconto){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(BAMBINO, resoconto.getBambino());
+        contentValues.put(GENITORE, resoconto.getGenitore());
+        contentValues.put(LOGOPEDISTA, resoconto.getGenitore());
+        contentValues.put(TITOLO, resoconto.getEsercizio().getName());
+        contentValues.put(TIPO, resoconto.getEsercizio().getTipo());
+        contentValues.put(GIORNO, resoconto.getEsercizio().getGiorno());
+        contentValues.put(MESE, resoconto.getEsercizio().getMese());
+        contentValues.put(ANNO, resoconto.getEsercizio().getAnno());
+        contentValues.put(PUNTEGGIO, resoconto.getPunteggio());
+        contentValues.put(CORRETTO, resoconto.getCorretti());
+        contentValues.put(SBAGLIATO, resoconto.getSbagliati());
+        contentValues.put(AIUTI, resoconto.getAiuti());
+
+        long result = db.insert(TABLE_RESOCONTO, null, contentValues);
+        return result != -1;
+    }
+
+    public ArrayList<Resoconto> getResoconto(String user){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        ArrayList<Resoconto> resoconti  = new ArrayList<>();
+
+        if(db!= null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_RESOCONTO + " WHERE GENITORE = ?", new String[]{user});
+        }
+
+        while (cursor.moveToNext()){
+            String bambino = cursor.getString(1);
+            String genitore = cursor.getString(2);
+            String logopedista = cursor.getString(3);
+            String titolo = cursor.getString(4);
+            String tipo = cursor.getString(5);
+            int giorno = cursor.getInt(6);
+            int mese = cursor.getInt(7);
+            int anno = cursor.getInt(8);
+            int punteggio = cursor.getInt(9);
+            int corretto = cursor.getInt(10);
+            int sbagliato = cursor.getInt(11);
+            int aiuti = cursor.getInt(12);
+
+            Esercizio esercizio = new Esercizio(null, titolo, tipo, null, null, null, null, giorno, mese, anno);
+
+            Resoconto resoconto = new Resoconto(bambino, genitore, logopedista, esercizio, punteggio, corretto, sbagliato, aiuti);
+            resoconti.add(resoconto);
+        }
+        db.close();
+        return resoconti;
+    }
+
     public ArrayList<Esercizio> getDenominazione(String user){
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -418,7 +497,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return esercizi;
     }
-
 
     public ArrayList<Esercizio> getSequenza(String user){
         SQLiteDatabase db = this.getReadableDatabase();

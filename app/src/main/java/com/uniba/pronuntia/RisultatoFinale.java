@@ -8,8 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 public class RisultatoFinale extends AppCompatActivity {
 
@@ -23,6 +27,10 @@ public class RisultatoFinale extends AppCompatActivity {
     private int corretti;
     private int sbagliati;
 
+    private RecyclerView recyclerView;
+    private ResultAdapter customAdapter;
+    private DBHelper db;
+    private ArrayList<Resoconto> resoconti;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +43,15 @@ public class RisultatoFinale extends AppCompatActivity {
             return insets;
         });
 
+        db = new DBHelper(this);
+
+        resoconti = db.getResoconto("paoloneri@gmail.com");
+
         punteggioText = findViewById(R.id.punteggio);
         aiutiText = findViewById(R.id.aiuti);
         correttiText = findViewById(R.id.corretti);
         sbagliatiText = findViewById(R.id.sbagliati);
+
 
         punteggio = getIntent().getIntExtra("Punteggio", 0);
         numeroAiuti = getIntent().getIntExtra("Aiuti", 0);
@@ -50,6 +63,11 @@ public class RisultatoFinale extends AppCompatActivity {
         correttiText.setText("Esercizi corretti: " + corretti);
         sbagliatiText.setText("Esercizi sbagliati: " + sbagliati);
 
+        recyclerView = findViewById(R.id.recyclerView);
+        customAdapter = new ResultAdapter(RisultatoFinale.this, resoconti);
+        customAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(customAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(RisultatoFinale.this));
 
     }
 }

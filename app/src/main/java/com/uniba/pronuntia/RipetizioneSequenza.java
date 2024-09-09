@@ -95,12 +95,13 @@ public class RipetizioneSequenza extends AppCompatActivity {
                         monthDP += 1;
                         data.setText(dayOfMonthDP + " " + (monthDP) + " " + yearDP );
 
+                        esercizio.setGiorno(dayOfMonthDP);
+                        esercizio.setMese(monthDP);
+                        esercizio.setAnno(yearDP);
                     }
                 }, day, month, year);
 
-                esercizio.setGiorno(day);
-                esercizio.setMese(month);
-                esercizio.setAnno(year);
+
 
 
                 datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis()-1000);

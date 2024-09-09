@@ -36,6 +36,7 @@ public class GamePath extends AppCompatActivity {
     private int numeroAiuti = 0;
     private int corretti = 0;
     private int sbagliati = 0;
+    private Resoconto resoconto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +72,14 @@ public class GamePath extends AppCompatActivity {
         risultato.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(GamePath.this, RisultatoFinale.class);
                 intent.putExtra("Punteggio", punteggio);
                 intent.putExtra("Aiuti", numeroAiuti);
                 intent.putExtra("Corretti", corretti);
                 intent.putExtra("Sbagliati", sbagliati);
                 startActivity(intent);
+
             }
         });
 
@@ -103,6 +106,8 @@ public class GamePath extends AppCompatActivity {
 
                 livello = nuovoLivello;
                 customAdapter.setLivello(nuovoLivello);  // Metodo da creare nell'Adapter
+
+                //resoconto = data.getParcelableExtra("Resoconto");
 
                 if(livello == esercizi.size()){
                     risultato.setVisibility(View.VISIBLE);
