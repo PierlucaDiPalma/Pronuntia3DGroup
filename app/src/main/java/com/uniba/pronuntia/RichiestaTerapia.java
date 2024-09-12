@@ -13,7 +13,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class RichiestaTerapia extends AppCompatActivity {
-
+private int logopedistaId;
+private String nomeBambino;
+private String motivoRichiesta;
+private int durataTerapia;
+private String emailGenitore;
+private String getEmailLogopedista;
     private EditText nomeBambinoEditText;
     private EditText motivoRichiestaEditText;
     private Spinner durataSpinner;
@@ -21,8 +26,40 @@ public class RichiestaTerapia extends AppCompatActivity {
     private Button inviaButton;
 
     private DBHelper databaseHelper;
+    public RichiestaTerapia() {
+    }
+    public RichiestaTerapia(int logopedistaId, String nomeBambino, String motivoRichiesta, int durataTerapia, String emailGenitore, String getEmailLogopedista) {
+        this.logopedistaId = logopedistaId;
+        this.nomeBambino = nomeBambino;
+        this.motivoRichiesta = motivoRichiesta;
+        this.durataTerapia = durataTerapia;
+        this.emailGenitore = emailGenitore;
+        this.getEmailLogopedista = getEmailLogopedista;
+    }
 
+    public int getLogopedistaId() {
+        return logopedistaId;
+    }
 
+    public String getNomeBambino() {
+        return nomeBambino;
+    }
+
+    public String getMotivoRichiesta() {
+        return motivoRichiesta;
+    }
+
+    public int getDurataTerapia() {
+        return durataTerapia;
+    }
+
+    public String getEmailGenitore() {
+        return emailGenitore;
+    }
+
+    public String getGetEmailLogopedista() {
+        return getEmailLogopedista;
+    }
 
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);

@@ -27,6 +27,9 @@ public class HomeGenitore extends AppCompatActivity {
 
         // Inizializza DBHelper
         dbHelper = new DBHelper(this);
+        Intent intent=getIntent();
+        String emailLogopedista=intent.getStringExtra("logopedista_email");
+
 
         // Recupero del layout che conterrà i pulsanti
         LinearLayout logopedistiLayout = findViewById(R.id.logopedisti_layout);

@@ -63,6 +63,7 @@ public class Login extends AppCompatActivity {
                         if(db.isLogopedista(email)){
                             //Carica la pagina del logopedista
                             Intent intent = new Intent(Login.this, Logopedista.class);
+                            intent.putExtra("logopedista_email", email);
                             startActivity(intent);
                             finish();
                         }else{

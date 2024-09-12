@@ -183,23 +183,104 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
     }
+
     public ArrayList<Utente> getLogopedisti() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + ISLOGOPEDISTA + " = 1", null);
-
         ArrayList<Utente> logopedisti = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            String email = cursor.getString(cursor.getColumnIndexOrThrow(EMAIL));
-            String nome = cursor.getString(cursor.getColumnIndexOrThrow(NOME));
-            String cognome = cursor.getString(cursor.getColumnIndexOrThrow(COGNOME));
-            String telefono = cursor.getString(cursor.getColumnIndexOrThrow(TELEFONO));
-            String password = cursor.getString(cursor.getColumnIndexOrThrow(PASSWORD));
+        SQLiteDatabase db = this.getReadableDatabase(); // Ottieni un'istanza del database
 
-            logopedisti.add(new Utente(email, nome, cognome, telefono, password, true));
+        // Query per selezionare solo gli utenti che sono logopedisti
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + ISLOGOPEDISTA + " = 1";
+
+        // Esegui la query
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                // Estrai i valori delle colonne
+                int columnEmail = cursor.getColumnIndex(EMAIL);
+                String email = cursor.getString(columnEmail);
+
+                int columnNome = cursor.getColumnIndex(NOME);
+                String nome = cursor.getString(columnNome);
+
+                int columnCognome = cursor.getColumnIndex(COGNOME);
+                String cognome = cursor.getString(columnCognome);
+
+                int columnTelefono = cursor.getColumnIndex(TELEFONO);
+                String telefono = cursor.getString(columnTelefono);
+
+                int columnPassword = cursor.getColumnIndex(PASSWORD);
+                String password = cursor.getString(columnPassword);
+
+                // Crea un oggetto RichiestaTerapia per ogni logopedista
+                Utente logopedista = new Utente(email, nome, cognome, telefono, password,true);
+
+                // Aggiungi alla lista
+                logopedisti.add(logopedista);
+
+            } while (cursor.moveToNext());
         }
-        cursor.close();
+
+        cursor.close(); // Chiudi il Cursor
+        db.close(); // Chiudi il database
+
         return logopedisti;
     }
+
+
+    public ArrayList<RichiestaTerapia> getTerapie(String email){
+
+        ArrayList<RichiestaTerapia> logopedisti=new ArrayList<RichiestaTerapia>();
+        String [] emails={email};
+        SQLiteDatabase db=this.getReadableDatabase(); //ottengo istanza del db
+        String query="SELECT * FROM Terapie WHERE email_logopedista=?";
+        Cursor cursor=db.rawQuery(query,emails);
+
+        if(cursor.moveToFirst()) {
+            do {
+                int columnId = cursor.getColumnIndex("id");
+                int logopedistaId = cursor.getInt(columnId);
+
+                int columnNomeBambino = cursor.getColumnIndex("nome_bambino");
+                String NomeBambino = cursor.getString(columnNomeBambino);
+
+                int columnMotivo = cursor.getColumnIndex("motivo_richiesta");
+                String motivo = cursor.getString(columnMotivo);
+
+                int columnDurataTerapia = cursor.getColumnIndex("durata_terapia");
+                int durataTerapia = cursor.getInt(columnDurataTerapia);
+
+                int columnEmailGenitore = cursor.getColumnIndex("email_genitore");
+                String emailGenitore = cursor.getString(columnEmailGenitore);
+
+                int columnEmailLogopedista = cursor.getColumnIndex("email_logopedista");
+                String emailLogopedista = cursor.getString(columnEmailLogopedista);
+
+                RichiestaTerapia terapia = new RichiestaTerapia(logopedistaId, NomeBambino, motivo, durataTerapia, emailGenitore, emailLogopedista);
+
+                logopedisti.add(terapia);
+
+
+            }while(cursor.moveToNext());
+
+
+
+        }
+cursor.close();
+        db.close();
+
+        return logopedisti;
+
+
+
+
+    }
+
+
+
+
+
+
 
     public boolean addUser(Utente utente) {
         SQLiteDatabase db = this.getWritableDatabase();

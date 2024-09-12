@@ -1,5 +1,6 @@
 package com.uniba.pronuntia;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -8,6 +9,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,29 +30,72 @@ public class Logopedista extends AppCompatActivity {
     ArrayList<Utente> users;
     CustomAdapter customAdapter;
     RecyclerView recyclerView;
-
+ArrayList<RichiestaTerapia> richieste;
+    ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_logopedista);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.logopedista), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+Intent intent=getIntent();
+String emailLogopedista=intent.getStringExtra("logopedista_email");
+
+
         Log.d(TAG, "Entrato");
-        recyclerView = findViewById(R.id.recyclerView);
+
         db = new DBHelper(Logopedista.this);
         users = new ArrayList<>();
+richieste=db.getTerapie(emailLogopedista);
+
 
         users = db.readData();
         Log.d(TAG, "Connesso");
 
         Log.d(TAG, "Raccolto");
-        customAdapter = new CustomAdapter(Logopedista.this, users);
-        recyclerView.setAdapter(customAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(Logopedista.this));
 
+        listView = findViewById(R.id.requests_list);
+        if (listView == null) {
+            Log.e(TAG, "ListView not found!");
+            return; // Esci se la ListView è null
+        }
+
+        if (richieste.isEmpty()) {
+            Toast.makeText(this, "Nessuna richiesta di terapia trovata.", Toast.LENGTH_SHORT).show();
+        } else {
+            // Crea un ArrayAdapter per la ListView
+            ArrayAdapter<RichiestaTerapia> adapter = new ArrayAdapter<RichiestaTerapia>(this, R.layout.item_richiesta, R.id.nomeBambino, richieste) {
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    if (convertView == null) {
+                        LayoutInflater inflater = LayoutInflater.from(getContext());
+                        convertView = inflater.inflate(R.layout.item_richiesta, parent, false);
+                    }
+
+                    RichiestaTerapia richiesta = getItem(position);
+
+                    TextView nomeBambino = convertView.findViewById(R.id.nomeBambino);
+                    TextView motivo = convertView.findViewById(R.id.motivo);
+                    TextView durata = convertView.findViewById(R.id.durata);
+
+                    if (richiesta != null) {
+                        nomeBambino.setText(richiesta.getNomeBambino());
+                        motivo.setText(richiesta.getMotivoRichiesta());
+                        durata.setText(String.valueOf(richiesta.getDurataTerapia()));
+                    }
+
+                    return convertView;
+                }
+            };
+
+            listView.setAdapter(adapter);
+        }
     }
 }
