@@ -1,29 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/nomeBambino"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/motivo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/textContainer"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"/>
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/PendenteButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/durata"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"/>
-</LinearLayout>
+        <TextView
+            android:id="@+id/nomeBambino"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome Bambino"
+
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/motivo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Motivo"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/durata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Durata"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/PendenteButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="12dp"
+        android:scaleType="fitXY"
+        android:contentDescription="Pulsante per avviare la creazione degli esercizi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textContainer"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/richiesta"
+        android:background="@android:color/transparent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

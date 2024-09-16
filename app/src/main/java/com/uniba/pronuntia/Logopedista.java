@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,11 +86,29 @@ richieste=db.getTerapie(emailLogopedista);
                     TextView nomeBambino = convertView.findViewById(R.id.nomeBambino);
                     TextView motivo = convertView.findViewById(R.id.motivo);
                     TextView durata = convertView.findViewById(R.id.durata);
+ImageButton pulsanteMkTerapia=convertView.findViewById(R.id.PendenteButton);
 
                     if (richiesta != null) {
                         nomeBambino.setText(richiesta.getNomeBambino());
                         motivo.setText(richiesta.getMotivoRichiesta());
-                        durata.setText(String.valueOf(richiesta.getDurataTerapia()));
+
+                        if(richiesta.getDurataTerapia()>1){
+                            durata.setText(String.valueOf(richiesta.getDurataTerapia())+"\tsettimane");
+                        }else {
+                            durata.setText(String.valueOf(richiesta.getDurataTerapia()) + "\tsettimana");
+                        }
+                       pulsanteMkTerapia.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View view) {
+                               Intent intent=new Intent(Logopedista.this, CreazioneEsercizi.class);
+                               startActivity(intent);
+
+
+                           }
+                       } );
+
+
+
                     }
 
                     return convertView;

@@ -375,6 +375,15 @@ cursor.close();
     }
 
     public ArrayList<Esercizio> readExercises(String user){
+
+        if (user == null) {
+            Log.e(TAG, "readExercises: User cannot be null");
+            return new ArrayList<>();
+        }
+
+
+
+
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
