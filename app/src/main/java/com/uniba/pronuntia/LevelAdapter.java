@@ -44,7 +44,6 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
         holder.levelButton.setText(String.valueOf(getItemCount()-position));
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.levelButton.getLayoutParams();
 
-        Random random = new Random();
         int i = position;
 
         int[] positionX = { -500, -300, -100, 0, 100, 300, 500};
@@ -96,13 +95,13 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
 
             holder.levelButton.setEnabled(true);
             holder.levelButton.setClickable(true);
+
             holder.levelButton.setOnClickListener(new View.OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
 
                     livello++;
-
 
                     Intent intent = new Intent(context, Game.class);
                     intent.putExtra("Posizione", i);
@@ -122,11 +121,6 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
             holder.levelButton.setEnabled(false);
             holder.levelButton.setClickable(false);
         }
-
-
-
-
-
 
         Log.d(TAG, "onBindViewHolder: " + params.rightMargin);
 

@@ -32,7 +32,7 @@ public class Logopedista extends AppCompatActivity {
     ArrayList<Utente> users;
     CustomAdapter customAdapter;
     RecyclerView recyclerView;
-ArrayList<RichiestaTerapia> richieste;
+    ArrayList<RichiestaTerapia> richieste;
     ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +47,15 @@ ArrayList<RichiestaTerapia> richieste;
         });
 
 
-Intent intent=getIntent();
-String emailLogopedista=intent.getStringExtra("logopedista_email");
+    Intent intent=getIntent();
+    String emailLogopedista=intent.getStringExtra("logopedista_email");
 
 
-        Log.d(TAG, "Entrato");
+    Log.d(TAG, "Entrato");
 
-        db = new DBHelper(Logopedista.this);
-        users = new ArrayList<>();
-richieste=db.getTerapie(emailLogopedista);
+    db = new DBHelper(Logopedista.this);
+    users = new ArrayList<>();
+    richieste=db.getTerapie(emailLogopedista);
 
 
         users = db.readData();
@@ -86,7 +86,7 @@ richieste=db.getTerapie(emailLogopedista);
                     TextView nomeBambino = convertView.findViewById(R.id.nomeBambino);
                     TextView motivo = convertView.findViewById(R.id.motivo);
                     TextView durata = convertView.findViewById(R.id.durata);
-ImageButton pulsanteMkTerapia=convertView.findViewById(R.id.PendenteButton);
+                    ImageButton pulsanteMkTerapia=convertView.findViewById(R.id.PendenteButton);
 
                     if (richiesta != null) {
                         nomeBambino.setText(richiesta.getNomeBambino());
@@ -101,6 +101,7 @@ ImageButton pulsanteMkTerapia=convertView.findViewById(R.id.PendenteButton);
                            @Override
                            public void onClick(View view) {
                                Intent intent=new Intent(Logopedista.this, CreazioneEsercizi.class);
+                               intent.putExtra("email", richiesta.getEmailGenitore());
                                startActivity(intent);
 
 

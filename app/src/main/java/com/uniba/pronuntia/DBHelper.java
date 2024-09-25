@@ -124,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + ANNO + " INTEGER )");
 
         db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
-                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,  "
                 + GENITORE + " TEXT, "
                 + BAMBINO + " TEXT, "
                 + LOGOPEDISTA + " TEXT, "
@@ -266,21 +266,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         }
-cursor.close();
+        cursor.close();
         db.close();
 
         return logopedisti;
 
-
-
-
     }
-
-
-
-
-
-
 
     public boolean addUser(Utente utente) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -545,10 +536,22 @@ cursor.close();
             Resoconto resoconto = new Resoconto(bambino, genitore, logopedista, esercizio, punteggio, corretto, sbagliato, aiuti);
             resoconti.add(resoconto);
         }
-        db.close();
         return resoconti;
     }
+/*
+    public boolean isEsercizioDone(Esercizio esercizio){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
 
+        if(db!=null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_RESOCONTO + " WHERE GENITORE = ? AND TITOLO = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?",
+                    new String[]{esercizio.getEmail(), esercizio.getName(), String.valueOf(esercizio.getGiorno()), String.valueOf(esercizio.getMese()), String.valueOf(esercizio.getAnno())});
+        }
+        if(cursor.getCount()!=0)
+            return true;
+        else return false;
+    }
+*/
     public ArrayList<Esercizio> getDenominazione(String user){
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -580,11 +583,10 @@ cursor.close();
             int anno = cursor.getInt(8);
 
 
-            esercizi.add(new Esercizio(email, titolo, tipo, immagine1, null, aiuto, null, giorno, mese, 0));
+            esercizi.add(new Esercizio(email, titolo, tipo, immagine1, null, aiuto, null, giorno, mese, anno));
             Log.d(TAG, "readExercises: " + cursor.getString(1));
             Log.d(TAG, "readExercises: " + cursor.getString(2));
         }
-        db.close();
         return esercizi;
     }
 
@@ -663,6 +665,5 @@ cursor.close();
         }
         return esercizi;
     }
-
 
 }

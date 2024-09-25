@@ -146,7 +146,9 @@ public class RipetizioneSequenza extends AppCompatActivity {
                     if(db.addExercises(esercizio) && db.addSequenza(esercizio)){
                             Log.d(TAG, "onClick: Scrittura");
                             Toast.makeText(RipetizioneSequenza.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(RipetizioneSequenza.this, CreazioneEsercizi.class));
+                            Intent intent = new Intent(RipetizioneSequenza.this, CreazioneEsercizi.class);
+                            intent.putExtra("email", email);
+                            startActivity(intent);
 
                         }else{
                             Toast.makeText(RipetizioneSequenza.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();

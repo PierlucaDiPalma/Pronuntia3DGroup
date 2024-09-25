@@ -2,6 +2,7 @@ package com.uniba.pronuntia;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,6 +39,8 @@ public class GamePath extends AppCompatActivity {
     private int sbagliati = 0;
     private Resoconto resoconto;
 
+    private final static String TAG = "GamePath";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,9 +62,16 @@ public class GamePath extends AppCompatActivity {
         risultato = findViewById(R.id.fine);
 
         risultato.setVisibility(View.GONE);
-        esercizi = db.getCoppia(email);
+        esercizi = db.getDenominazione(email);
+
+        for(int i=0; i<esercizi.size();i++) {
+            Log.d(TAG, "Denominazione: " + esercizi.get(i).getName() + " " + esercizi.get(i).getGiorno() + " " + esercizi.get(i).getMese() + " " + esercizi.get(i).getAnno());
+        }
+
         esercizi.addAll(db.getSequenza(email));
-        esercizi.addAll(db.getDenominazione(email));
+        esercizi.addAll(db.getCoppia(email));
+
+
 
         shuffleArrayList(esercizi);
 
@@ -74,6 +84,7 @@ public class GamePath extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(GamePath.this, RisultatoFinale.class);
+                intent.putExtra("Bambino", "Giulio");
                 intent.putExtra("Punteggio", punteggio);
                 intent.putExtra("Aiuti", numeroAiuti);
                 intent.putExtra("Corretti", corretti);
@@ -111,6 +122,7 @@ public class GamePath extends AppCompatActivity {
 
                 if(livello > esercizi.size()){
                     risultato.setVisibility(View.VISIBLE);
+
                 }
                 // Notifica l'Adapter per aggiornare la RecyclerView
                 customAdapter.notifyDataSetChanged();

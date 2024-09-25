@@ -122,10 +122,15 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(DenominazioneImmagini.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
-                        data.setText(dayOfMonthDP + " " + (monthDP+ 1) + " " + yearDP);
+
+                        data.setText(dayOfMonthDP + " " + (monthDP+1) + " " + yearDP );
+                        Log.d(TAG, "onDateSet: " + dayOfMonthDP + " " + (monthDP+1) + " " + yearDP);
+
                         esercizio.setGiorno(dayOfMonthDP);
                         esercizio.setMese(monthDP+1);
                         esercizio.setAnno(yearDP);
+
+                        Log.d(TAG, "onDateSet: " + esercizio.getName() + " " + esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
                     }
                 }, day, month, year);
 
@@ -173,7 +178,10 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     if (db.addDenominazione(esercizio) && db.addExercises(esercizio)) {
                         Log.d(TAG, "onClick: Scrittura");
                         Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class));
+                        Intent intent = new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class);
+                        intent.putExtra("email", email);
+                        startActivity(intent);
+                        //finish();
                     } else {
                         Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
                     }

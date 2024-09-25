@@ -61,7 +61,8 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
         esercizio = getIntent().getParcelableExtra("Esercizio");
 
         Log.d(TAG, "Livello: " + livello);
-        Log.d(TAG, "Tipo: " + esercizio.getTipo() + " " + esercizio.getName());
+        Log.d(TAG, "Tipo: " + esercizio.getTipo() + " " + esercizio.getName() + " " + esercizio.getGiorno() + " "
+                + esercizio.getMese() + " " + esercizio.getAnno());
 
         Bundle args = new Bundle();
 

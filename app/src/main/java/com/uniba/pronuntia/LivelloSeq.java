@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -184,6 +185,10 @@ public class LivelloSeq extends Fragment {
 
             String[] inputSplitted = input.split(" ");
 
+            inputSplitted = manageArray(inputSplitted);
+
+
+
             Log.d(TAG, "onActivityResult: " + inputSplitted[0]);
             Log.d(TAG, "onActivityResult: " + inputSplitted[1]);
             Log.d(TAG, "onActivityResult: " + inputSplitted[2]);
@@ -214,6 +219,31 @@ public class LivelloSeq extends Fragment {
             passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati);
         }
     }
+
+    private String[] manageArray(String[] input){
+
+        if(input.length<3){
+            String[] newArray = new String[3];
+            for (int i = 0; i < input.length; i++) {
+                newArray[i] = input[i];
+            }
+
+            for (int i = input.length; i < 3; i++) {
+                newArray[i] = " ";
+            }
+            return newArray;
+
+        }else if(input.length>3){
+
+            return Arrays.copyOfRange(input, 0, 3);
+
+        }else{
+            return input;
+        }
+
+    }
+
+
     private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati) {
         if (getActivity() instanceof OnDataPassListener) {
             ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati);

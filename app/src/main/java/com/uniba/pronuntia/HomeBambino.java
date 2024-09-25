@@ -20,11 +20,14 @@ public class HomeBambino extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ExerciseAdapter customAdapter;
+    private ArrayList<Esercizio> eserciziList = new ArrayList<>();
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
     private DBHelper db;
     private String email;
-    private final static String TAG = "MainActivity";
+    private final static String TAG = "HomeBambino";
     private Button avanti;
+    private ArrayList<Resoconto> resoconti;
+    private int numberOfTrue = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +47,76 @@ public class HomeBambino extends AppCompatActivity {
 
         Intent intent = getIntent();
         email = intent.getStringExtra("email");
+        resoconti = db.getResoconto(email);
 
-        esercizi = db.readExercises(email);
+        eserciziList = db.readExercises(email);
+
+        esercizi = db.getDenominazione(email);
+        esercizi.addAll(db.getSequenza(email));
+        esercizi.addAll(db.getCoppia(email));
+
         Log.d(TAG, "onCreate: email recuperata " + email);
+
 
         customAdapter = new ExerciseAdapter(HomeBambino.this, esercizi);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(HomeBambino.this));
 
+        for(int i = 0; i<resoconti.size();i++){
+            for(int j = 0; j<esercizi.size();j++){
+                if(resoconti.get(i).getEsercizio().getName().equals( esercizi.get(j).getName()) &&
+                        resoconti.get(i).getEsercizio().getGiorno() == esercizi.get(j).getGiorno() &&
+                        resoconti.get(i).getEsercizio().getMese() == esercizi.get(j).getMese() &&
+                        resoconti.get(i).getEsercizio().getAnno() == esercizi.get(j).getAnno()){
+                    numberOfTrue++;
+                    Log.d(TAG, "Resoconto: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getEsercizio().getGiorno() + " " + resoconti.get(i).getEsercizio().getMese()
+                            + " " + resoconti.get(i).getEsercizio().getAnno()
+                            + " esercizio: " + esercizi.get(j).getName() + " " + esercizi.get(j).getGiorno() + " " + esercizi.get(j).getMese() + " " +esercizi.get(j).getAnno());
+                }
+            }
+        }
+
         avanti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeBambino.this, GamePath.class);
-                intent.putExtra("Email", email);
-                startActivityForResult(intent, 1);
+
+
+
+                if(numberOfTrue == resoconti.size() && numberOfTrue>0) {
+
+                    Intent intent = new Intent(HomeBambino.this, RisultatoFinale.class);
+                    intent.putExtra("Email", email);
+                    startActivityForResult(intent, 1);
+
+                }else{
+                    Intent intent = new Intent(HomeBambino.this, GamePath.class);
+                    intent.putExtra("Email", email);
+                    startActivityForResult(intent, 1);
+
+                }
             }
         });
+    }
+
+    public boolean isEquals(ArrayList<Esercizio> esercizi, ArrayList<Resoconto> resoconti) {
+        for (Esercizio esercizio : esercizi) {
+            boolean isDone = false; // Variabile esterna per controllare se l'esercizio è completato
+            for (Resoconto resoconto : resoconti) {
+                // Controlla se tutti i parametri corrispondono tra esercizio e resoconto
+                if (esercizio.getName().equals(resoconto.getEsercizio().getName()) &&
+                        esercizio.getEmail().equals(resoconto.getGenitore()) &&
+                        esercizio.getGiorno() == resoconto.getEsercizio().getGiorno() &&
+                        esercizio.getMese() == resoconto.getEsercizio().getMese() &&
+                        esercizio.getAnno() == resoconto.getEsercizio().getAnno()) {
+
+                    // Se c'è una corrispondenza, imposta isDone su true
+                    isDone = true;
+                    return isDone; // Esci dal ciclo, hai trovato un match
+                }
+            }
+
+        }
+
+        return false;
     }
 }

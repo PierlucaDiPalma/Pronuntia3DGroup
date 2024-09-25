@@ -58,6 +58,7 @@ public class RisultatoFinale extends AppCompatActivity {
         corretti = getIntent().getIntExtra("Corretti", 0);
         sbagliati = getIntent().getIntExtra("Sbagliati", 0);
 
+
         punteggioText.setText("Punteggio: " + punteggio);
         aiutiText.setText("Aiuti usati: " + numeroAiuti);
         correttiText.setText("Esercizi corretti: " + corretti);
