@@ -62,6 +62,9 @@
             android:name=".CoupleActivity"
             android:exported="false" />
         <activity
+            android:name=".CreazioneBambino"
+            android:exported="false" />
+        <activity
             android:name=".RichiestaTerapia"
             android:exported="false" />
         <activity

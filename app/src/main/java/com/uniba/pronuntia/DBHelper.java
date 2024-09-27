@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -61,7 +62,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CORRETTO = "CORRETTO";
     private static final String SBAGLIATO = "SBAGLIATO";
     private static final String AIUTI = "AIUTI";
-
+private static final String TABLE_BAMBINI="BAMBINI";
+private static final String NOME_BAMBINO="NOME_BAMBINO";
+private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -71,6 +74,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+
+
+
+
 
         db.execSQL("CREATE TABLE " + TABLE_NAME
                 + " ( " + EMAIL +" TEXT PRIMARY KEY, "
@@ -139,6 +147,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 + AIUTI + " INTEGER )");
 
 
+
+
+
+
+
+
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + nome_bambino + " TEXT,"
@@ -150,6 +164,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
                 + ")";
         db.execSQL(CREATE_TABLE_TERAPIE);
+
+
+        db.execSQL("CREATE TABLE " + TABLE_BAMBINI + " ("
+                + NOME_BAMBINO + " TEXT, "
+                + EMAIL_GENITORE + " TEXT, "
+                + "PRIMARY KEY (" + NOME_BAMBINO + ", " + EMAIL_GENITORE + "), "
+                + "FOREIGN KEY (" + EMAIL_GENITORE + ") REFERENCES " + TABLE_NAME + " (" + EMAIL + ")"
+                + ");");
+
+
+
 
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
@@ -164,6 +189,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_COPPIA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESOCONTO);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BAMBINI);
         onCreate(db);
     }
 
@@ -183,6 +209,51 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
     }
+
+    public void addBambino(String nomeBambino,String emailGenitore){
+        SQLiteDatabase db=this.getWritableDatabase();
+ContentValues values=new ContentValues();
+values.put(NOME_BAMBINO,nomeBambino);
+values.put(EMAIL_GENITORE,emailGenitore);
+long result=db.insert(TABLE_BAMBINI,null,values);
+        if (result == -1) {
+            Log.e(TAG, "Errore nell'inserimento della terapia");
+        } else {
+            Log.d(TAG, "Terapia inserita con successo, ID: " + result);
+        }
+        db.close();
+
+
+    }
+
+
+    public ArrayList<String> getBambiniByEmail(String emailGenitore) {
+        ArrayList<String> bambini = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_BAMBINI, new String[]{NOME_BAMBINO}, EMAIL_GENITORE + " = ?", new String[]{emailGenitore}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String nome = cursor.getString(0);
+                bambini.add(nome);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        return bambini;
+    }
+
+
+
+
+
+
+
+
+
+
 
     public ArrayList<Utente> getLogopedisti() {
         ArrayList<Utente> logopedisti = new ArrayList<>();
