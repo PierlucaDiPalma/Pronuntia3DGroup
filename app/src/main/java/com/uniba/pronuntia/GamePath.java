@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Random;
 
@@ -62,14 +63,16 @@ public class GamePath extends AppCompatActivity {
         risultato = findViewById(R.id.fine);
 
         risultato.setVisibility(View.GONE);
-        esercizi = db.getDenominazione(email);
+
+        Calendar calendar = Calendar.getInstance();
+        esercizi = db.getDenominazione(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
 
         for(int i=0; i<esercizi.size();i++) {
             Log.d(TAG, "Denominazione: " + esercizi.get(i).getName() + " " + esercizi.get(i).getGiorno() + " " + esercizi.get(i).getMese() + " " + esercizi.get(i).getAnno());
         }
 
-        esercizi.addAll(db.getSequenza(email));
-        esercizi.addAll(db.getCoppia(email));
+        esercizi.addAll(db.getSequenza(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
+        esercizi.addAll(db.getCoppia(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
 
 
 

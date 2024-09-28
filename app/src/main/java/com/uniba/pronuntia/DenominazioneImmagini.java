@@ -53,19 +53,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DenominazioneImmagini extends AppCompatActivity {
 
     private EditText titoloEdit, aiutoEdit;
-    private TextView data;
+    private TextView  dataText;
     private ImageView immagine;
     private Button crea, calendario, imgLoad;
     private DBHelper db;
     private String titolo, aiuto;
     private String email;
+    private String data;
     private int day, month, year;
+    private int durata;
     private Esercizio esercizio = new Esercizio(null, null, "Denominazione", null, null, null, null, 0, 0, 0);
+
 
     ActivityResultLauncher<Intent> resultLauncher;
 
@@ -101,46 +105,44 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
         Intent intent = getIntent();
         email = intent.getStringExtra("email");
+        durata = intent.getIntExtra("durata", 1);
+        data = intent.getStringExtra("data");
 
-
-        esercizio.setEmail(email);
-
-        data = findViewById(R.id.date);
+        dataText = findViewById(R.id.date);
         db = new DBHelper(DenominazioneImmagini.this);
 
+        String[] dataSplitted = data.split(" ");
+        day = Integer.valueOf(dataSplitted[0]);
+        month = Integer.valueOf(dataSplitted[1])-1;
+        year = Integer.valueOf(dataSplitted[2]);
+
+        Calendar forWeeks = Calendar.getInstance();
+        forWeeks.set(year, month, day);
+
+        dataText.setText(day + " " + (month+1) + " " + year);
+
+        ArrayList<String> dateList = new ArrayList<>();
+        for (int i = 0; i < (durata*7); i++) {
+
+            // Ottieni il giorno, mese e anno corrente
+            int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
+            int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
+            int currentYear = forWeeks.get(Calendar.YEAR);
+
+            // Aggiungi la data alla lista
+            String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
+            dateList.add(currentDate);
+
+            // Aggiungi un giorno al calendario
+            forWeeks.add(Calendar.DAY_OF_YEAR, 1);
+
+        }
+
+        for(int i = 0;i<dateList.size();i++){
+            Log.d(TAG, i+1 + " " + dateList.get(i));
+        }
 
         Log.d(TAG, "onCreate: " + email);
-
-        calendario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Calendar calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(DenominazioneImmagini.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
-
-                        data.setText(dayOfMonthDP + " " + (monthDP+1) + " " + yearDP );
-                        Log.d(TAG, "onDateSet: " + dayOfMonthDP + " " + (monthDP+1) + " " + yearDP);
-
-                        esercizio.setGiorno(dayOfMonthDP);
-                        esercizio.setMese(monthDP+1);
-                        esercizio.setAnno(yearDP);
-
-                        Log.d(TAG, "onDateSet: " + esercizio.getName() + " " + esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
-                    }
-                }, day, month, year);
-
-
-
-                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis() - 1000);
-                datePickerDialog.show();
-            }
-        });
-
 
 
         immagine.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +158,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
         crea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int added = 0;
 
                 titolo = titoloEdit.getText().toString().trim();
                 aiuto = aiutoEdit.getText().toString().trim();
@@ -169,22 +172,40 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                 if (!titolo.isEmpty() || !aiuto.isEmpty() || titolo!= null || aiuto != null || immagine.getDrawable() != null) {
 
-                    esercizio.setName(titolo);
-                    esercizio.setAiuto(aiuto);
+                    for(int i = 0; i<dateList.size();i++){
 
-                    Log.d(TAG, esercizio.getName());
-                    Log.d(TAG, esercizio.getTipo());
+                        esercizio.setEmail(email);
+                        esercizio.setName(titolo);
+                        esercizio.setAiuto(aiuto);
 
-                    if (db.addDenominazione(esercizio) && db.addExercises(esercizio)) {
-                        Log.d(TAG, "onClick: Scrittura");
+                        String[] dateContent = dateList.get(i).split("/");
+                        Log.d(TAG, "da settare: " + dateContent[0] + " " + dateContent[1] + " " + dateContent[2]);
+
+                        Log.d(TAG, "data esercizio: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
+
+                        esercizio.setGiorno(Integer.valueOf(dateContent[0]));
+                        esercizio.setMese(Integer.valueOf(dateContent[1]));
+                        esercizio.setAnno(Integer.valueOf(dateContent[2]));
+
+                        Log.d(TAG, "data esercizio settata: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
+
+                        if (db.addDenominazione(esercizio)) {
+
+                            Log.d(TAG, "onClick: Scrittura");
+                            added++;
+                        }
+                    }
+
+                    if(added==dateList.size() && db.addExercises(esercizio)){
                         Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class);
                         intent.putExtra("email", email);
                         startActivity(intent);
-                        //finish();
-                    } else {
+                    }else {
+
                         Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
                     }
+
                 } else {
                     Toast.makeText(DenominazioneImmagini.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();
                 }

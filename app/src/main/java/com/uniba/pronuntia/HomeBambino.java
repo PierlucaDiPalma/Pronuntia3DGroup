@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class HomeBambino extends AppCompatActivity {
 
@@ -51,14 +52,16 @@ public class HomeBambino extends AppCompatActivity {
 
         eserciziList = db.readExercises(email);
 
-        esercizi = db.getDenominazione(email);
-        esercizi.addAll(db.getSequenza(email));
-        esercizi.addAll(db.getCoppia(email));
+        Calendar calendar = Calendar.getInstance();
+
+        esercizi = db.getDenominazione(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
+        esercizi.addAll(db.getSequenza(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
+        esercizi.addAll(db.getCoppia(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
 
         Log.d(TAG, "onCreate: email recuperata " + email);
 
 
-        customAdapter = new ExerciseAdapter(HomeBambino.this, esercizi);
+        customAdapter = new ExerciseAdapter(HomeBambino.this, eserciziList);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(HomeBambino.this));
 
@@ -82,7 +85,7 @@ public class HomeBambino extends AppCompatActivity {
 
 
 
-                if(numberOfTrue == resoconti.size() && numberOfTrue>0) {
+                if(numberOfTrue == esercizi.size() && numberOfTrue>0) {
 
                     Intent intent = new Intent(HomeBambino.this, RisultatoFinale.class);
                     intent.putExtra("Email", email);

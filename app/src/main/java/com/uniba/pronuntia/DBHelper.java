@@ -623,7 +623,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         else return false;
     }
 */
-    public ArrayList<Esercizio> getDenominazione(String user){
+    public ArrayList<Esercizio> getDenominazione(String user, int day, int month, int year){
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -633,7 +633,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         if(db!=null){
             Log.d(TAG, "denominazione: Entrato");
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE + " WHERE EMAIL = ?", new String[]{user});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE + " WHERE EMAIL = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
 
             Log.d(TAG, "denominazione: Esecuzione query");
         }
@@ -661,7 +661,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         return esercizi;
     }
 
-    public ArrayList<Esercizio> getSequenza(String user){
+    public ArrayList<Esercizio> getSequenza(String user, int day, int month, int year){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
@@ -670,7 +670,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         if(db!=null){
             Log.d(TAG, "denominazione: Entrato");
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_SEQUENZA + " WHERE EMAIL = ?", new String[]{user});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_SEQUENZA + " WHERE EMAIL = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
 
             Log.d(TAG, "denominazione: Esecuzione query");
         }
@@ -703,7 +703,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         return esercizi;
     }
 
-    public ArrayList<Esercizio> getCoppia(String user){
+    public ArrayList<Esercizio> getCoppia(String user, int day, int month, int year){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
@@ -711,7 +711,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         if(db!=null){
 
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE EMAIL = ?", new String[]{user});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE EMAIL = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
       }
 
 

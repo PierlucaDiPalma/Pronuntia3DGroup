@@ -102,6 +102,10 @@ public class Logopedista extends AppCompatActivity {
                            public void onClick(View view) {
                                Intent intent=new Intent(Logopedista.this, CreazioneEsercizi.class);
                                intent.putExtra("email", richiesta.getEmailGenitore());
+                               intent.putExtra("bambino", richiesta.getNomeBambino());
+                               intent.putExtra("motivo", richiesta.getMotivoRichiesta());
+                               intent.putExtra("durata", richiesta.getDurataTerapia());
+
                                startActivity(intent);
 
 

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -31,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Coppia extends AppCompatActivity {
@@ -38,7 +40,7 @@ public class Coppia extends AppCompatActivity {
     private Button imageLoad1, imageLoad2, calendario, crea;
     private ImageView immagine1, immagine2;
     private EditText titoloEdit, soluzioneEdit;
-    private TextView data;
+    private TextView dataText;
     private DBHelper db = new DBHelper(this);
 
     private int day, month, year;
@@ -58,8 +60,11 @@ public class Coppia extends AppCompatActivity {
     private String titolo;
     private String soluzione;
     private String email;
+    private String data;
+    private int durata;
     private Esercizio esercizio = new Esercizio(null, null, "Coppia", null, null,  null, null, 0, 0,0);
 
+    private final static String TAG = "Coppia";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,16 +84,48 @@ public class Coppia extends AppCompatActivity {
 
         crea = findViewById(R.id.createCoup);
         calendario = findViewById(R.id.calendar);
-        data = findViewById(R.id.date);
+        dataText = findViewById(R.id.date);
 
         titoloEdit = findViewById(R.id.titolo);
         soluzioneEdit = findViewById(R.id.soluzione);
 
         Intent intent = getIntent();
         email = intent.getStringExtra("email");
+        durata = intent.getIntExtra("durata", 1);
+        data = intent.getStringExtra("data");
 
-        esercizio.setEmail(email);
 
+        String[] dataSplitted = data.split(" ");
+        day = Integer.valueOf(dataSplitted[0]);
+        month = Integer.valueOf(dataSplitted[1])-1;
+        year = Integer.valueOf(dataSplitted[2]);
+
+        Calendar forWeeks = Calendar.getInstance();
+        forWeeks.set(year, month, day);
+
+        dataText.setText(day + " " + (month+1) + " " + year);
+
+        ArrayList<String> dateList = new ArrayList<>();
+        for (int i = 0; i < (durata*7); i++) {
+
+            // Ottieni il giorno, mese e anno corrente
+            int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
+            int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
+            int currentYear = forWeeks.get(Calendar.YEAR);
+
+            // Aggiungi la data alla lista
+            String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
+            dateList.add(currentDate);
+
+            // Aggiungi un giorno al calendario
+            forWeeks.add(Calendar.DAY_OF_YEAR, 1);
+
+        }
+
+        for(int i = 0;i<dateList.size();i++){
+            Log.d(TAG, i+1 + " " + dateList.get(i));
+        }
+/*
         calendario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,7 +151,7 @@ public class Coppia extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
-
+*/
         immagine1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,6 +192,8 @@ public class Coppia extends AppCompatActivity {
         crea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                int added = 0;
                 titolo = titoloEdit.getText().toString().trim();
                 soluzione = soluzioneEdit.getText().toString().trim();
 
@@ -165,21 +204,36 @@ public class Coppia extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                esercizio.setName(titolo);
-                esercizio.setAiuto(soluzione);
 
                 if(!titolo.isEmpty() || !soluzione.isEmpty() || immagine1.getDrawable()!=null || immagine2.getDrawable()!=null){
+                    for(int i = 0; i<dateList.size();i++){
 
-                    if(db.addCoppia(esercizio) && db.addExercises(esercizio)){
+                        esercizio.setEmail(email);
+                        esercizio.setName(titolo);
+                        esercizio.setAiuto(soluzione);
 
+                        String[] dateContent = dateList.get(i).split("/");
 
+                        esercizio.setGiorno(Integer.valueOf(dateContent[0]));
+                        esercizio.setMese(Integer.valueOf(dateContent[1]));
+                        esercizio.setAnno(Integer.valueOf(dateContent[2]));
+
+                        if(db.addCoppia(esercizio)){
+                            added++;
+
+                        }
+                    }
+
+                    if(added==dateList.size() && db.addExercises(esercizio)){
                         Toast.makeText(Coppia.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Coppia.this, CreazioneEsercizi.class);
                         intent.putExtra("email", email);
                         startActivity(intent);
+
                     }else{
                         Toast.makeText(Coppia.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
                     }
+
                 }
 
             }
