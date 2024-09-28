@@ -21,7 +21,7 @@ public class HomeUtente extends AppCompatActivity {
 private LinearLayout linearLayout;
 private Button pulsanteAggiungiBambino;
 private String email;
-private ArrayList<String> bambini;
+private ArrayList<Bambino> bambini;
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -69,8 +69,8 @@ db=new DBHelper(this);
         if (email != null) {
             bambini = db.getBambiniByEmail(email);
 
-        for (String nomeBambino : bambini) {
-            createButtonForBambino(nomeBambino);
+        for (Bambino bambino : bambini) {
+            createButtonForBambino(bambino);
         }
         } else {
             // Gestisci il caso in cui l'email è null (mostrare un messaggio di errore, ecc.)
@@ -102,9 +102,9 @@ db=new DBHelper(this);
 
 
     }
-    private void createButtonForBambino(String nomeBambino) {
+    private void createButtonForBambino(Bambino bambino) {
         Button button = new Button(this);
-        button.setText(nomeBambino);
+        button.setText(bambino.getNome());
         button.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -117,7 +117,9 @@ db=new DBHelper(this);
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeUtente.this, HomeBambino.class); // Assicurati che questa activity esista
-                intent.putExtra("nomeBambino", nomeBambino); // Passa il nome del bambino all'Activity
+                intent.putExtra("idBambino", bambino.getId()); // Passa l'ID del bambino
+                intent.putExtra("nomeBambino", bambino.getNome()); // Passa il nome del bambino
+
 
                 startActivity(intent);
             }

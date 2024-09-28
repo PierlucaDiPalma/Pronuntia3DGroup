@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +30,7 @@ public class HomeBambino extends AppCompatActivity {
     private Button avanti;
     private ArrayList<Resoconto> resoconti;
     private int numberOfTrue = 0;
-
+    private TextView nomeBambinoTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +42,27 @@ public class HomeBambino extends AppCompatActivity {
             return insets;
         });
 
+        Intent intent = getIntent();
+        int idBambino = intent.getIntExtra("idBambino", -1); // Ottieni l'ID del bambino
+      String  nomeBambino = intent.getStringExtra("nomeBambino"); // Ottieni il nome del bambino
+          nomeBambinoTextView = findViewById(R.id.textView);
+
+
+        if (nomeBambino != null) {
+            nomeBambinoTextView.setText(nomeBambino); // Mostra il nome del bambino
+        } else {
+            nomeBambinoTextView.setText("Nome non disponibile");
+        }
+
+
+
+
         avanti = findViewById(R.id.avanti);
         recyclerView = findViewById(R.id.exercises);
         db = new DBHelper(this);
 
 
-        Intent intent = getIntent();
+
         email = intent.getStringExtra("email");
         resoconti = db.getResoconto(email);
 

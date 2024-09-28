@@ -167,13 +167,12 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
 
         db.execSQL("CREATE TABLE " + TABLE_BAMBINI + " ("
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + NOME_BAMBINO + " TEXT, "
                 + EMAIL_GENITORE + " TEXT, "
-                + "PRIMARY KEY (" + NOME_BAMBINO + ", " + EMAIL_GENITORE + "), "
+                + "UNIQUE (" + NOME_BAMBINO + ", " + EMAIL_GENITORE + "), "
                 + "FOREIGN KEY (" + EMAIL_GENITORE + ") REFERENCES " + TABLE_NAME + " (" + EMAIL + ")"
                 + ");");
-
-
 
 
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
@@ -227,16 +226,19 @@ long result=db.insert(TABLE_BAMBINI,null,values);
     }
 
 
-    public ArrayList<String> getBambiniByEmail(String emailGenitore) {
-        ArrayList<String> bambini = new ArrayList<>();
+    public ArrayList<Bambino> getBambiniByEmail(String emailGenitore) {
+        ArrayList<Bambino> bambini = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_BAMBINI, new String[]{NOME_BAMBINO}, EMAIL_GENITORE + " = ?", new String[]{emailGenitore}, null, null, null);
+
+        Cursor cursor = db.query(TABLE_BAMBINI, new String[]{"ID", NOME_BAMBINO}, EMAIL_GENITORE + " = ?", new String[]{emailGenitore}, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
-                String nome = cursor.getString(0);
-                bambini.add(nome);
+                String nome = cursor.getString(1);
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID"));
+                Bambino bambino=new Bambino(id,nome);
+                bambini.add(bambino);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -584,6 +586,13 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         ArrayList<Resoconto> resoconti  = new ArrayList<>();
 
+        if (user == null) {
+            Log.e("DBHelper", "Il valore di genitore è null");
+            return resoconti; // Restituisce un array vuoto
+        }
+
+
+
         if(db!= null){
             cursor = db.rawQuery("SELECT * FROM " + TABLE_RESOCONTO + " WHERE GENITORE = ?", new String[]{user});
         }
@@ -631,6 +640,11 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         ArrayList<Esercizio> esercizi = new ArrayList<>();
         Log.d(TAG, "denominazione: Array creato");
 
+        if (user == null) {
+            Log.e(TAG, "User cannot be null");
+            return new ArrayList<>(); // Restituisce un array vuoto
+        }
+
         if(db!=null){
             Log.d(TAG, "denominazione: Entrato");
             cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE + " WHERE EMAIL = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
@@ -667,6 +681,11 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         ArrayList<Esercizio> esercizi = new ArrayList<>();
         Log.d(TAG, "denominazione: Array creato");
+
+        if (user == null) {
+            Log.e(TAG, "User cannot be null");
+            return new ArrayList<>(); // Restituisce un array vuoto
+        }
 
         if(db!=null){
             Log.d(TAG, "denominazione: Entrato");
@@ -708,6 +727,12 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         Cursor cursor = null;
 
         ArrayList<Esercizio> esercizi = new ArrayList<>();
+        if (user == null) {
+            Log.e(TAG, "User cannot be null");
+            return new ArrayList<>(); // Restituisce un array vuoto
+        }
+
+
 
         if(db!=null){
 
