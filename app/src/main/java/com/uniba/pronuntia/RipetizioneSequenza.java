@@ -197,7 +197,8 @@ public class RipetizioneSequenza extends AppCompatActivity {
                             Toast.makeText(RipetizioneSequenza.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RipetizioneSequenza.this, CreazioneEsercizi.class);
                             intent.putExtra("email", email);
-                            startActivity(intent);
+                            finish();
+
 
                     }else{
                         Toast.makeText(RipetizioneSequenza.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();

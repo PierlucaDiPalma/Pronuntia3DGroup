@@ -27,19 +27,14 @@
         android:textSize="18dp"
         />
 
-    <Button
-        android:id="@+id/calendar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Calendario"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
 
     <EditText
         android:id="@+id/titolo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Titolo esercizio"
+        android:lines="1"
+        android:inputType="text"
         />
 
     <LinearLayout
@@ -52,11 +47,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
-        <ImageView
-            android:id="@+id/image1"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:src="@drawable/ic_launcher_background"/>
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_launcher_background" />
 
             <Button
                 android:id="@+id/caricaImg1"
@@ -76,12 +72,12 @@
                 android:layout_height="150dp"
 
                 android:src="@drawable/ic_launcher_background"/>
+
             <Button
                 android:id="@+id/caricaImg2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Carica l'immagine sbagliata"
-                />
+                android:text="Carica l'immagine sbagliata" />
         </LinearLayout>
     </LinearLayout>
 

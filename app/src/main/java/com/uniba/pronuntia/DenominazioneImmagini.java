@@ -200,7 +200,9 @@ public class DenominazioneImmagini extends AppCompatActivity {
                         Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class);
                         intent.putExtra("email", email);
-                        startActivity(intent);
+                        intent.putExtra("data", data);
+                        finish();
+                        //startActivity(intent);
                     }else {
 
                         Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();

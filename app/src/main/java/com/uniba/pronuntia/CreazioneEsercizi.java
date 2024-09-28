@@ -118,6 +118,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
                 DatePickerDialog datePickerDialog = new DatePickerDialog(CreazioneEsercizi.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
+
                         data = dayOfMonthDP + " " + (monthDP+1) + " " + yearDP;
                         dataText.setText(data);
                         Log.d(TAG, "onDateSet: " + dayOfMonthDP + " " + (monthDP+1) + " " + yearDP);
