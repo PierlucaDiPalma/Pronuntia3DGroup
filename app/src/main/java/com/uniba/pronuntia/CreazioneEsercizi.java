@@ -183,6 +183,12 @@ public class CreazioneEsercizi extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        
+    }
+
     private void showExerciseTypeDialog(String email) {
         String[] exerciseTypes = {"Denominazione", "Sequenza", "Coppia"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

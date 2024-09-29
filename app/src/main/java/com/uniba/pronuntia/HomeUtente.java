@@ -43,23 +43,12 @@ private ArrayList<Bambino> bambini;
 
 
                Intent intentBambino=new Intent(HomeUtente.this, CreazioneBambino.class);
-               intentBambino.putExtra("email",email);
+               intentBambino.putExtra("email", email);
 
                startActivity(intentBambino);
 
            }
        });
-
-
-
-
-
-
-
-
-
-
-
 
 
 db=new DBHelper(this);
@@ -76,14 +65,6 @@ db=new DBHelper(this);
             // Gestisci il caso in cui l'email è null (mostrare un messaggio di errore, ecc.)
             Toast.makeText(this, "Email non valida!", Toast.LENGTH_SHORT).show();
         }
-
-
-
-
-
-
-
-
 
         genitoreBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +100,7 @@ db=new DBHelper(this);
                 Intent intent = new Intent(HomeUtente.this, HomeBambino.class); // Assicurati che questa activity esista
                 intent.putExtra("idBambino", bambino.getId()); // Passa l'ID del bambino
                 intent.putExtra("nomeBambino", bambino.getNome()); // Passa il nome del bambino
-
+                intent.putExtra("email", getIntent().getStringExtra("email"));
 
                 startActivity(intent);
             }
