@@ -61,8 +61,9 @@ public class Coppia extends AppCompatActivity {
     private String soluzione;
     private String email;
     private String data;
+    private String bambino;
     private int durata;
-    private Esercizio esercizio = new Esercizio(null, null, "Coppia", null, null,  null, null, 0, 0,0);
+    private Esercizio esercizio = new Esercizio(null, null, null, "Coppia", null, null,  null, null, 0, 0,0);
 
     private final static String TAG = "Coppia";
 
@@ -83,7 +84,6 @@ public class Coppia extends AppCompatActivity {
         immagine2 = findViewById(R.id.image2);
 
         crea = findViewById(R.id.createCoup);
-        calendario = findViewById(R.id.calendar);
         dataText = findViewById(R.id.date);
 
         titoloEdit = findViewById(R.id.titolo);
@@ -93,7 +93,7 @@ public class Coppia extends AppCompatActivity {
         email = intent.getStringExtra("email");
         durata = intent.getIntExtra("durata", 1);
         data = intent.getStringExtra("data");
-
+        bambino = intent.getStringExtra("bambino");
 
         String[] dataSplitted = data.split(" ");
         day = Integer.valueOf(dataSplitted[0]);
@@ -125,33 +125,7 @@ public class Coppia extends AppCompatActivity {
         for(int i = 0;i<dateList.size();i++){
             Log.d(TAG, i+1 + " " + dateList.get(i));
         }
-/*
-        calendario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Calendar calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Coppia.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
-
-                        data.setText(dayOfMonthDP + " " + (monthDP+1) + " " + yearDP );
-                        esercizio.setGiorno(dayOfMonthDP);
-                        esercizio.setMese(monthDP+1);
-                        esercizio.setAnno(yearDP);
-                    }
-                }, day, month, year);
-
-
-
-                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis()-1000);
-                datePickerDialog.show();
-            }
-        });
-*/
         immagine1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -165,14 +139,7 @@ public class Coppia extends AppCompatActivity {
                 choseImage(PICK_IMAGE_REQUEST_1);
             }
         });
-/*
-        loadImage2Launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        esercizio.setImmagine2(handleImageResult(result.getData(), immagine2, imageLoad2));
-                    }
-                });*/
+
 
         immagine2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -209,6 +176,7 @@ public class Coppia extends AppCompatActivity {
                     for(int i = 0; i<dateList.size();i++){
 
                         esercizio.setEmail(email);
+                        esercizio.setBambino(bambino);
                         esercizio.setName(titolo);
                         esercizio.setAiuto(soluzione);
 
@@ -365,108 +333,5 @@ public class Coppia extends AppCompatActivity {
         }
     }
 
-
-
-
-/*
-    private void registerImageResultCorrect(String email){
-        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    try{
-                        Uri imageUri = result.getData().getData();
-
-                        try {
-
-                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-
-                            immagine1.setVisibility(View.VISIBLE);
-                            immagine1.setImageURI(imageUri);
-                            imageLoad1.setText("Cambia immagine");
-
-
-                            // Converti Bitmap in byte[]
-                            ByteArrayOutputStream outputStreamCorrect = new ByteArrayOutputStream();
-
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStreamCorrect);
-
-                            byte[] imageBytes_correct = outputStreamCorrect.toByteArray();
-
-
-                            esercizio.setImmagine1(imageBytes_correct);
-
-
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Toast.makeText(Coppia.this, "Errore nel caricamento dell'immagine", Toast.LENGTH_SHORT).show();
-                        }
-
-                        immagine1.setVisibility(View.VISIBLE);
-                        immagine1.setImageURI(imageUri);
-                        imageLoad1.setText("Cambia immagine");
-
-                    }catch (Exception e){
-                        Toast.makeText(Coppia.this, "Nessuna immagine caricata", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        );
-    }
-
-    private void registerImageResultIncorrect(String email){
-        resultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        try{
-                            Uri imageUri = result.getData().getData();
-
-                            try {
-
-                                InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-
-                                immagine2.setVisibility(View.VISIBLE);
-                                immagine2.setImageURI(imageUri);
-                                imageLoad2.setText("Cambia immagine");
-
-
-                                // Converti Bitmap in byte[]
-                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                                byte[] imageBytes = outputStream.toByteArray();
-
-                                esercizio.setImmagine2(imageBytes);
-
-
-
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                Toast.makeText(Coppia.this, "Errore nel caricamento dell'immagine", Toast.LENGTH_SHORT).show();
-                            }
-
-                            immagine2.setVisibility(View.VISIBLE);
-                            immagine2.setImageURI(imageUri);
-                            imageLoad2.setText("Cambia immagine");
-
-                        }catch (Exception e){
-                            Toast.makeText(Coppia.this, "Nessuna immagine caricata", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-        );
-    }
-
-    private void loadImage(){
-
-        Intent intent = new Intent(MediaStore.ACTION_PICK_IMAGES);
-        resultLauncher.launch(intent);
-    }
-*/
 
 }

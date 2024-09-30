@@ -66,9 +66,10 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private String titolo, aiuto;
     private String email;
     private String data;
+    private String bambino;
     private int day, month, year;
     private int durata;
-    private Esercizio esercizio = new Esercizio(null, null, "Denominazione", null, null, null, null, 0, 0, 0);
+    private Esercizio esercizio = new Esercizio(null, null, null, "Denominazione", null, null, null, null, 0, 0, 0);
 
 
     ActivityResultLauncher<Intent> resultLauncher;
@@ -96,7 +97,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
         Log.d(TAG, "onCreate: Entrato");
         titoloEdit = findViewById(R.id.titoloEsercizio);
         crea = findViewById(R.id.createDen);
-        calendario = findViewById(R.id.calendar);
+        //calendario = findViewById(R.id.calendar);
         aiutoEdit = findViewById(R.id.aiuto);
 
         imgLoad = findViewById(R.id.caricaImg);
@@ -107,6 +108,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
         email = intent.getStringExtra("email");
         durata = intent.getIntExtra("durata", 1);
         data = intent.getStringExtra("data");
+        bambino = intent.getStringExtra("bambino");
 
         dataText = findViewById(R.id.date);
         db = new DBHelper(DenominazioneImmagini.this);
@@ -175,6 +177,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     for(int i = 0; i<dateList.size();i++){
 
                         esercizio.setEmail(email);
+                        esercizio.setBambino(bambino);
                         esercizio.setName(titolo);
                         esercizio.setAiuto(aiuto);
 

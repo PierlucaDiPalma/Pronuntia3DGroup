@@ -38,6 +38,7 @@ public class GamePath extends AppCompatActivity {
     private int numeroAiuti = 0;
     private int corretti = 0;
     private int sbagliati = 0;
+    private String bambino;
     private Resoconto resoconto;
 
     private final static String TAG = "GamePath";
@@ -56,6 +57,7 @@ public class GamePath extends AppCompatActivity {
         recyclerView = findViewById(R.id.levelView);
         db = new DBHelper(GamePath.this);
         email = getIntent().getStringExtra("Email");
+        bambino = getIntent().getStringExtra("Bambino");
         punteggioText = findViewById(R.id.punteggio);
         aiutiText = findViewById(R.id.aiuti);
         correttiText = findViewById(R.id.corretti);
@@ -65,14 +67,14 @@ public class GamePath extends AppCompatActivity {
         risultato.setVisibility(View.GONE);
 
         Calendar calendar = Calendar.getInstance();
-        esercizi = db.getDenominazione(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
+        esercizi = db.getDenominazione(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
 
         for(int i=0; i<esercizi.size();i++) {
             Log.d(TAG, "Denominazione: " + esercizi.get(i).getName() + " " + esercizi.get(i).getGiorno() + " " + esercizi.get(i).getMese() + " " + esercizi.get(i).getAnno());
         }
 
-        esercizi.addAll(db.getSequenza(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
-        esercizi.addAll(db.getCoppia(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
+        esercizi.addAll(db.getSequenza(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
+        esercizi.addAll(db.getCoppia(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
 
 
 

@@ -2,13 +2,11 @@ package com.uniba.pronuntia;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,14 +14,11 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
-import androidx.core.util.Pair;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,7 +35,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private TextView dataText;
     private Button calendario;
 
-    private Button addEsercizio, prova;
+    private Button addEsercizio;
     private RecyclerView recyclerView;
     private ExerciseAdapter customAdapter;
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
@@ -48,6 +43,9 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private int day, month, year;
     private int durata;
     private String data;
+    private String email;
+    private String bambino;
+    private String motivo;
     private static final String TAG = "CreazioneEsercizi";
 
     @Override
@@ -71,9 +69,9 @@ public class CreazioneEsercizi extends AppCompatActivity {
         calendario = findViewById(R.id.calendar);
 
         Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
-        String bambino = intent.getStringExtra("bambino");
-        String motivo = intent.getStringExtra("motivo");
+        email = intent.getStringExtra("email");
+        bambino = intent.getStringExtra("bambino");
+        motivo = intent.getStringExtra("motivo");
         durata = intent.getIntExtra("durata", 1);
 
 
@@ -93,12 +91,11 @@ public class CreazioneEsercizi extends AppCompatActivity {
         }
 
         addEsercizio = findViewById(R.id.add);
-        prova = findViewById(R.id.tryImage);
         recyclerView = findViewById(R.id.exercises);
 
         db = new DBHelper(this);
 
-        esercizi = db.readExercises(email);
+        esercizi = db.readExercises(email, bambino);
 
 
         customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, esercizi);
@@ -172,15 +169,6 @@ public class CreazioneEsercizi extends AppCompatActivity {
                 }
             }
         });
-
-        prova.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CreazioneEsercizi.this, CoupleActivity.class);
-                intent.putExtra(email, "email");
-                startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -212,6 +200,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
                     Log.d(TAG, "showExerciseTypeDialog: " + data);
                     intent.putExtra("email", email);
+                    intent.putExtra("bambino", bambino);
                     intent.putExtra("durata", durata);
                     intent.putExtra("data", data);
                     startActivity(intent);

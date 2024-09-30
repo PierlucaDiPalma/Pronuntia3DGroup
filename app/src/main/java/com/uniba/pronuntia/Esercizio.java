@@ -17,9 +17,11 @@ public class Esercizio implements Parcelable {
     private String aiuto;
     private String[] sequenza = new String[3];
     private int giorno, mese, anno;
+    private String bambino;
 
-    public Esercizio(String email, String name, String tipo, byte[] immagine1, byte[] immagine2, String aiuto, String[] sequenza, int giorno, int mese, int anno) {
+    public Esercizio(String email, String bambino, String name, String tipo, byte[] immagine1, byte[] immagine2, String aiuto, String[] sequenza, int giorno, int mese, int anno) {
         this.email = email;
+        this.bambino = bambino;
         this.name = name;
         this.tipo = tipo;
         this.immagine1 = immagine1;
@@ -34,6 +36,7 @@ public class Esercizio implements Parcelable {
 
     protected Esercizio(Parcel in) {
         email = in.readString();
+        bambino = in.readString();
         name = in.readString();
         tipo = in.readString();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -66,6 +69,14 @@ public class Esercizio implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getBambino() {
+       return bambino;
+    }
+
+    public void setBambino(String bambino) {
+        this.bambino = bambino;
     }
 
     public String getName() {
@@ -149,6 +160,7 @@ public class Esercizio implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeString(email);
+        parcel.writeString(bambino);
         parcel.writeString(name);
         parcel.writeString(tipo);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

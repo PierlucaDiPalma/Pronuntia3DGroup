@@ -26,11 +26,13 @@ public class HomeBambino extends AppCompatActivity {
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
     private DBHelper db;
     private String email;
+    private String bambino;
     private final static String TAG = "HomeBambino";
     private Button avanti;
     private ArrayList<Resoconto> resoconti;
     private int numberOfTrue = 0;
     private TextView nomeBambinoTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +46,12 @@ public class HomeBambino extends AppCompatActivity {
 
         Intent intent = getIntent();
         int idBambino = intent.getIntExtra("idBambino", -1); // Ottieni l'ID del bambino
-      String  nomeBambino = intent.getStringExtra("nomeBambino"); // Ottieni il nome del bambino
-          nomeBambinoTextView = findViewById(R.id.textView);
+        bambino = intent.getStringExtra("bambino"); // Ottieni il nome del bambino
+        nomeBambinoTextView = findViewById(R.id.textView);
 
 
-        if (nomeBambino != null) {
-            nomeBambinoTextView.setText(nomeBambino); // Mostra il nome del bambino
+        if (bambino != null) {
+            nomeBambinoTextView.setText(bambino); // Mostra il nome del bambino
         } else {
             nomeBambinoTextView.setText("Nome non disponibile");
         }
@@ -64,15 +66,16 @@ public class HomeBambino extends AppCompatActivity {
 
 
         email = intent.getStringExtra("email");
+
         resoconti = db.getResoconto(email);
 
-        eserciziList = db.readExercises(email);
+        eserciziList = db.readExercises(email, bambino);
 
         Calendar calendar = Calendar.getInstance();
 
-        esercizi = db.getDenominazione(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
-        esercizi.addAll(db.getSequenza(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
-        esercizi.addAll(db.getCoppia(email, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
+        esercizi = db.getDenominazione(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
+        esercizi.addAll(db.getSequenza(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
+        esercizi.addAll(db.getCoppia(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
 
         Log.d(TAG, "onCreate: email recuperata " + email);
 
@@ -87,6 +90,7 @@ public class HomeBambino extends AppCompatActivity {
                         resoconti.get(i).getEsercizio().getGiorno() == esercizi.get(j).getGiorno() &&
                         resoconti.get(i).getEsercizio().getMese() == esercizi.get(j).getMese() &&
                         resoconti.get(i).getEsercizio().getAnno() == esercizi.get(j).getAnno()){
+
                     numberOfTrue++;
                     Log.d(TAG, "Resoconto: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getEsercizio().getGiorno() + " " + resoconti.get(i).getEsercizio().getMese()
                             + " " + resoconti.get(i).getEsercizio().getAnno()
@@ -99,17 +103,17 @@ public class HomeBambino extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
-
                 if(numberOfTrue == esercizi.size() && numberOfTrue>0) {
 
                     Intent intent = new Intent(HomeBambino.this, RisultatoFinale.class);
                     intent.putExtra("Email", email);
+                    intent.putExtra("Bambino", bambino);
                     startActivityForResult(intent, 1);
 
                 }else{
                     Intent intent = new Intent(HomeBambino.this, GamePath.class);
                     intent.putExtra("Email", email);
+                    intent.putExtra("Bambino", bambino);
                     startActivityForResult(intent, 1);
 
                 }

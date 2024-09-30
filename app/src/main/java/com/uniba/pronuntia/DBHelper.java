@@ -91,6 +91,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         db.execSQL("CREATE TABLE " + TABLE_ESERCIZI
                 + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + EMAIL + " TEXT, "
+                + BAMBINO + " TEXT, "
                 + TITOLO +" TEXT, "
                 + TIPO +" TEXT )");
 
@@ -98,6 +99,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         db.execSQL("CREATE TABLE " + TABLE_DENOMINAZIONE
                 + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + EMAIL + " TEXT, "
+                + BAMBINO + " TEXT, "
                 + TITOLO +" TEXT, "
                 + TIPO +" TEXT, "
                 + IMMAGINE + " BLOB, "
@@ -110,6 +112,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         db.execSQL("CREATE TABLE " + TABLE_SEQUENZA
                 + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + EMAIL + " TEXT, "
+                + BAMBINO + " TEXT, "
                 + TITOLO +" TEXT, "
                 + TIPO +" TEXT, "
                 + PAROLA_1 + " TEXT, "
@@ -122,6 +125,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         db.execSQL("CREATE TABLE " + TABLE_COPPIA
                 + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + EMAIL + " TEXT, "
+                + BAMBINO + " TEXT, "
                 + TITOLO +" TEXT, "
                 + TIPO +" TEXT, "
                 + IMMAGINE_1 + " BLOB, "
@@ -145,12 +149,6 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
                 + CORRETTO + " INTEGER, "
                 + SBAGLIATO + " INTEGER, "
                 + AIUTI + " INTEGER )");
-
-
-
-
-
-
 
 
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
@@ -438,15 +436,12 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
     }
 
-    public ArrayList<Esercizio> readExercises(String user){
+    public ArrayList<Esercizio> readExercises(String user, String child){
 
         if (user == null) {
             Log.e(TAG, "readExercises: User cannot be null");
             return new ArrayList<>();
         }
-
-
-
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -456,7 +451,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         if(db!=null){
             Log.d(TAG, "readExercises: Entrato");
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_ESERCIZI + " WHERE EMAIL = ?", new String[]{user});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_ESERCIZI + " WHERE EMAIL = ? AND BAMBINO = ?", new String[]{user, child});
 
             Log.d(TAG, "readExercises: Esecuzione query");
         }
@@ -464,10 +459,11 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         while(cursor.moveToNext()){
             String email = cursor.getString(1);
-            String titolo = cursor.getString(2).replace("+", " ");
-            String tipo = cursor.getString(3);
+            String bambino = cursor.getString(2);
+            String titolo = cursor.getString(3).replace("+", " ");
+            String tipo = cursor.getString(4);
 
-            esercizi.add(new Esercizio(email, titolo, tipo, null, null, null, null, 0, 0, 0));
+            esercizi.add(new Esercizio(email, bambino, titolo, tipo, null, null, null, null, 0, 0, 0));
 
             Log.d(TAG, "readExercises: " + cursor.getString(1));
             Log.d(TAG, "readExercises: " + cursor.getString(2));
@@ -483,10 +479,9 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(EMAIL, esercizio.getEmail());
+        contentValues.put(BAMBINO, esercizio.getBambino());
         contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
-
-
 
         Log.d(TAG, "addDenominazione: Scritto");
         long result = db.insert(TABLE_ESERCIZI, null, contentValues);
@@ -500,15 +495,9 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(EMAIL, esercizio.getEmail());
+        contentValues.put(BAMBINO, esercizio.getBambino());
         contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
-/*
-        Bitmap bitmap = esercizio.getImmagine1();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-
-        byte[] immagine = byteArrayOutputStream.toByteArray();
-*/
         contentValues.put(IMMAGINE, esercizio.getImmagine1());
         contentValues.put(AIUTO, esercizio.getAiuto().replace("+", " "));
         contentValues.put(GIORNO, esercizio.getGiorno());
@@ -526,6 +515,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(EMAIL, esercizio.getEmail());
+        contentValues.put(BAMBINO, esercizio.getBambino());
         contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
         contentValues.put(PAROLA_1, esercizio.getSequenza()[0]);
@@ -544,11 +534,10 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(EMAIL, esercizio.getEmail());
+        contentValues.put(BAMBINO, esercizio.getBambino());
         contentValues.put(TITOLO, esercizio.getName().replace("+", " "));
         contentValues.put(TIPO, esercizio.getTipo());
-
         contentValues.put(IMMAGINE_1, esercizio.getImmagine1());
-
         contentValues.put(IMMAGINE_2, esercizio.getImmagine2());
         contentValues.put(AIUTO, esercizio.getAiuto());
         contentValues.put(GIORNO, esercizio.getGiorno());
@@ -611,7 +600,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
             int sbagliato = cursor.getInt(11);
             int aiuti = cursor.getInt(12);
 
-            Esercizio esercizio = new Esercizio(null, titolo, tipo, null, null, null, null, giorno, mese, anno);
+            Esercizio esercizio = new Esercizio(genitore, bambino, titolo, tipo, null, null, null, null, giorno, mese, anno);
 
             Resoconto resoconto = new Resoconto(bambino, genitore, logopedista, esercizio, punteggio, corretto, sbagliato, aiuti);
             resoconti.add(resoconto);
@@ -632,7 +621,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         else return false;
     }
 */
-    public ArrayList<Esercizio> getDenominazione(String user, int day, int month, int year){
+    public ArrayList<Esercizio> getDenominazione(String user, String child, int day, int month, int year){
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -647,7 +636,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         if(db!=null){
             Log.d(TAG, "denominazione: Entrato");
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE + " WHERE EMAIL = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_DENOMINAZIONE + " WHERE EMAIL = ? AND BAMBINO = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, child, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
 
             Log.d(TAG, "denominazione: Esecuzione query");
         }
@@ -659,23 +648,24 @@ long result=db.insert(TABLE_BAMBINI,null,values);
             Log.d(TAG, "getDenominazione: " + cursor.getString(2));
 
             String email = cursor.getString(1);
-            String titolo = cursor.getString(2).replace("+", " ");
-            String tipo = cursor.getString(3);
-            byte[] immagine1 = cursor.getBlob(4);
-            String aiuto = cursor.getString(5);
-            int giorno = cursor.getInt(6);
-            int mese = cursor.getInt(7);
-            int anno = cursor.getInt(8);
+            String bambino = cursor.getString(2);
+            String titolo = cursor.getString(3).replace("+", " ");
+            String tipo = cursor.getString(4);
+            byte[] immagine1 = cursor.getBlob(5);
+            String aiuto = cursor.getString(6);
+            int giorno = cursor.getInt(7);
+            int mese = cursor.getInt(8);
+            int anno = cursor.getInt(9);
 
 
-            esercizi.add(new Esercizio(email, titolo, tipo, immagine1, null, aiuto, null, giorno, mese, anno));
+            esercizi.add(new Esercizio(email, bambino, titolo, tipo, immagine1, null, aiuto, null, giorno, mese, anno));
             Log.d(TAG, "readExercises: " + cursor.getString(1));
             Log.d(TAG, "readExercises: " + cursor.getString(2));
         }
         return esercizi;
     }
 
-    public ArrayList<Esercizio> getSequenza(String user, int day, int month, int year){
+    public ArrayList<Esercizio> getSequenza(String user, String child, int day, int month, int year){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
@@ -689,7 +679,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         if(db!=null){
             Log.d(TAG, "denominazione: Entrato");
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_SEQUENZA + " WHERE EMAIL = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_SEQUENZA + " WHERE EMAIL = ? AND BAMBINO = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, child, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
 
             Log.d(TAG, "denominazione: Esecuzione query");
         }
@@ -699,30 +689,31 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
 
             String email = cursor.getString(1);
-            String titolo = cursor.getString(2).replace("+", " ");
-            String tipo = cursor.getString(3);
+            String bambino = cursor.getString(2);
+            String titolo = cursor.getString(3).replace("+", " ");
+            String tipo = cursor.getString(4);
 
             String[] sequenza = new String[3];
-            sequenza[0] = cursor.getString(4);
-            sequenza[1] = cursor.getString(5);
-            sequenza[2] = cursor.getString(6);
+            sequenza[0] = cursor.getString(5);
+            sequenza[1] = cursor.getString(6);
+            sequenza[2] = cursor.getString(7);
 
             Log.d(TAG, "getSequenza: " + sequenza[0]);
             Log.d(TAG, "getSequenza: " + sequenza[1]);
             Log.d(TAG, "getSequenza: " + sequenza[2]);
 
-            int giorno = cursor.getInt(7);
-            int mese = cursor.getInt(8);
-            int anno = cursor.getInt(9);
+            int giorno = cursor.getInt(8);
+            int mese = cursor.getInt(9);
+            int anno = cursor.getInt(10);
 
 
-            esercizi.add(new Esercizio(email, titolo, tipo, null, null, null, sequenza, giorno, mese, anno));
+            esercizi.add(new Esercizio(email, bambino, titolo, tipo, null, null, null, sequenza, giorno, mese, anno));
 
         }
         return esercizi;
     }
 
-    public ArrayList<Esercizio> getCoppia(String user, int day, int month, int year){
+    public ArrayList<Esercizio> getCoppia(String user, String child, int day, int month, int year){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
@@ -736,7 +727,7 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         if(db!=null){
 
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE EMAIL = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_COPPIA + " WHERE EMAIL = ? AND BAMBINO = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?", new String[]{user, child, String.valueOf(day), String.valueOf(month), String.valueOf(year)});
       }
 
 
@@ -744,19 +735,20 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
 
             String email = cursor.getString(1);
-            String titolo = cursor.getString(2).replace("+", " ");
-            String tipo = cursor.getString(3);
+            String bambino = cursor.getString(2);
+            String titolo = cursor.getString(3).replace("+", " ");
+            String tipo = cursor.getString(4);
 
-            byte[] immagine1 = cursor.getBlob(4);
-            byte[] immagine2 = cursor.getBlob(5);
-            String aiuto = cursor.getString(6);
+            byte[] immagine1 = cursor.getBlob(5);
+            byte[] immagine2 = cursor.getBlob(6);
+            String aiuto = cursor.getString(7);
 
-            int giorno = cursor.getInt(7);
-            int mese = cursor.getInt(8);
-            int anno = cursor.getInt(9);
+            int giorno = cursor.getInt(8);
+            int mese = cursor.getInt(9);
+            int anno = cursor.getInt(10);
 
 
-            esercizi.add(new Esercizio(email, titolo, tipo, immagine1, immagine2, aiuto, null, giorno, mese, anno));
+            esercizi.add(new Esercizio(email, bambino, titolo, tipo, immagine1, immagine2, aiuto, null, giorno, mese, anno));
 
         }
         return esercizi;

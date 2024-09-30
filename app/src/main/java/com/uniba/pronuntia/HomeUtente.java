@@ -18,10 +18,11 @@ public class HomeUtente extends AppCompatActivity {
 
     private DBHelper db;
     private Button genitoreBTN ;
-private LinearLayout linearLayout;
-private Button pulsanteAggiungiBambino;
-private String email;
-private ArrayList<Bambino> bambini;
+    private LinearLayout linearLayout;
+    private Button pulsanteAggiungiBambino;
+    private String email;
+    private ArrayList<Bambino> bambini;
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -34,7 +35,7 @@ private ArrayList<Bambino> bambini;
 
         pulsanteAggiungiBambino = findViewById(R.id.pulsanteAggiungiBambino);
 
-       pulsanteAggiungiBambino.setOnClickListener(new View.OnClickListener() {
+        pulsanteAggiungiBambino.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
 
@@ -48,10 +49,10 @@ private ArrayList<Bambino> bambini;
                startActivity(intentBambino);
 
            }
-       });
+        });
 
 
-db=new DBHelper(this);
+        db=new DBHelper(this);
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
         Log.d("Login", "Email passata: " + email); // Log per debugging
@@ -77,12 +78,8 @@ db=new DBHelper(this);
             }
         });
 
-
-
-
-
-
     }
+
     private void createButtonForBambino(Bambino bambino) {
         Button button = new Button(this);
         button.setText(bambino.getNome());
@@ -99,7 +96,7 @@ db=new DBHelper(this);
             public void onClick(View view) {
                 Intent intent = new Intent(HomeUtente.this, HomeBambino.class); // Assicurati che questa activity esista
                 intent.putExtra("idBambino", bambino.getId()); // Passa l'ID del bambino
-                intent.putExtra("nomeBambino", bambino.getNome()); // Passa il nome del bambino
+                intent.putExtra("bambino", bambino.getNome()); // Passa il nome del bambino
                 intent.putExtra("email", getIntent().getStringExtra("email"));
 
                 startActivity(intent);

@@ -34,9 +34,10 @@ public class RipetizioneSequenza extends AppCompatActivity {
     private String titolo;
     private String email;
     private String data;
+    private String bambino;
     private int durata;
     private int day, month, year;
-    private Esercizio esercizio = new Esercizio(null, null, "Sequenza", null, null,  null, null, 0, 0,0);
+    private Esercizio esercizio = new Esercizio(null, null, null, "Sequenza", null, null,  null, null, 0, 0,0);
 
     private static final String TAG = "RipetzioneSequenza";
 
@@ -57,7 +58,6 @@ public class RipetizioneSequenza extends AppCompatActivity {
         parola3Edit = findViewById(R.id.parola3);
 
         crea = findViewById(R.id.createSeq);
-        calendario = findViewById(R.id.calendar);
         dataText = findViewById(R.id.date);
         db = new DBHelper(RipetizioneSequenza.this);
 
@@ -68,6 +68,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
         email = intent.getStringExtra("email");
         durata = intent.getIntExtra("durata", 1);
         data = intent.getStringExtra("data");
+        bambino = intent.getStringExtra("bambino");
 
         String[] dataSplitted = data.split(" ");
         day = Integer.valueOf(dataSplitted[0]);
@@ -107,38 +108,6 @@ public class RipetizioneSequenza extends AppCompatActivity {
 
         MaterialDatePicker materialDatePicker = MaterialDatePicker.Builder.datePicker().build();
 
-/*
-        calendario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                final Calendar calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(RipetizioneSequenza.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
-                        monthDP += 1;
-                        dataText.setText(dayOfMonthDP + " " + (monthDP) + " " + yearDP );
-
-                        esercizio.setGiorno(dayOfMonthDP);
-                        esercizio.setMese(monthDP);
-                        esercizio.setAnno(yearDP);
-                    }
-                }, day, month, year);
-
-
-
-
-                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis()-1000);
-                datePickerDialog.show();
-            }
-
-        });
-
-*/
         crea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -178,6 +147,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
 
                         esercizio.setEmail(email);
                         esercizio.setName(titolo);
+                        esercizio.setBambino(bambino);
 
 
                         String[] dateContent = dateList.get(i).split("/");
