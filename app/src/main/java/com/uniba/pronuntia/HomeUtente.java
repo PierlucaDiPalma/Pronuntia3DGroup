@@ -84,7 +84,7 @@ public class HomeUtente extends AppCompatActivity {
         Button button = new Button(this);
         button.setText(bambino.getNome());
         button.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         ));
         button.setBackgroundTintList(getResources().getColorStateList(android.R.color.holo_blue_light));
@@ -105,6 +105,7 @@ public class HomeUtente extends AppCompatActivity {
 
         // Aggiungi il pulsante al LinearLayout
         linearLayout.addView(button);
+
     }
 
 }

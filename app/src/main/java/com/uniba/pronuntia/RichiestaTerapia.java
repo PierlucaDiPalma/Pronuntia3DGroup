@@ -1,16 +1,23 @@
 package com.uniba.pronuntia;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
+import com.uniba.pronuntia.R;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class RichiestaTerapia extends AppCompatActivity {
 private int logopedistaId;
@@ -24,6 +31,8 @@ private String getEmailLogopedista;
     private Spinner durataSpinner;
     private String emailLogopedista;
     private Button inviaButton;
+private ImageView backBtn;
+private BottomNavigationView bottombar;
 
     private DBHelper databaseHelper;
     public RichiestaTerapia() {
@@ -61,6 +70,8 @@ private String getEmailLogopedista;
         return getEmailLogopedista;
     }
 
+
+
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
 
@@ -74,6 +85,10 @@ private String getEmailLogopedista;
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+
+
+
 
 
         databaseHelper = new DBHelper(this);
@@ -96,6 +111,30 @@ private String getEmailLogopedista;
             }
         });
 
+backBtn=findViewById(R.id.back_buttonRichiestaTerapia);
+backBtn.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        onBackPressed();
+    }
+});
+
+        bottombar = findViewById(R.id.BottomNavigationViewRichiestaTerapia);
+        bottombar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                if (item.getItemId() == R.id.RichiediTerapia) {
+
+                    Intent intent = new Intent(RichiestaTerapia.this, SceltaLogopedista.class);
+                    startActivity(intent);
+                    return true;
+                }
+
+
+                return false;
+            }
+        });
 
 
 
