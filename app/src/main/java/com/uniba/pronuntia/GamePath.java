@@ -28,7 +28,7 @@ public class GamePath extends AppCompatActivity {
     private DBHelper db;
     private ArrayList<Esercizio> esercizi;
     private String email;
-    private int punteggio = 0;
+    private int punteggio;
     private TextView punteggioText;
     private TextView aiutiText;
     private TextView correttiText;
@@ -56,8 +56,11 @@ public class GamePath extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.levelView);
         db = new DBHelper(GamePath.this);
-        email = getIntent().getStringExtra("Email");
+
+        email = getIntent().getStringExtra("email");
         bambino = getIntent().getStringExtra("Bambino");
+        punteggio = getIntent().getIntExtra("punteggio", 0);
+
         punteggioText = findViewById(R.id.punteggio);
         aiutiText = findViewById(R.id.aiuti);
         correttiText = findViewById(R.id.corretti);
@@ -89,7 +92,8 @@ public class GamePath extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent = new Intent(GamePath.this, RisultatoFinale.class);
-                intent.putExtra("Bambino", "Giulio");
+                intent.putExtra("Bambino", bambino);
+                intent.putExtra("email", email);
                 intent.putExtra("Punteggio", punteggio);
                 intent.putExtra("Aiuti", numeroAiuti);
                 intent.putExtra("Corretti", corretti);

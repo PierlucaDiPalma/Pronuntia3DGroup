@@ -196,8 +196,10 @@ public class Coppia extends AppCompatActivity {
                         Toast.makeText(Coppia.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Coppia.this, CreazioneEsercizi.class);
                         intent.putExtra("email", email);
-                        finish();
-                        //startActivity(intent);
+                        intent.putExtra("bambino", bambino);
+                        intent.putExtra("data", data);
+                        intent.putExtra("source", TAG);
+                        startActivity(intent);
 
                     }else{
                         Toast.makeText(Coppia.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();

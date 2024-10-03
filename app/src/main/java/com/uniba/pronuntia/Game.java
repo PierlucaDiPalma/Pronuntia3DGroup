@@ -77,6 +77,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
                 Intent intent = new Intent();
                 intent.putExtra("Livello", livello);
                 intent.putExtra("Punteggio", punteggio);
+
                 intent.putExtra("Aiuti", numeroAiuti);
                 intent.putExtra("Corretti", corretti);
                 intent.putExtra("Sbagliati", sbagliati);

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,10 +29,11 @@ public class HomeBambino extends AppCompatActivity {
     private String email;
     private String bambino;
     private final static String TAG = "HomeBambino";
-    private Button avanti;
+    private Button avanti, sceltaPersonaggi;
     private ArrayList<Resoconto> resoconti;
     private int numberOfTrue = 0;
-    private TextView nomeBambinoTextView;
+    private int punti = 0;
+    private TextView nomeBambinoTextView, punteggio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,7 @@ public class HomeBambino extends AppCompatActivity {
         int idBambino = intent.getIntExtra("idBambino", -1); // Ottieni l'ID del bambino
         bambino = intent.getStringExtra("bambino"); // Ottieni il nome del bambino
         nomeBambinoTextView = findViewById(R.id.textView);
+        punteggio = findViewById(R.id.punteggio);
 
 
         if (bambino != null) {
@@ -60,6 +63,8 @@ public class HomeBambino extends AppCompatActivity {
 
 
         avanti = findViewById(R.id.avanti);
+        sceltaPersonaggi = findViewById(R.id.sceltaPersonaggio);
+
         recyclerView = findViewById(R.id.exercises);
         db = new DBHelper(this);
 
@@ -67,7 +72,7 @@ public class HomeBambino extends AppCompatActivity {
 
         email = intent.getStringExtra("email");
 
-        resoconti = db.getResoconto(email);
+        resoconti = db.getResoconto(email, bambino);
 
         eserciziList = db.readExercises(email, bambino);
 
@@ -84,39 +89,60 @@ public class HomeBambino extends AppCompatActivity {
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(HomeBambino.this));
 
+
         for(int i = 0; i<resoconti.size();i++){
             for(int j = 0; j<esercizi.size();j++){
-                if(resoconti.get(i).getEsercizio().getName().equals( esercizi.get(j).getName()) &&
+                if(resoconti.get(i).getEsercizio().getName().toUpperCase().equals( esercizi.get(j).getName().toUpperCase()) &&
                         resoconti.get(i).getEsercizio().getGiorno() == esercizi.get(j).getGiorno() &&
                         resoconti.get(i).getEsercizio().getMese() == esercizi.get(j).getMese() &&
                         resoconti.get(i).getEsercizio().getAnno() == esercizi.get(j).getAnno()){
 
                     numberOfTrue++;
                     Log.d(TAG, "Resoconto: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getEsercizio().getGiorno() + " " + resoconti.get(i).getEsercizio().getMese()
-                            + " " + resoconti.get(i).getEsercizio().getAnno()
+                            + " " + resoconti.get(i).getEsercizio().getAnno() + " " + resoconti.get(i).getPunteggio()
                             + " esercizio: " + esercizi.get(j).getName() + " " + esercizi.get(j).getGiorno() + " " + esercizi.get(j).getMese() + " " +esercizi.get(j).getAnno());
                 }
             }
         }
 
+
+
+        for(int i = 0;i<resoconti.size();i++){
+            punti+=resoconti.get(i).getPunteggio();
+        }
+        punteggio.setText(String.valueOf(punti));
+
+
         avanti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+
                 if(numberOfTrue == esercizi.size() && numberOfTrue>0) {
 
                     Intent intent = new Intent(HomeBambino.this, RisultatoFinale.class);
-                    intent.putExtra("Email", email);
+                    intent.putExtra("email", email);
                     intent.putExtra("Bambino", bambino);
+                    intent.putExtra("punteggio", punti);
                     startActivityForResult(intent, 1);
 
                 }else{
                     Intent intent = new Intent(HomeBambino.this, GamePath.class);
-                    intent.putExtra("Email", email);
+                    intent.putExtra("email", email);
                     intent.putExtra("Bambino", bambino);
+                    intent.putExtra("punteggio", punti);
                     startActivityForResult(intent, 1);
 
                 }
+            }
+        });
+
+        sceltaPersonaggi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeBambino.this, SceltaPersonaggi.class);
+                intent.putExtra("punteggio", punti);
+                startActivity(intent);
             }
         });
     }

@@ -62,6 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CORRETTO = "CORRETTO";
     private static final String SBAGLIATO = "SBAGLIATO";
     private static final String AIUTI = "AIUTI";
+    private static final String TABLE_PUNTEGGI = "PUNTEGGI";
 private static final String TABLE_BAMBINI="BAMBINI";
 private static final String NOME_BAMBINO="NOME_BAMBINO";
 private static final String EMAIL_GENITORE="EMAIL_GENITORE";
@@ -150,6 +151,12 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
                 + SBAGLIATO + " INTEGER, "
                 + AIUTI + " INTEGER )");
 
+        db.execSQL("CREATE TABLE " + TABLE_PUNTEGGI + "( "
+                + BAMBINO + " TEXT, "
+                + GENITORE + " TEXT, "
+                + PUNTEGGIO + " INTEGER, "
+                + "PRIMARY KEY(BAMBINO, GENITORE))");
+
 
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -187,10 +194,12 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESOCONTO);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BAMBINI);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PUNTEGGI);
         onCreate(db);
     }
 
     public void addTerapia(String nomeBambino, String motivoRichiesta, int durata, String emailGenitore, String emailLogopedista) {
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(nome_bambino, nomeBambino);
@@ -198,7 +207,9 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         values.put(durata_terapia, durata);
         values.put(email_genitore, emailGenitore);
         values.put(email_logopedista,emailLogopedista);
+
         long result = db.insert(TABLE_TERAPIE, null, values);
+
         if (result == -1) {
             Log.e(TAG, "Errore nell'inserimento della terapia");
         } else {
@@ -209,10 +220,10 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
     public void addBambino(String nomeBambino,String emailGenitore){
         SQLiteDatabase db=this.getWritableDatabase();
-ContentValues values=new ContentValues();
-values.put(NOME_BAMBINO,nomeBambino);
-values.put(EMAIL_GENITORE,emailGenitore);
-long result=db.insert(TABLE_BAMBINI,null,values);
+        ContentValues values=new ContentValues();
+        values.put(NOME_BAMBINO,nomeBambino);
+        values.put(EMAIL_GENITORE,emailGenitore);
+        long result=db.insert(TABLE_BAMBINI,null,values);
         if (result == -1) {
             Log.e(TAG, "Errore nell'inserimento della terapia");
         } else {
@@ -244,15 +255,6 @@ long result=db.insert(TABLE_BAMBINI,null,values);
 
         return bambini;
     }
-
-
-
-
-
-
-
-
-
 
 
     public ArrayList<Utente> getLogopedisti() {
@@ -569,7 +571,42 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         return result != -1;
     }
 
-    public ArrayList<Resoconto> getResoconto(String user){
+    public boolean addPunteggio(String genitore, String bambino, int punteggio){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+
+        contentValues.put(BAMBINO, bambino);
+        contentValues.put(GENITORE, genitore);
+        contentValues.put(PUNTEGGIO, punteggio);
+
+        long result = db.insert(TABLE_PUNTEGGI, null, contentValues);
+        return result !=1;
+
+    }
+
+    public void updatePunteggio(String genitore, String bambino, int punteggio){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(PUNTEGGIO, punteggio);
+        db.update(TABLE_PUNTEGGI, contentValues, "GENITORE = ? AND BAMBINO = ?", new String[]{genitore, bambino});
+    }
+
+    public int getPunteggio(String user, String child){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        if(db!= null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_PUNTEGGI + " WHERE GENITORE = ? AND BAMBINO = ?", new String[]{user, child});
+        }
+
+        int punteggio = cursor.getInt(2);
+        return punteggio;
+
+    }
+
+    public ArrayList<Resoconto> getResoconto(String user, String child){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
@@ -580,10 +617,8 @@ long result=db.insert(TABLE_BAMBINI,null,values);
             return resoconti; // Restituisce un array vuoto
         }
 
-
-
         if(db!= null){
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_RESOCONTO + " WHERE GENITORE = ?", new String[]{user});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_RESOCONTO + " WHERE GENITORE = ? AND BAMBINO = ?", new String[]{user, child});
         }
 
         while (cursor.moveToNext()){
@@ -607,20 +642,8 @@ long result=db.insert(TABLE_BAMBINI,null,values);
         }
         return resoconti;
     }
-/*
-    public boolean isEsercizioDone(Esercizio esercizio){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
 
-        if(db!=null){
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_RESOCONTO + " WHERE GENITORE = ? AND TITOLO = ? AND GIORNO = ? AND MESE = ? AND ANNO = ?",
-                    new String[]{esercizio.getEmail(), esercizio.getName(), String.valueOf(esercizio.getGiorno()), String.valueOf(esercizio.getMese()), String.valueOf(esercizio.getAnno())});
-        }
-        if(cursor.getCount()!=0)
-            return true;
-        else return false;
-    }
-*/
+
     public ArrayList<Esercizio> getDenominazione(String user, String child, int day, int month, int year){
 
         SQLiteDatabase db = this.getReadableDatabase();

@@ -26,6 +26,8 @@ public class RisultatoFinale extends AppCompatActivity {
     private int numeroAiuti;
     private int corretti;
     private int sbagliati;
+    private String email;
+    private String bambino;
 
     private RecyclerView recyclerView;
     private ResultAdapter customAdapter;
@@ -44,8 +46,10 @@ public class RisultatoFinale extends AppCompatActivity {
         });
 
         db = new DBHelper(this);
+        email = getIntent().getStringExtra("email");
+        bambino = getIntent().getStringExtra("Bambino");
 
-        resoconti = db.getResoconto("paoloneri@gmail.com");
+        resoconti = db.getResoconto(email, bambino);
 
         punteggioText = findViewById(R.id.punteggio);
         aiutiText = findViewById(R.id.aiuti);
@@ -58,6 +62,9 @@ public class RisultatoFinale extends AppCompatActivity {
         corretti = getIntent().getIntExtra("Corretti", 0);
         sbagliati = getIntent().getIntExtra("Sbagliati", 0);
 
+        for(int i=0; i<resoconti.size();i++){
+            punteggio += resoconti.get(i).getPunteggio();
+        }
 
         punteggioText.setText("Punteggio: " + punteggio);
         aiutiText.setText("Aiuti usati: " + numeroAiuti);
@@ -66,7 +73,10 @@ public class RisultatoFinale extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         customAdapter = new ResultAdapter(RisultatoFinale.this, resoconti);
+
         customAdapter.notifyDataSetChanged();
+
+        db.updatePunteggio(email, bambino, punteggio);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(RisultatoFinale.this));
 

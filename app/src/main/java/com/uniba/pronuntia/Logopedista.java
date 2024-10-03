@@ -105,7 +105,7 @@ public class Logopedista extends AppCompatActivity {
                                intent.putExtra("bambino", richiesta.getNomeBambino());
                                intent.putExtra("motivo", richiesta.getMotivoRichiesta());
                                intent.putExtra("durata", richiesta.getDurataTerapia());
-
+                               intent.putExtra("source", TAG);
                                startActivity(intent);
 
 

@@ -46,6 +46,8 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private String email;
     private String bambino;
     private String motivo;
+
+    private String source;
     private static final String TAG = "CreazioneEsercizi";
 
     @Override
@@ -73,6 +75,10 @@ public class CreazioneEsercizi extends AppCompatActivity {
         bambino = intent.getStringExtra("bambino");
         motivo = intent.getStringExtra("motivo");
         durata = intent.getIntExtra("durata", 1);
+
+        source = intent.getStringExtra("source");
+
+        //data = intent.getStringExtra("data");
 
 
         String nome = intent.getStringExtra("nome");
@@ -102,6 +108,11 @@ public class CreazioneEsercizi extends AppCompatActivity {
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
 
+        Log.d(TAG, "onCreate: " + source);
+        if(!source.equals("Logopedista")){
+            data = intent.getStringExtra("data");
+            dataText.setText(data);
+        }else{
         calendario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,6 +167,8 @@ public class CreazioneEsercizi extends AppCompatActivity {
         });
 
 
+        }
+
 
 
         addEsercizio.setOnClickListener(new View.OnClickListener() {
@@ -206,5 +219,11 @@ public class CreazioneEsercizi extends AppCompatActivity {
                     startActivity(intent);
                 });
         builder.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        customAdapter.notifyDataSetChanged();
     }
 }

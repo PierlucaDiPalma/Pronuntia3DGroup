@@ -1,12 +1,14 @@
 package com.uniba.pronuntia;
 
+import android.graphics.Bitmap;
+
 public class Personaggio {
 
     private String nome;
     private int valore;
-    private byte[] immagine;
+    private Bitmap immagine;
 
-    public Personaggio(String nome, int valore, byte[] immagine) {
+    public Personaggio(String nome, int valore, Bitmap immagine) {
         this.nome = nome;
         this.valore = valore;
         this.immagine = immagine;
@@ -28,11 +30,11 @@ public class Personaggio {
         this.valore = valore;
     }
 
-    public byte[] getImmagine() {
+    public Bitmap getImmagine() {
         return immagine;
     }
 
-    public void setImmagine(byte[] immagine) {
+    public void setImmagine(Bitmap immagine) {
         this.immagine = immagine;
     }
 }

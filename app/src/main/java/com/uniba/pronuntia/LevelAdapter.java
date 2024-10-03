@@ -108,6 +108,7 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
                     intent.putExtra("Punteggio", punteggio);
                     intent.putExtra("Livello", livello);
                     intent.putExtra("Esercizio", exerciseList.get(i));
+                    intent.putExtra("Bambino", exerciseList.get(i).getBambino());
                     intent.putExtra("Email", exerciseList.get(i).getEmail());
 
                     Log.d(TAG, "onClick: " + exerciseList.get(i).getName() + " " + exerciseList.get(i).getTipo() );
