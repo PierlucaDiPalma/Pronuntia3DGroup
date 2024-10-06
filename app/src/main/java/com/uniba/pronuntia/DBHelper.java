@@ -605,12 +605,6 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
             cursor = db.rawQuery("SELECT * FROM " + TABLE_ACQUISTI + " WHERE BAMBINO = ? AND GENITORE = ?", new String[]{child, user});
 
         }
-        /*
-        String bambino = cursor.getString(0);
-        String genitore = cursor.getString(1);
-        String personaggio = cursor.getString(2);
-
-        */
 
         int spesa = 0;
 
@@ -625,6 +619,25 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
         }
         return spesa;
+    }
+
+    public ArrayList<String> getPersonaggio(String child, String user){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        ArrayList<String> personaggi = new ArrayList<>();
+
+        if(db!=null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_ACQUISTI + " WHERE BAMBINO = ? AND GENITORE = ?", new String[]{child, user});
+        }
+
+        while(cursor.moveToNext()){
+            String personaggio = cursor.getString(2);
+
+            personaggi.add(personaggio);
+
+        }
+        return personaggi;
     }
 
     public boolean addPunteggio(String genitore, String bambino, int punteggio){

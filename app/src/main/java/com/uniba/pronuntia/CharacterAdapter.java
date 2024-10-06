@@ -24,6 +24,7 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
     private DBHelper db;
     private String bambino;
     private String genitore;
+    private ArrayList<String> nomiPersonaggi;
 
     public CharacterAdapter(Context context, ArrayList<Personaggio> personaggi, int punteggio, String bambino, String genitore, CharacterInterface listener) {
         this.context = context;
@@ -49,6 +50,16 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
         holder.nome.setText(personaggi.get(position).getNome());
         holder.valore.setText(String.valueOf(personaggi.get(position).getValore()));
         holder.pic.setImageBitmap(personaggi.get(position).getImmagine());
+
+        nomiPersonaggi = db.getPersonaggio(bambino, genitore);
+
+        for(int i=0;i<nomiPersonaggi.size();i++){
+            if(nomiPersonaggi.get(i).equals(personaggi.get(position).getNome())){
+                holder.acquista.setVisibility(View.GONE);
+                holder.usa.setVisibility(View.VISIBLE);
+            }
+        }
+
 
         holder.acquista.setOnClickListener(new View.OnClickListener() {
             @Override
