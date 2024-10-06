@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="130dp"
     android:orientation="vertical"
     android:gravity="center">
 
@@ -11,31 +11,53 @@
         android:id="@+id/position"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1"/>
+        android:layout_marginStart="32dp"
+        android:text="1"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/titolo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Titolo esercizio"/>
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="16dp"
+        android:text="Titolo esercizio"
+        app:layout_constraintStart_toEndOf="@+id/position"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tipo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tipo esercizio"/>
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="20dp"
+        android:text="Tipo esercizio"
+        app:layout_constraintStart_toEndOf="@+id/position"
+        app:layout_constraintTop_toBottomOf="@+id/titolo" />
 
     <TextView
         android:id="@+id/numeroAiuti"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Aiuti usati"/>
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="20dp"
+        android:text="Aiuti usati"
+        app:layout_constraintStart_toEndOf="@+id/position"
+        app:layout_constraintTop_toBottomOf="@+id/tipo" />
 
     <ImageView
         android:id="@+id/esito"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/ok_icon" />
+        android:layout_marginEnd="40dp"
+        android:src="@drawable/ok_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

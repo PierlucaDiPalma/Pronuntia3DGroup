@@ -33,6 +33,8 @@ public class HomeBambino extends AppCompatActivity {
     private ArrayList<Resoconto> resoconti;
     private int numberOfTrue = 0;
     private int punti = 0;
+    private int puntiSpesi = 0;
+
     private TextView nomeBambinoTextView, punteggio;
 
     @Override
@@ -47,9 +49,12 @@ public class HomeBambino extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
+
         int idBambino = intent.getIntExtra("idBambino", -1); // Ottieni l'ID del bambino
         bambino = intent.getStringExtra("bambino"); // Ottieni il nome del bambino
         nomeBambinoTextView = findViewById(R.id.textView);
+        email = intent.getStringExtra("email");
+
         punteggio = findViewById(R.id.punteggio);
 
 
@@ -69,8 +74,8 @@ public class HomeBambino extends AppCompatActivity {
         db = new DBHelper(this);
 
 
-
-        email = intent.getStringExtra("email");
+        puntiSpesi = db.getSpesa(bambino, email);
+        Log.d(TAG, "PUNTI SPESI: " + puntiSpesi);
 
         resoconti = db.getResoconto(email, bambino);
 
@@ -110,6 +115,7 @@ public class HomeBambino extends AppCompatActivity {
         for(int i = 0;i<resoconti.size();i++){
             punti+=resoconti.get(i).getPunteggio();
         }
+        punti -= puntiSpesi;
         punteggio.setText(String.valueOf(punti));
 
 
@@ -142,6 +148,8 @@ public class HomeBambino extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(HomeBambino.this, SceltaPersonaggi.class);
                 intent.putExtra("punteggio", punti);
+                intent.putExtra("bambino", bambino);
+                intent.putExtra("email", email);
                 startActivity(intent);
             }
         });

@@ -2,6 +2,7 @@ package com.uniba.pronuntia;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -63,7 +64,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SBAGLIATO = "SBAGLIATO";
     private static final String AIUTI = "AIUTI";
     private static final String TABLE_PUNTEGGI = "PUNTEGGI";
-private static final String TABLE_BAMBINI="BAMBINI";
+    private static final String TABLE_ACQUISTI = "PERSONAGGI_SBLOCCATI";
+    private static final String PERSONAGGIO = "PERSONAGGIO";
+    private static final String VALORE = "VALORE";
+
+    private static final String TABLE_BAMBINI="BAMBINI";
 private static final String NOME_BAMBINO="NOME_BAMBINO";
 private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
@@ -157,6 +162,12 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
                 + PUNTEGGIO + " INTEGER, "
                 + "PRIMARY KEY(BAMBINO, GENITORE))");
 
+        db.execSQL("CREATE TABLE " + TABLE_ACQUISTI + "( "
+                + BAMBINO + " TEXT, "
+                + GENITORE + " TEXT, "
+                + PERSONAGGIO + " TEXT, "
+                + VALORE + " INTEGER, "
+                + "PRIMARY KEY(BAMBINO, GENITORE, PERSONAGGIO))");
 
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -195,6 +206,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BAMBINI);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PUNTEGGI);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACQUISTI);
         onCreate(db);
     }
 
@@ -571,6 +583,50 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         return result != -1;
     }
 
+    public boolean addAcquisto(Personaggio personaggio, String bambino, String genitore){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(BAMBINO, bambino);
+        contentValues.put(GENITORE, genitore);
+        contentValues.put(PERSONAGGIO, personaggio.getNome());
+        contentValues.put(VALORE, personaggio.getValore());
+
+        long result = db.insert(TABLE_ACQUISTI, null, contentValues);
+        return  result != -1;
+    }
+
+    public int getSpesa(String child, String user){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        ArrayList<Integer> valori = new ArrayList<>();
+
+        if(db!= null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_ACQUISTI + " WHERE BAMBINO = ? AND GENITORE = ?", new String[]{child, user});
+
+        }
+        /*
+        String bambino = cursor.getString(0);
+        String genitore = cursor.getString(1);
+        String personaggio = cursor.getString(2);
+
+        */
+
+        int spesa = 0;
+
+        while(cursor.moveToNext()) {
+
+            int valore = cursor.getInt(3);
+            valori.add(valore);
+
+            for (int i = 0; i < valori.size(); i++) {
+                spesa += valori.get(i);
+            }
+
+        }
+        return spesa;
+    }
+
     public boolean addPunteggio(String genitore, String bambino, int punteggio){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -600,6 +656,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         if(db!= null){
             cursor = db.rawQuery("SELECT * FROM " + TABLE_PUNTEGGI + " WHERE GENITORE = ? AND BAMBINO = ?", new String[]{user, child});
         }
+
 
         int punteggio = cursor.getInt(2);
         return punteggio;

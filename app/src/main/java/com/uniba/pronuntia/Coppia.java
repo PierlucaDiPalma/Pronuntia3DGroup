@@ -273,7 +273,7 @@ public class Coppia extends AppCompatActivity {
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
                         ByteArrayOutputStream outputStreamCorrect = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 60, outputStreamCorrect);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 30, outputStreamCorrect);
                         byte[] imageBytes = outputStreamCorrect.toByteArray();
 
 
