@@ -1,10 +1,13 @@
 package com.uniba.pronuntia;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,14 @@ public class HomeBambino extends AppCompatActivity {
     private int punti = 0;
     private int puntiSpesi = 0;
 
+    private Personaggio personaggio;
+
+    private ImageView picPersonaggioView;
+    private TextView frase;
+    private byte[] immagine;
+    private String nome;
+
+
     private TextView nomeBambinoTextView, punteggio;
 
     @Override
@@ -55,6 +66,25 @@ public class HomeBambino extends AppCompatActivity {
         nomeBambinoTextView = findViewById(R.id.textView);
         email = intent.getStringExtra("email");
 
+
+        picPersonaggioView = findViewById(R.id.pic);
+        frase = findViewById(R.id.frase);
+
+        Log.d(TAG, "Arriva da: " + intent.getStringExtra("source"));
+
+        if(!intent.getStringExtra("source").equals("HomeUtente")) {
+            nome = intent.getStringExtra("nomePersonaggio");
+            Log.d(TAG, "RITORNO: " + nome);
+
+            String path = intent.getStringExtra("pathPersonaggio");
+            Bitmap picPersonaggio = BitmapFactory.decodeFile(path);
+            picPersonaggioView.setImageBitmap(picPersonaggio);
+
+
+            //personaggio = db.getPersonaggio(bambino, email, nome);
+
+            frase.setText("Ciao, io sono " + nome + " e ti guiderò in questo percorso!");
+        }
         punteggio = findViewById(R.id.punteggio);
 
 
@@ -63,8 +93,6 @@ public class HomeBambino extends AppCompatActivity {
         } else {
             nomeBambinoTextView.setText("Nome non disponibile");
         }
-
-
 
 
         avanti = findViewById(R.id.avanti);

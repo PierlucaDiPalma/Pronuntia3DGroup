@@ -8,8 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.telephony.ims.ImsMmTelManager;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String SBAGLIATO = "SBAGLIATO";
     private static final String AIUTI = "AIUTI";
     private static final String TABLE_PUNTEGGI = "PUNTEGGI";
+    private static final String TABLE_PERSONAGGI = "PERSONAGGI";
     private static final String TABLE_ACQUISTI = "PERSONAGGI_SBLOCCATI";
     private static final String PERSONAGGIO = "PERSONAGGIO";
     private static final String VALORE = "VALORE";
@@ -162,11 +165,12 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
                 + PUNTEGGIO + " INTEGER, "
                 + "PRIMARY KEY(BAMBINO, GENITORE))");
 
-        db.execSQL("CREATE TABLE " + TABLE_ACQUISTI + "( "
+        db.execSQL("CREATE TABLE " + TABLE_ACQUISTI + " ( "
                 + BAMBINO + " TEXT, "
                 + GENITORE + " TEXT, "
                 + PERSONAGGIO + " TEXT, "
                 + VALORE + " INTEGER, "
+                + IMMAGINE + " BLOB, "
                 + "PRIMARY KEY(BAMBINO, GENITORE, PERSONAGGIO))");
 
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
@@ -583,6 +587,8 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         return result != -1;
     }
 
+
+
     public boolean addAcquisto(Personaggio personaggio, String bambino, String genitore){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -591,6 +597,12 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         contentValues.put(GENITORE, genitore);
         contentValues.put(PERSONAGGIO, personaggio.getNome());
         contentValues.put(VALORE, personaggio.getValore());
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        personaggio.getImmagine().compress(Bitmap.CompressFormat.PNG, 40, stream);
+        byte[] picPersonaggio = stream.toByteArray();
+
+        contentValues.put(IMMAGINE, picPersonaggio);
 
         long result = db.insert(TABLE_ACQUISTI, null, contentValues);
         return  result != -1;
@@ -621,7 +633,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         return spesa;
     }
 
-    public ArrayList<String> getPersonaggio(String child, String user){
+    public ArrayList<String> getPersonaggi(String child, String user){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
 
@@ -632,12 +644,38 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         }
 
         while(cursor.moveToNext()){
+
             String personaggio = cursor.getString(2);
+
 
             personaggi.add(personaggio);
 
         }
         return personaggi;
+    }
+
+    public Personaggio getPersonaggio(String child, String user, String name){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        Personaggio personaggio = null;
+
+        if(db!= null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_ACQUISTI + " WHERE BAMBINO = ? AND GENITORE = ? AND PERSONAGGIO = ?", new String[]{child, user, name});
+        }
+
+        while(cursor.moveToNext()) {
+            String nome = cursor.getString(2);
+            int valore = cursor.getInt(3);
+            byte[] pic = cursor.getBlob(4);
+
+            Log.d(TAG, "getPersonaggio DB: " + nome + " " + valore);
+            Bitmap picPersonaggio = BitmapFactory.decodeByteArray(pic, 0, pic.length);
+
+            personaggio = new Personaggio(nome, valore, picPersonaggio);
+        }
+
+        return personaggio;
     }
 
     public boolean addPunteggio(String genitore, String bambino, int punteggio){

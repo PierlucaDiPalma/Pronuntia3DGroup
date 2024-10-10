@@ -23,6 +23,8 @@ public class HomeUtente extends AppCompatActivity {
     private String email;
     private ArrayList<Bambino> bambini;
 
+    private static final String TAG = "HomeUtente";
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
 
@@ -98,6 +100,7 @@ public class HomeUtente extends AppCompatActivity {
                 intent.putExtra("idBambino", bambino.getId()); // Passa l'ID del bambino
                 intent.putExtra("bambino", bambino.getNome()); // Passa il nome del bambino
                 intent.putExtra("email", getIntent().getStringExtra("email"));
+                intent.putExtra("source", TAG);
 
                 startActivity(intent);
             }
