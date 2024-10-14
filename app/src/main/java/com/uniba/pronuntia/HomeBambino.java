@@ -44,7 +44,7 @@ public class HomeBambino extends AppCompatActivity {
     private TextView frase;
     private byte[] immagine;
     private String nome;
-
+    private String path;
 
     private TextView nomeBambinoTextView, punteggio;
 
@@ -76,7 +76,7 @@ public class HomeBambino extends AppCompatActivity {
             nome = intent.getStringExtra("nomePersonaggio");
             Log.d(TAG, "RITORNO: " + nome);
 
-            String path = intent.getStringExtra("pathPersonaggio");
+            path = intent.getStringExtra("pathPersonaggio");
             Bitmap picPersonaggio = BitmapFactory.decodeFile(path);
             picPersonaggioView.setImageBitmap(picPersonaggio);
 
@@ -151,7 +151,6 @@ public class HomeBambino extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
                 if(numberOfTrue == esercizi.size() && numberOfTrue>0) {
 
                     Intent intent = new Intent(HomeBambino.this, RisultatoFinale.class);
@@ -161,13 +160,18 @@ public class HomeBambino extends AppCompatActivity {
                     startActivityForResult(intent, 1);
 
                 }else{
-                    Intent intent = new Intent(HomeBambino.this, GamePath.class);
-                    intent.putExtra("email", email);
-                    intent.putExtra("Bambino", bambino);
-                    intent.putExtra("punteggio", punti);
-                    startActivityForResult(intent, 1);
-
+                    if(picPersonaggioView.getDrawable()!=null){
+                        Intent intent = new Intent(HomeBambino.this, GamePath.class);
+                        intent.putExtra("email", email);
+                        intent.putExtra("Bambino", bambino);
+                        intent.putExtra("punteggio", punti);
+                        intent.putExtra("pathPersonaggio", path);
+                        startActivityForResult(intent, 1);
+                    }else{
+                        Toast.makeText(HomeBambino.this, "Seleziona un personaggio", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             }
         });
 

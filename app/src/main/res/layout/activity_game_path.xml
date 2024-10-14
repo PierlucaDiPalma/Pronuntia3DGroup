@@ -13,7 +13,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/levelView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-132dp" />
+
     <TextView
         android:id="@+id/punteggio"
         android:layout_width="match_parent"
@@ -35,6 +38,7 @@
         android:textStyle="bold"
         android:textColor="@color/white"
         />
+
     <TextView
         android:id="@+id/corretti"
         android:layout_width="match_parent"
@@ -45,6 +49,7 @@
         android:textStyle="bold"
         android:textColor="@color/white"
         />
+
     <TextView
         android:id="@+id/sbagliati"
         android:layout_width="match_parent"

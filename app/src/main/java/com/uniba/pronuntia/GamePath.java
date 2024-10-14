@@ -1,15 +1,22 @@
 package com.uniba.pronuntia;
 
 import android.content.Intent;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -40,6 +47,7 @@ public class GamePath extends AppCompatActivity {
     private int sbagliati = 0;
     private String bambino;
     private Resoconto resoconto;
+    private String path;
 
     private final static String TAG = "GamePath";
 
@@ -60,6 +68,7 @@ public class GamePath extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         bambino = getIntent().getStringExtra("Bambino");
         punteggio = getIntent().getIntExtra("punteggio", 0);
+        path = getIntent().getStringExtra("pathPersonaggio");
 
         punteggioText = findViewById(R.id.punteggio);
         aiutiText = findViewById(R.id.aiuti);
@@ -80,12 +89,15 @@ public class GamePath extends AppCompatActivity {
         esercizi.addAll(db.getCoppia(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
 
 
-
         shuffleArrayList(esercizi);
 
-        customAdapter = new LevelAdapter(GamePath.this, esercizi, livello);
+        customAdapter = new LevelAdapter(GamePath.this, esercizi, livello, path);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(GamePath.this));
+
+        //layoutParams.bottomMargin = 50;
+
+        //setImagePosition(livello);
 
         risultato.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +116,8 @@ public class GamePath extends AppCompatActivity {
         });
 
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

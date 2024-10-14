@@ -4,17 +4,26 @@ package com.uniba.pronuntia;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,11 +34,13 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
     private static final String TAG = "LevelAdapter";
     private int punteggio;
     private int livello;
+    private String personaggio;
 
-    public LevelAdapter(Context context, ArrayList<Esercizio> exerciseList, int livello) {
+    public LevelAdapter(Context context, ArrayList<Esercizio> exerciseList, int livello, String personaggio) {
         this.context = context;
         this.exerciseList = exerciseList;
         this.livello = livello;
+        this.personaggio = personaggio;
     }
 
     @NonNull
@@ -41,12 +52,12 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
 
     @Override
     public void onBindViewHolder(@NonNull LevelViewHolder holder, int position) {
-        holder.levelButton.setText(String.valueOf(getItemCount()-position));
+        holder.levelText.setText(String.valueOf(getItemCount()-position));
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.levelButton.getLayoutParams();
 
         int i = position;
 
-        int[] positionX = { -500, -300, -100, 0, 100, 300, 500};
+        int[] positionX = { -400, -200, -0, 100, 200, 400, 600};
 
         if(((getItemCount()-position)/6%2)==0) {
             switch ((getItemCount()-position) % 6) {
@@ -86,15 +97,35 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
             }
         }
 
+
+
         if(getItemCount() - position<livello){
 
             holder.levelButton.setEnabled(true);
             holder.levelButton.setClickable(false);
+            holder.levelButton.setBackgroundColor(Color.TRANSPARENT);
+
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.crown);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+
+            holder.levelButton.setImageBitmap(bitmap);
 
         }else if (livello == getItemCount() - position) {
+            File file = new File(personaggio);
 
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+            int width = 200;  // imposta la larghezza desiderata
+            int height = 200; // imposta l'altezza desiderata
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(myBitmap, width, height, true);
+
+            holder.levelButton.setBackgroundColor(Color.TRANSPARENT);
+            holder.levelButton.setImageBitmap(resizedBitmap);
             holder.levelButton.setEnabled(true);
             holder.levelButton.setClickable(true);
+
 
             holder.levelButton.setOnClickListener(new View.OnClickListener() {
 
@@ -137,10 +168,13 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
     }
 
     public class LevelViewHolder extends RecyclerView.ViewHolder {
-        Button levelButton;
+        ImageButton levelButton;
+        TextView levelText;
+
         public LevelViewHolder(@NonNull View itemView) {
             super(itemView);
             levelButton = itemView.findViewById(R.id.levelButton);
+            levelText = itemView.findViewById(R.id.levelButtonText);
         }
 
     }
