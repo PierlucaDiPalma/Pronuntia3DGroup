@@ -48,6 +48,7 @@ public class GamePath extends AppCompatActivity {
     private String bambino;
     private Resoconto resoconto;
     private String path;
+    private ArrayList<Resoconto> resoconti = new ArrayList<>();
 
     private final static String TAG = "GamePath";
 
@@ -67,7 +68,7 @@ public class GamePath extends AppCompatActivity {
 
         email = getIntent().getStringExtra("email");
         bambino = getIntent().getStringExtra("Bambino");
-        punteggio = getIntent().getIntExtra("punteggio", 0);
+        punteggio = 0; //getIntent().getIntExtra("punteggio", 0);
         path = getIntent().getStringExtra("pathPersonaggio");
 
         punteggioText = findViewById(R.id.punteggio);
@@ -75,6 +76,9 @@ public class GamePath extends AppCompatActivity {
         correttiText = findViewById(R.id.corretti);
         sbagliatiText = findViewById(R.id.sbagliati);
         risultato = findViewById(R.id.fine);
+
+
+
 
         risultato.setVisibility(View.GONE);
 
@@ -102,6 +106,13 @@ public class GamePath extends AppCompatActivity {
         risultato.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                for(int i = 0; i<resoconti.size();i++){
+                    Log.d(TAG, "STAMPA RESOCONTI: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getBambino()
+                            + " " + resoconti.get(i).getEsercizio().getTipo());
+
+                    db.addResoconto(resoconti.get(i));
+                }
 
                 Intent intent = new Intent(GamePath.this, RisultatoFinale.class);
                 intent.putExtra("Bambino", bambino);
@@ -141,8 +152,17 @@ public class GamePath extends AppCompatActivity {
                 livello = nuovoLivello;
                 customAdapter.setLivello(nuovoLivello);  // Metodo da creare nell'Adapter
 
-                //resoconto = data.getParcelableExtra("Resoconto");
+                //resoconto = new Resoconto(bambino, email, "marcorossi@gmai.com", )
 
+                resoconto = data.getParcelableExtra("Resoconto");
+                resoconti.add(resoconto);
+
+
+                 /*resoconti.add(resoconto);
+
+                Log.d(TAG, "STAMPA RESOCONTI: " + resoconto.getEsercizio().getName() + " " + resoconto.getBambino()
+                        + " " + resoconto.getEsercizio().getTipo());
+*/
                 if(livello > esercizi.size()){
                     risultato.setVisibility(View.VISIBLE);
 

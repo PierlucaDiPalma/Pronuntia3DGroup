@@ -80,9 +80,6 @@ public class HomeBambino extends AppCompatActivity {
             Bitmap picPersonaggio = BitmapFactory.decodeFile(path);
             picPersonaggioView.setImageBitmap(picPersonaggio);
 
-
-            //personaggio = db.getPersonaggio(bambino, email, nome);
-
             frase.setText("Ciao, io sono " + nome + " e ti guiderò in questo percorso!");
         }
         punteggio = findViewById(R.id.punteggio);
@@ -151,7 +148,7 @@ public class HomeBambino extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(numberOfTrue == esercizi.size() && numberOfTrue>0) {
+                if(numberOfTrue >= esercizi.size() && numberOfTrue>0) {
 
                     Intent intent = new Intent(HomeBambino.this, RisultatoFinale.class);
                     intent.putExtra("email", email);

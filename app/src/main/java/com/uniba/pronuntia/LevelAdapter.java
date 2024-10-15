@@ -117,9 +117,7 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
 
-            int width = 200;  // imposta la larghezza desiderata
-            int height = 200; // imposta l'altezza desiderata
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(myBitmap, width, height, true);
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(myBitmap, 200, 200, true);
 
             holder.levelButton.setBackgroundColor(Color.TRANSPARENT);
             holder.levelButton.setImageBitmap(resizedBitmap);

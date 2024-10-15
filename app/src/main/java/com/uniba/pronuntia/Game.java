@@ -81,6 +81,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
                 intent.putExtra("Aiuti", numeroAiuti);
                 intent.putExtra("Corretti", corretti);
                 intent.putExtra("Sbagliati", sbagliati);
+                intent.putExtra("Resoconto", resoconto);
 
                 setResult(RESULT_OK, intent); // Imposta il risultato come RESULT_OK
                 finish();
@@ -120,7 +121,6 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
             args.putByteArray("Immagine2",esercizio.getImmagine2());
             args.putString("Aiuto", esercizio.getAiuto());
             args.putInt("Punteggio", punteggio);
-
             LivelloCop fragment = new LivelloCop();
             fragment.setArguments(args);
             getSupportFragmentManager().beginTransaction().replace(R.id.level, fragment).commit();
@@ -142,7 +142,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
         resoconto = new Resoconto("Luigi", "paoloneri@gmail.com", "marcorossi@gmail.com",
                 esercizio, punteggio, this.corretti, this.sbagliati, this.numeroAiuti);
 
-        boolean isInserted = db.addResoconto(resoconto);
+        /*boolean isInserted = db.addResoconto(resoconto);
         if (isInserted) {
             Log.d(TAG, "Resoconto salvato con successo");
         } else {
@@ -151,6 +151,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
 
         Log.d(TAG, "Esercizio: " + resoconto.getEsercizio().getName() + " Numero aiuti: " + resoconto.getAiuti()
                 + " Numero errori: " + resoconto.getSbagliati() + " Numero corretti " + resoconto.getCorretti());
+        */
 
         if(isDone){
             avanti.setVisibility(View.VISIBLE);

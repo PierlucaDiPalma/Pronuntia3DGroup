@@ -53,10 +53,10 @@ public class SceltaPersonaggi extends AppCompatActivity implements CharacterInte
         db = new DBHelper(this);
 
         Bitmap profile1 = BitmapFactory.decodeResource(SceltaPersonaggi.this.getResources(), R.drawable.personaggio1);
-        Personaggio personaggio1 = new Personaggio("Ricky", 20, profile1);
+        Personaggio personaggio1 = new Personaggio("Ricky", 0, profile1);
 
         Bitmap profile2 = BitmapFactory.decodeResource(SceltaPersonaggi.this.getResources(), R.drawable.personaggio2);
-        Personaggio personaggio2 = new Personaggio("Anacleto", 40, profile2);
+        Personaggio personaggio2 = new Personaggio("Anacleto", 20, profile2);
 
         personaggi.add(personaggio1);
         personaggi.add(personaggio2);
