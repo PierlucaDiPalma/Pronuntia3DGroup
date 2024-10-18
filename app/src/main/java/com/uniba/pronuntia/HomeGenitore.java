@@ -55,12 +55,33 @@ public class HomeGenitore extends AppCompatActivity {
         richiediTerapiaItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                // Qui puoi avviare RichiestaTerapia senza passare l'email, se non necessario
+
                 Intent intent = new Intent(HomeGenitore.this, SceltaLogopedista.class);
+                intent.putExtra("nomeActivity","richiediTerapia");
                 startActivity(intent);
                 return true;
             }
         });
+
+
+        MenuItem richiediAppuntamento=menu.findItem(R.id.RichiediAppuntamento);
+
+        richiediAppuntamento.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+             Intent intent=new Intent(HomeGenitore.this,SceltaLogopedista.class);
+             intent.putExtra("nomeActivity","richiestaAppuntamento");
+
+             startActivity(intent);
+             return true;
+            }
+        });
+
+
+
+
+
+
     }
 
     @Override

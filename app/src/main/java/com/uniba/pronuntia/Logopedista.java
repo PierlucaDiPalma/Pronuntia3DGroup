@@ -8,19 +8,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -30,8 +26,6 @@ public class Logopedista extends AppCompatActivity {
 
     DBHelper db;
     ArrayList<Utente> users;
-    CustomAdapter customAdapter;
-    RecyclerView recyclerView;
     ArrayList<RichiestaTerapia> richieste;
     ListView listView;
     @Override
@@ -51,7 +45,7 @@ public class Logopedista extends AppCompatActivity {
     String emailLogopedista=intent.getStringExtra("logopedista_email");
 
 
-    Log.d(TAG, "Entrato");
+
 
     db = new DBHelper(Logopedista.this);
     users = new ArrayList<>();
@@ -59,20 +53,18 @@ public class Logopedista extends AppCompatActivity {
 
 
         users = db.readData();
-        Log.d(TAG, "Connesso");
 
-        Log.d(TAG, "Raccolto");
 
         listView = findViewById(R.id.requests_list);
         if (listView == null) {
-            Log.e(TAG, "ListView not found!");
-            return; // Esci se la ListView è null
+
+            return;
         }
 
         if (richieste.isEmpty()) {
             Toast.makeText(this, "Nessuna richiesta di terapia trovata.", Toast.LENGTH_SHORT).show();
         } else {
-            // Crea un ArrayAdapter per la ListView
+
             ArrayAdapter<RichiestaTerapia> adapter = new ArrayAdapter<RichiestaTerapia>(this, R.layout.item_richiesta, R.id.nomeBambino, richieste) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {

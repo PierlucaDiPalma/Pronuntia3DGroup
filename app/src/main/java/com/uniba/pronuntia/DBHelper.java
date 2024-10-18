@@ -3,6 +3,7 @@ package com.uniba.pronuntia;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,8 +13,14 @@ import android.telephony.ims.ImsMmTelManager;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -74,9 +81,16 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_BAMBINI="BAMBINI";
 private static final String NOME_BAMBINO="NOME_BAMBINO";
 private static final String EMAIL_GENITORE="EMAIL_GENITORE";
+private static final String CALENDARIO="CALENDARIO";
+private static final String DATA="DATA";
+private static final String ORA="ORA";
+private static final String ISBOOKED="ISBOOKED";
+
+
+
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 3);
     }
 
     private static final String TAG = "DBHelper";
@@ -159,19 +173,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
                 + SBAGLIATO + " INTEGER, "
                 + AIUTI + " INTEGER )");
 
-        db.execSQL("CREATE TABLE " + TABLE_PUNTEGGI + "( "
-                + BAMBINO + " TEXT, "
-                + GENITORE + " TEXT, "
-                + PUNTEGGIO + " INTEGER, "
-                + "PRIMARY KEY(BAMBINO, GENITORE))");
 
-        db.execSQL("CREATE TABLE " + TABLE_ACQUISTI + " ( "
-                + BAMBINO + " TEXT, "
-                + GENITORE + " TEXT, "
-                + PERSONAGGIO + " TEXT, "
-                + VALORE + " INTEGER, "
-                + IMMAGINE + " BLOB, "
-                + "PRIMARY KEY(BAMBINO, GENITORE, PERSONAGGIO))");
 
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -201,18 +203,109 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ESERCIZI);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DENOMINAZIONE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SEQUENZA);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COPPIA);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESOCONTO);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_TERAPIE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BAMBINI);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PUNTEGGI);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACQUISTI);
-        onCreate(db);
+
+        if (oldVersion < 2) {
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PUNTEGGI + " ( "
+                    + BAMBINO + " TEXT, "
+                    + GENITORE + " TEXT, "
+                    + PUNTEGGIO + " INTEGER, "
+                    + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + "))");
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
+                    + BAMBINO + " TEXT, "
+                    + GENITORE + " TEXT, "
+                    + PERSONAGGIO + " TEXT, "
+                    + VALORE + " INTEGER, "
+                    + IMMAGINE + " BLOB, "
+                    + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + ", " + PERSONAGGIO + "))");
+        }
+
+        if(oldVersion<3){
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
+                    + email_logopedista + " TEXT, "
+                    + DATA + " TEXT, "
+                    + ORA + " TEXT, "
+                    + ISBOOKED + " BOOLEAN, "
+                    + "PRIMARY KEY (" + DATA + ", " + ORA + "), "
+                    + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                    + ")");
+
+          this.popolaTabellaAppuntamenti();
+
+        }
+
+
+
+
+
     }
+
+
+private ArrayList<String> generaDate(){
+
+        ArrayList<String> date=new ArrayList<String>();
+Calendar calendar=Calendar.getInstance();
+SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+for(int i=0;i<5*30;i++) {
+
+
+    Date data=calendar.getTime();
+    date.add(sdf.format(data));
+
+    calendar.add(Calendar.DAY_OF_YEAR,1);
+
+}
+
+return date;
+
+}
+
+
+private ArrayList<String> generaFasceOrarie(){
+
+        return new ArrayList<>( Arrays.asList("09:00-10:00","10:00-11:00","11:00-12:00","12:00-13:00","15:00-16:00","16:00-17:00"));
+
+}
+
+
+    public void popolaTabellaAppuntamenti() {
+
+        try(SQLiteDatabase db = this.getWritableDatabase()) {
+
+
+            ArrayList<Utente> logopedisti = this.getLogopedisti();
+            ArrayList<String> date = this.generaDate();
+            ArrayList<String> fasceOrarie = this.generaFasceOrarie();
+
+            for (Utente logopedista : logopedisti) {
+                for (String data : date) {
+                    for (String ora : fasceOrarie) {
+                        ContentValues cv = new ContentValues();
+                        cv.put(email_logopedista, logopedista.getEmail());
+                        cv.put(DATA, data);
+                        cv.put(ORA, ora);
+                        cv.put(ISBOOKED, false);
+
+                        long result = db.insert(CALENDARIO, null, cv);
+
+                        if (result == -1) {
+                            Log.e("Errore nell'inserimento della tupla", cv.toString());
+                        } else {
+                            Log.i("Inserimento avvenuto con successo", cv.toString());
+                        }
+                    }
+                }
+            }
+
+        }  catch (Exception e){
+            Log.e("Errore durante l'operazione sul database", e.getMessage());
+        }
+    }
+
+
+
 
     public void addTerapia(String nomeBambino, String motivoRichiesta, int durata, String emailGenitore, String emailLogopedista) {
 
@@ -253,65 +346,97 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
     public ArrayList<Bambino> getBambiniByEmail(String emailGenitore) {
         ArrayList<Bambino> bambini = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
+       try (SQLiteDatabase db = this.getReadableDatabase()) {
 
 
-        Cursor cursor = db.query(TABLE_BAMBINI, new String[]{"ID", NOME_BAMBINO}, EMAIL_GENITORE + " = ?", new String[]{emailGenitore}, null, null, null);
+           Cursor cursor = db.query(TABLE_BAMBINI, new String[]{"ID", NOME_BAMBINO}, EMAIL_GENITORE + " = ?", new String[]{emailGenitore}, null, null, null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                String nome = cursor.getString(1);
-                int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID"));
-                Bambino bambino=new Bambino(id,nome);
-                bambini.add(bambino);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
+           if (cursor.moveToFirst()) {
+               do {
+                   String nome = cursor.getString(1);
+                   int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID"));
+                   Bambino bambino = new Bambino(id, nome);
+                   bambini.add(bambino);
+               } while (cursor.moveToNext());
+           }
+           cursor.close();
+       }catch (Exception e){
+           Log.e("errore nell'apertura del db",e.getMessage());
+       }
 
         return bambini;
     }
 
 
-    public ArrayList<Utente> getLogopedisti() {
-        ArrayList<Utente> logopedisti = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase(); // Ottieni un'istanza del database
+    public ArrayList<String> recuperaOrariDisponibili(String email, String data) {
+        ArrayList<String> orari = new ArrayList<>();
+        String query = "SELECT ORA FROM CALENDARIO WHERE email_logopedista=? AND DATA=?";
+        String[] emailslogopedisti = {email, data};
 
-        // Query per selezionare solo gli utenti che sono logopedisti
-        String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + ISLOGOPEDISTA + " = 1";
+        try (SQLiteDatabase db = this.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, emailslogopedisti)) {
 
-        // Esegui la query
-        Cursor cursor = db.rawQuery(query, null);
+            // Controlla se il cursore ha dati
+            if (cursor.moveToFirst()) {
+                do {
+                    // Ottieni l'orario e aggiungilo alla lista
+                    String ore = cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
+                    orari.add(ore);
+                } while (cursor.moveToNext()); // Continua fino all'ultimo elemento
+            } else {
+                Log.d("recuperaOrariDisponibili", "Nessun orario trovato per la data: " + data);
+            }
 
-        if (cursor.moveToFirst()) {
-            do {
-                // Estrai i valori delle colonne
-                int columnEmail = cursor.getColumnIndex(EMAIL);
-                String email = cursor.getString(columnEmail);
-
-                int columnNome = cursor.getColumnIndex(NOME);
-                String nome = cursor.getString(columnNome);
-
-                int columnCognome = cursor.getColumnIndex(COGNOME);
-                String cognome = cursor.getString(columnCognome);
-
-                int columnTelefono = cursor.getColumnIndex(TELEFONO);
-                String telefono = cursor.getString(columnTelefono);
-
-                int columnPassword = cursor.getColumnIndex(PASSWORD);
-                String password = cursor.getString(columnPassword);
-
-                // Crea un oggetto RichiestaTerapia per ogni logopedista
-                Utente logopedista = new Utente(email, nome, cognome, telefono, password,true);
-
-                // Aggiungi alla lista
-                logopedisti.add(logopedista);
-
-            } while (cursor.moveToNext());
+        } catch (Exception e) {
+            Log.e("errore nell'apertura del db", e.getMessage());
         }
 
-        cursor.close(); // Chiudi il Cursor
-        db.close(); // Chiudi il database
+        return orari; // Restituisce la lista degli orari (può essere vuota)
+    }
+
+
+
+    public ArrayList<Utente> getLogopedisti() {
+        ArrayList<Utente> logopedisti = new ArrayList<>();
+        try(SQLiteDatabase db = this.getReadableDatabase()) { // Ottieni un'istanza del database
+
+            // Query per selezionare solo gli utenti che sono logopedisti
+            String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + ISLOGOPEDISTA + " = 1";
+
+            // Esegui la query
+            Cursor cursor = db.rawQuery(query, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    // Estrai i valori delle colonne
+                    int columnEmail = cursor.getColumnIndex(EMAIL);
+                    String email = cursor.getString(columnEmail);
+
+                    int columnNome = cursor.getColumnIndex(NOME);
+                    String nome = cursor.getString(columnNome);
+
+                    int columnCognome = cursor.getColumnIndex(COGNOME);
+                    String cognome = cursor.getString(columnCognome);
+
+                    int columnTelefono = cursor.getColumnIndex(TELEFONO);
+                    String telefono = cursor.getString(columnTelefono);
+
+                    int columnPassword = cursor.getColumnIndex(PASSWORD);
+                    String password = cursor.getString(columnPassword);
+
+                    // Crea un oggetto RichiestaTerapia per ogni logopedista
+                    Utente logopedista = new Utente(email, nome, cognome, telefono, password, true);
+
+                    // Aggiungi alla lista
+                    logopedisti.add(logopedista);
+
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close(); // Chiudi il Cursor
+        }catch(Exception e){
+           Log.e("errore nell'apertura del db",e.getMessage());
+            }
 
         return logopedisti;
     }
@@ -427,10 +552,10 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
         ArrayList<Utente> pazienti = new ArrayList<>();
 
         if(db!= null){
-            Log.d(TAG, "readData: Lettura dati");
+
             cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
 
-            Log.d(TAG, "readData: Lettura dati avvenuta");
+
         }
 
 
@@ -448,7 +573,7 @@ private static final String EMAIL_GENITORE="EMAIL_GENITORE";
 
 
         }
-        Log.d(TAG, "Ritorno array");
+
         cursor.close();
         return pazienti;
 

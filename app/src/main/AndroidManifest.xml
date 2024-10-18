@@ -59,6 +59,10 @@
             android:name=".HomeUtente"
             android:exported="false" />
         <activity
+            android:name=".RichiestaAppuntamento"
+            android:exported="false" />
+
+        <activity
             android:name=".HomeGenitore"
             android:exported="false" />
         <activity

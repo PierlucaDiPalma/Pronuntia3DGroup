@@ -30,6 +30,7 @@ setContentView(R.layout.scelta_logopedisti);
 logopedisti=findViewById(R.id.logopedisti_layout);
 listalogopedisti=db.getLogopedisti();
 Intent intent=getIntent();
+String nomeActivity=intent.getStringExtra("nomeActivity");
  String emailLogopedista=intent.getStringExtra("logopedista_email");
         Toolbar toolbar=findViewById(R.id.my_toolbarSceltalogopedista);
 
@@ -44,9 +45,15 @@ pulsanteLogopedista.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
 
-        Intent intent=new Intent(SceltaLogopedista.this,RichiestaTerapia.class);
-        intent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
-        startActivity(intent);
+        if(nomeActivity.equals("richiediTerapia")) {
+            Intent intent = new Intent(SceltaLogopedista.this, RichiestaTerapia.class);
+            intent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
+            startActivity(intent);
+        } else if (nomeActivity.equals("richiestaAppuntamento")) {
+            Intent intent=new Intent(SceltaLogopedista.this,RichiestaAppuntamento.class);
+            intent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
+            startActivity(intent);
+        }
     }
 });
 

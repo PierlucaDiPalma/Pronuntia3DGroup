@@ -74,6 +74,7 @@ public class HomeUtente extends AppCompatActivity {
             public void onClick(View view) {
 
                 Intent intent=new Intent(HomeUtente.this,HomeGenitore.class);
+
                 startActivity(intent);
 
 
