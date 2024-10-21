@@ -61,7 +61,10 @@ public class Login extends AppCompatActivity {
 
                     if(db.checkUser(email, password)){
                         if(db.isLogopedista(email)){
-                            //Carica la pagina del logopedista
+                            SharedPreferences sharedPreferences = getSharedPreferences("LogoPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("userEmail", email);
+                            editor.apply();
                             Intent intent = new Intent(Login.this, Logopedista.class);
                             intent.putExtra("logopedista_email", email);
                             startActivity(intent);

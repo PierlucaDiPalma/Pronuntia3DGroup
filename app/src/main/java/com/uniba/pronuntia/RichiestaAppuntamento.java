@@ -1,14 +1,18 @@
 package com.uniba.pronuntia;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
@@ -21,13 +25,15 @@ private CalendarView calendario;
 private String emailLogopedista;
 private ArrayList<String> orari;
 private DBHelper db;
+private String emailGenitore;
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.richiesta_appuntamento);
 
 
-
+        SharedPreferences sharedPreferences=getSharedPreferences("UserPrefs", MODE_PRIVATE);
+         emailGenitore=sharedPreferences.getString("userEmail",null);
 Intent intent=getIntent();
 emailLogopedista=intent.getStringExtra("EMAIL_LOGOPEDISTA");
 db=new DBHelper(this);
@@ -53,8 +59,7 @@ for(String ora:orari){
     button.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            // Logica da eseguire quando si clicca sul pulsante
-            Log.d("Pulsante", "Orario selezionato: " + ora);
+          confermaAlertDialog(ora,dataFormattata);
         }
     });
 
@@ -74,6 +79,34 @@ layout.addView(button);
 
     }
 
+
+
+    private void confermaAlertDialog(String ora,String data){
+
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle("Conferma appuntamento");
+        builder.setMessage("Sei sicuro di voler confermare l'appuntamento alle "+ ora +"?");
+
+
+        builder.setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                db.SetBooked(emailLogopedista,data,ora,emailGenitore);
+                Toast.makeText(getApplicationContext(), "Appuntamento richiesto", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+
+            }
+        });
+builder.show();
+    }
 
 
 

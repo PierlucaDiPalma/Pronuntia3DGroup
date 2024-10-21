@@ -90,7 +90,7 @@ private static final String ISBOOKED="ISBOOKED";
 
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 3);
+        super(context, DATABASE_NAME, null, 5);
     }
 
     private static final String TAG = "DBHelper";
@@ -221,18 +221,22 @@ private static final String ISBOOKED="ISBOOKED";
                     + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + ", " + PERSONAGGIO + "))");
         }
 
-        if(oldVersion<3){
+        if(oldVersion<5){
 
             db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
                     + email_logopedista + " TEXT, "
+                    + email_genitore + " TEXT, "
                     + DATA + " TEXT, "
                     + ORA + " TEXT, "
                     + ISBOOKED + " BOOLEAN, "
                     + "PRIMARY KEY (" + DATA + ", " + ORA + "), "
-                    + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                    + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
+                    + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
                     + ")");
 
-          this.popolaTabellaAppuntamenti();
+            this.popolaTabellaAppuntamenti();
+
+
 
         }
 
@@ -271,11 +275,11 @@ private ArrayList<String> generaFasceOrarie(){
 
 
     public void popolaTabellaAppuntamenti() {
-
+        ArrayList<Utente> logopedisti = this.getLogopedisti();
         try(SQLiteDatabase db = this.getWritableDatabase()) {
 
 
-            ArrayList<Utente> logopedisti = this.getLogopedisti();
+
             ArrayList<String> date = this.generaDate();
             ArrayList<String> fasceOrarie = this.generaFasceOrarie();
 
@@ -286,6 +290,7 @@ private ArrayList<String> generaFasceOrarie(){
                         cv.put(email_logopedista, logopedista.getEmail());
                         cv.put(DATA, data);
                         cv.put(ORA, ora);
+                        cv.put(email_genitore,"");
                         cv.put(ISBOOKED, false);
 
                         long result = db.insert(CALENDARIO, null, cv);
@@ -300,7 +305,7 @@ private ArrayList<String> generaFasceOrarie(){
             }
 
         }  catch (Exception e){
-            Log.e("Errore durante l'operazione sul database", e.getMessage());
+            Log.e("Errore durante l'operazione sul database", e.getMessage()+e.getLocalizedMessage());
         }
     }
 
@@ -342,6 +347,96 @@ private ArrayList<String> generaFasceOrarie(){
 
 
     }
+    public List<itemAppuntamento> getInfoAppuntamentoPendente(String email_logopedista){
+
+        ArrayList<itemAppuntamento> infoAppuntamento=new ArrayList<>();
+        String query = "SELECT " + TABLE_NAME + ".NOME, "+TABLE_NAME + ".COGNOME," + CALENDARIO + ".DATA, " + CALENDARIO + ".ORA " +
+                "FROM " + TABLE_NAME + " JOIN " + CALENDARIO + " ON " +
+                TABLE_NAME + ".EMAIL = " + CALENDARIO + ".email_genitore " +
+                "WHERE " + CALENDARIO + ".email_logopedista = ? AND " + CALENDARIO + ".ISBOOKED = 1;";
+
+        String[] valori={email_logopedista};
+        try(SQLiteDatabase db=this.getReadableDatabase()){
+            Cursor cursor=db.rawQuery(query,valori);
+
+            if(cursor.moveToFirst()){
+
+               do{
+
+                   String nome=cursor.getString(cursor.getColumnIndexOrThrow("NOME"));
+                   String cognome=cursor.getString(cursor.getColumnIndexOrThrow("COGNOME"));
+
+                   String Data=cursor.getString(cursor.getColumnIndexOrThrow("DATA"));
+                   String ora=cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
+                   itemAppuntamento item=new itemAppuntamento(nome+" "+cognome,Data+" ",ora);
+                   infoAppuntamento.add(item);
+               }while(cursor.moveToNext());
+
+            }
+cursor.close();
+
+            }
+
+return infoAppuntamento;
+
+    }
+
+
+
+
+    public  void SetUnBooked(String data,String ora){
+
+        String query = "UPDATE CALENDARIO SET ISBOOKED = 0, email_genitore = ? " +
+                "WHERE DATA = ? " +
+                "AND ORA = ?";
+
+        String[] valori={"",data,ora};
+
+
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+
+            db.execSQL(query, valori);
+            Log.d("Update", "Prenotazione eliminata con successo.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Update", "Errore durante l'aggiornamento: " + e.getMessage());
+        }
+
+
+
+
+
+
+
+    }
+
+    public void SetBooked(String email_logopedista,String data,String ora,String email_genitore){
+
+        String query = "UPDATE CALENDARIO SET ISBOOKED = 1, email_genitore = ? " +
+                "WHERE email_logopedista = ? " +
+                "AND DATA = ? " +
+                "AND ORA = ?";
+
+        String[] valori={email_genitore,email_logopedista,data,ora};
+
+
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+
+            db.execSQL(query, valori);
+            Log.d("Update", "Prenotazione aggiornata con successo.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Update", "Errore durante l'aggiornamento: " + e.getMessage());
+        }
+
+
+
+
+
+
+
+    }
+
 
 
     public ArrayList<Bambino> getBambiniByEmail(String emailGenitore) {
@@ -370,19 +465,19 @@ private ArrayList<String> generaFasceOrarie(){
 
     public ArrayList<String> recuperaOrariDisponibili(String email, String data) {
         ArrayList<String> orari = new ArrayList<>();
-        String query = "SELECT ORA FROM CALENDARIO WHERE email_logopedista=? AND DATA=?";
+        String query = "SELECT ORA FROM CALENDARIO WHERE email_logopedista=? AND DATA=? AND ISBOOKED=false ";
         String[] emailslogopedisti = {email, data};
 
         try (SQLiteDatabase db = this.getReadableDatabase();
              Cursor cursor = db.rawQuery(query, emailslogopedisti)) {
 
-            // Controlla se il cursore ha dati
+
             if (cursor.moveToFirst()) {
                 do {
-                    // Ottieni l'orario e aggiungilo alla lista
+
                     String ore = cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
                     orari.add(ore);
-                } while (cursor.moveToNext()); // Continua fino all'ultimo elemento
+                } while (cursor.moveToNext());
             } else {
                 Log.d("recuperaOrariDisponibili", "Nessun orario trovato per la data: " + data);
             }
@@ -391,7 +486,7 @@ private ArrayList<String> generaFasceOrarie(){
             Log.e("errore nell'apertura del db", e.getMessage());
         }
 
-        return orari; // Restituisce la lista degli orari (può essere vuota)
+        return orari;
     }
 
 

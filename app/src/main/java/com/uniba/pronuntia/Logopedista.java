@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,6 +20,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -43,6 +48,21 @@ public class Logopedista extends AppCompatActivity {
 
     Intent intent=getIntent();
     String emailLogopedista=intent.getStringExtra("logopedista_email");
+BottomNavigationView bnv =findViewById(R.id.BottomNavigationView);
+Menu menu=bnv.getMenu();
+MenuItem menuItem= menu.findItem(R.id.Appuntamento);
+
+menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+    @Override
+    public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+
+        Intent intent=new Intent(Logopedista.this, AppuntamentiLogopedista.class);
+        intent.putExtra("logopedista_email",emailLogopedista);
+        startActivity(intent);
+
+        return true;
+    }
+});
 
 
 

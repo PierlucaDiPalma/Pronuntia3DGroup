@@ -25,7 +25,7 @@ public class HomeGenitore extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_genitore);
 
-        // Inizializza DBHelper
+
         dbHelper = new DBHelper(this);
         Intent intent=getIntent();
         String emailLogopedista=intent.getStringExtra("logopedista_email");
@@ -33,21 +33,21 @@ public class HomeGenitore extends AppCompatActivity {
 
 
 
-        // Configura la Toolbar
+
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        // Configura il pulsante "indietro"
+
         ImageView backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
-            // Torna all'Activity precedente quando si clicca sul pulsante "indietro"
+
             onBackPressed();
         });
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        // Configura la BottomNavigationView
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.BottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem richiediTerapiaItem = menu.findItem(R.id.RichiediTerapia);
@@ -87,7 +87,7 @@ public class HomeGenitore extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            onBackPressed(); // Torna all'Activity precedente
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

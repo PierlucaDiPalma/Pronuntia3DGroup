@@ -66,6 +66,9 @@
             android:name=".HomeGenitore"
             android:exported="false" />
         <activity
+            android:name=".AppuntamentiLogopedista"
+            android:exported="false" />
+        <activity
             android:name=".CoupleActivity"
             android:exported="false" />
         <activity
