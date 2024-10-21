@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Pronuntia"
         tools:targetApi="31">
         <activity
+            android:name=".Trofeo"
+            android:exported="false" />
+        <activity
             android:name=".SceltaPersonaggi"
             android:exported="false" />
         <activity
@@ -61,7 +64,6 @@
         <activity
             android:name=".RichiestaAppuntamento"
             android:exported="false" />
-
         <activity
             android:name=".HomeGenitore"
             android:exported="false" />

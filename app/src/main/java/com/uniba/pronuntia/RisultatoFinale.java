@@ -1,7 +1,10 @@
 package com.uniba.pronuntia;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,10 +32,16 @@ public class RisultatoFinale extends AppCompatActivity {
     private String email;
     private String bambino;
 
+    private int totaleCorretti = 0;
+    private int premio = 1;
+    private int totalePremi = 0;
+
     private RecyclerView recyclerView;
     private ResultAdapter customAdapter;
     private DBHelper db;
     private ArrayList<Resoconto> resoconti;
+
+    private static final String TAG = "RisultatoFinale";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,8 @@ public class RisultatoFinale extends AppCompatActivity {
         bambino = getIntent().getStringExtra("Bambino");
 
         resoconti = db.getResoconto(email, bambino);
+        //totaleCorretti = db.getCorretti(bambino, email);
+        totalePremi = db.getPremi(bambino, email);
 
         punteggioText = findViewById(R.id.punteggio);
         aiutiText = findViewById(R.id.aiuti);
@@ -57,10 +68,40 @@ public class RisultatoFinale extends AppCompatActivity {
         sbagliatiText = findViewById(R.id.sbagliati);
 
 
-        punteggio = getIntent().getIntExtra("Punteggio", 0);
+        //punteggio = getIntent().getIntExtra("Punteggio", 0);
         numeroAiuti = getIntent().getIntExtra("Aiuti", 0);
         corretti = getIntent().getIntExtra("Corretti", 0);
         sbagliati = getIntent().getIntExtra("Sbagliati", 0);
+
+        for(int i = 0; i<resoconti.size();i++){
+          totaleCorretti += resoconti.get(i).getCorretti();
+        }
+
+        Log.d(TAG, "ESERCIZI CORRETTI: " + totaleCorretti);
+
+
+
+        if(totaleCorretti == 3 && totalePremi==0){
+            Toast.makeText(RisultatoFinale.this, "Hai completato " + totaleCorretti + "  esercizi", Toast.LENGTH_LONG).show();
+            db.addPremio(bambino, email, totaleCorretti, premio);
+
+            Intent intent = new Intent(RisultatoFinale.this, Trofeo.class);
+            intent.putExtra("soglia", 3);
+            startActivity(intent);
+
+        }else{
+            if(totaleCorretti>=(3*totalePremi)+((totalePremi+1)*3)){
+                Toast.makeText(RisultatoFinale.this, "Hai completato altri" + ((totalePremi+1)*3) + "  esercizi.\n Prossimo premio tra 3 esercizi corretti", Toast.LENGTH_LONG).show();
+                premio += totalePremi;
+                db.updateValuesPremi(bambino, email, totaleCorretti, premio);
+
+                Intent intent = new Intent(RisultatoFinale.this, Trofeo.class);
+                intent.putExtra("soglia", ((totalePremi+1)*3) );
+                startActivity(intent);
+            }
+        }
+
+
 
         for(int i=0; i<resoconti.size();i++){
             punteggio += resoconti.get(i).getPunteggio();
@@ -76,7 +117,6 @@ public class RisultatoFinale extends AppCompatActivity {
 
         customAdapter.notifyDataSetChanged();
 
-        db.updatePunteggio(email, bambino, punteggio);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(RisultatoFinale.this));
 

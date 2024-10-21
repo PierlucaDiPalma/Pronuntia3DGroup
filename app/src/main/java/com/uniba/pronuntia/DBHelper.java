@@ -72,35 +72,35 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CORRETTO = "CORRETTO";
     private static final String SBAGLIATO = "SBAGLIATO";
     private static final String AIUTI = "AIUTI";
-    private static final String TABLE_PUNTEGGI = "PUNTEGGI";
+
     private static final String TABLE_PERSONAGGI = "PERSONAGGI";
     private static final String TABLE_ACQUISTI = "PERSONAGGI_SBLOCCATI";
     private static final String PERSONAGGIO = "PERSONAGGIO";
     private static final String VALORE = "VALORE";
 
+    private static final String TABLE_PREMI = "PREMI";
+    private static final String CORRETTI = "CORRETTI";
+    private static final String NUMERO_PREMI = "NUMERO_PREMI";
+
     private static final String TABLE_BAMBINI="BAMBINI";
-private static final String NOME_BAMBINO="NOME_BAMBINO";
-private static final String EMAIL_GENITORE="EMAIL_GENITORE";
-private static final String CALENDARIO="CALENDARIO";
-private static final String DATA="DATA";
-private static final String ORA="ORA";
-private static final String ISBOOKED="ISBOOKED";
+    private static final String NOME_BAMBINO="NOME_BAMBINO";
+    private static final String EMAIL_GENITORE="EMAIL_GENITORE";
+    private static final String CALENDARIO="CALENDARIO";
+    private static final String DATA="DATA";
+    private static final String ORA="ORA";
+    private static final String ISBOOKED="ISBOOKED";
 
 
 
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 5);
+        super(context, DATABASE_NAME, null, 9);
     }
 
     private static final String TAG = "DBHelper";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
-
-
-
 
 
         db.execSQL("CREATE TABLE " + TABLE_NAME
@@ -173,7 +173,13 @@ private static final String ISBOOKED="ISBOOKED";
                 + SBAGLIATO + " INTEGER, "
                 + AIUTI + " INTEGER )");
 
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
+                + BAMBINO + " TEXT, "
+                + GENITORE + " TEXT, "
+                + PERSONAGGIO + " TEXT, "
+                + VALORE + " INTEGER, "
+                + IMMAGINE + " BLOB, "
+                + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + ", " + PERSONAGGIO + "))");
 
         String CREATE_TABLE_TERAPIE = "CREATE TABLE " + TABLE_TERAPIE + "("
                 + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -196,6 +202,13 @@ private static final String ISBOOKED="ISBOOKED";
                 + "FOREIGN KEY (" + EMAIL_GENITORE + ") REFERENCES " + TABLE_NAME + " (" + EMAIL + ")"
                 + ");");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PREMI + " ("
+                + BAMBINO + " TEXT, "
+                + GENITORE + " TEXT, "
+                + CORRETTI + " INTEGER, "
+                + NUMERO_PREMI + " INTEGER, "
+                + "PRIMARY KEY (BAMBINO, GENITORE, NUMERO_PREMI))");
+
 
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
@@ -206,11 +219,6 @@ private static final String ISBOOKED="ISBOOKED";
 
         if (oldVersion < 2) {
 
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PUNTEGGI + " ( "
-                    + BAMBINO + " TEXT, "
-                    + GENITORE + " TEXT, "
-                    + PUNTEGGIO + " INTEGER, "
-                    + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + "))");
 
             db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
                     + BAMBINO + " TEXT, "
@@ -236,8 +244,24 @@ private static final String ISBOOKED="ISBOOKED";
 
             this.popolaTabellaAppuntamenti();
 
+        }
 
+        if(oldVersion<8){
 
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
+                    + BAMBINO + " TEXT, "
+                    + GENITORE + " TEXT, "
+                    + PERSONAGGIO + " TEXT, "
+                    + VALORE + " INTEGER, "
+                    + IMMAGINE + " BLOB, "
+                    + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + ", " + PERSONAGGIO + "))");
+
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PREMI + " ("
+                    + BAMBINO + " TEXT, "
+                    + GENITORE + " TEXT, "
+                    + CORRETTI + " INTEGER, "
+                    + NUMERO_PREMI + " INTEGER, "
+                    + "PRIMARY KEY (BAMBINO, GENITORE))");
         }
 
 
@@ -403,11 +427,6 @@ return infoAppuntamento;
         }
 
 
-
-
-
-
-
     }
 
     public void SetBooked(String email_logopedista,String data,String ora,String email_genitore){
@@ -428,12 +447,6 @@ return infoAppuntamento;
             e.printStackTrace();
             Log.e("Update", "Errore durante l'aggiornamento: " + e.getMessage());
         }
-
-
-
-
-
-
 
     }
 
@@ -786,6 +799,68 @@ return infoAppuntamento;
         return result != -1;
     }
 
+    public boolean addPremio(String bambino, String genitore, int corretti, int premio){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(BAMBINO, bambino);
+        values.put(GENITORE, genitore);
+        values.put(CORRETTI, corretti);
+        values.put(NUMERO_PREMI, premio);
+
+        long result = db.insert(TABLE_PREMI, null, values);
+        return result != -1;
+    }
+
+    public int getCorretti(String bambino, String genitore){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        if(db!=null){
+            cursor = db.rawQuery("SELECT CORRETTI FROM " + TABLE_PREMI + " WHERE BAMBINO = ? AND GENITORE = ?", new String[]{bambino, genitore});
+
+        }
+
+        int corretti = 0;
+
+        while(cursor.moveToNext()){
+            corretti = cursor.getInt(0);
+        }
+
+        return corretti;
+    }
+
+    public int getPremi(String bambino, String genitore){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        if(db!=null){
+            cursor = db.rawQuery("SELECT NUMERO_PREMI FROM " + TABLE_PREMI + " WHERE BAMBINO = ? AND GENITORE = ?", new String[]{bambino, genitore});
+        }
+
+        int premi = 0;
+
+        while(cursor.moveToNext()){
+            premi = cursor.getInt(0);
+        }
+
+        return premi;
+    }
+
+    public void updateValuesPremi(String bambino, String genitore, int corretti, int premi){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(BAMBINO, bambino);
+        values.put(GENITORE, genitore);
+        values.put(CORRETTI, corretti);
+        values.put(NUMERO_PREMI, premi);
+
+        db.update(TABLE_PREMI, values, "BAMBINO = ? AND GENITORE = ?", new String[]{bambino, genitore});
+    }
+
     public boolean addResoconto(Resoconto resoconto){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -898,41 +973,7 @@ return infoAppuntamento;
         return personaggio;
     }
 
-    public boolean addPunteggio(String genitore, String bambino, int punteggio){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
 
-
-        contentValues.put(BAMBINO, bambino);
-        contentValues.put(GENITORE, genitore);
-        contentValues.put(PUNTEGGIO, punteggio);
-
-        long result = db.insert(TABLE_PUNTEGGI, null, contentValues);
-        return result !=1;
-
-    }
-
-    public void updatePunteggio(String genitore, String bambino, int punteggio){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(PUNTEGGIO, punteggio);
-        db.update(TABLE_PUNTEGGI, contentValues, "GENITORE = ? AND BAMBINO = ?", new String[]{genitore, bambino});
-    }
-
-    public int getPunteggio(String user, String child){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        if(db!= null){
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_PUNTEGGI + " WHERE GENITORE = ? AND BAMBINO = ?", new String[]{user, child});
-        }
-
-
-        int punteggio = cursor.getInt(2);
-        return punteggio;
-
-    }
 
     public ArrayList<Resoconto> getResoconto(String user, String child){
         SQLiteDatabase db = this.getReadableDatabase();
