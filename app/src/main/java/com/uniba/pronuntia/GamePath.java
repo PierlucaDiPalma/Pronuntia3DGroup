@@ -48,6 +48,7 @@ public class GamePath extends AppCompatActivity {
     private String bambino;
     private Resoconto resoconto;
     private String path;
+    private String logopedista;
     private ArrayList<Resoconto> resoconti = new ArrayList<>();
 
     private final static String TAG = "GamePath";
@@ -70,6 +71,7 @@ public class GamePath extends AppCompatActivity {
         bambino = getIntent().getStringExtra("Bambino");
         punteggio = 0; //getIntent().getIntExtra("punteggio", 0);
         path = getIntent().getStringExtra("pathPersonaggio");
+        logopedista = getIntent().getStringExtra("logopedista");
 
         punteggioText = findViewById(R.id.punteggio);
         aiutiText = findViewById(R.id.aiuti);
@@ -95,7 +97,7 @@ public class GamePath extends AppCompatActivity {
 
         shuffleArrayList(esercizi);
 
-        customAdapter = new LevelAdapter(GamePath.this, esercizi, livello, path);
+        customAdapter = new LevelAdapter(GamePath.this, esercizi, livello, path, logopedista);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(GamePath.this));
 

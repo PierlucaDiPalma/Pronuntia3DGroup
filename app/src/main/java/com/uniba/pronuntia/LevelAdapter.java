@@ -35,12 +35,14 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
     private int punteggio;
     private int livello;
     private String personaggio;
+    private String logopedista;
 
-    public LevelAdapter(Context context, ArrayList<Esercizio> exerciseList, int livello, String personaggio) {
+    public LevelAdapter(Context context, ArrayList<Esercizio> exerciseList, int livello, String personaggio, String logopedista) {
         this.context = context;
         this.exerciseList = exerciseList;
         this.livello = livello;
         this.personaggio = personaggio;
+        this.logopedista = logopedista;
     }
 
     @NonNull
@@ -139,7 +141,7 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
                     intent.putExtra("Esercizio", exerciseList.get(i));
                     intent.putExtra("Bambino", exerciseList.get(i).getBambino());
                     intent.putExtra("Email", exerciseList.get(i).getEmail());
-
+                    intent.putExtra("Logopedista", logopedista);
                     Log.d(TAG, "onClick: " + exerciseList.get(i).getName() + " " + exerciseList.get(i).getTipo() );
 
                     ((Activity) context).startActivityForResult(intent, 2);

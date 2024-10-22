@@ -30,7 +30,7 @@ SharedPreferences sdp= getActivity().getSharedPreferences("UserPrefs", getContex
 emailGenitore=sdp.getString("userEmail",null);
         recyclerView=view.findViewById(R.id.ListaAppuntamentiFissati);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        itemAppuntamentoList=db.getInfoAppuntamentoFissato(emailGenitore);
+        //itemAppuntamentoList=db.getInfoAppuntamentoFissato(emailGenitore);
         AppuntamentiFissatiAdapter adapter=new AppuntamentiFissatiAdapter(getActivity(),itemAppuntamentoList);
         recyclerView.setAdapter(adapter);
 

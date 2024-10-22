@@ -48,23 +48,21 @@ public class Logopedista extends AppCompatActivity {
 
     Intent intent=getIntent();
     String emailLogopedista=intent.getStringExtra("logopedista_email");
-BottomNavigationView bnv =findViewById(R.id.BottomNavigationView);
-Menu menu=bnv.getMenu();
-MenuItem menuItem= menu.findItem(R.id.Appuntamento);
+    BottomNavigationView bnv =findViewById(R.id.BottomNavigationView);
+    Menu menu=bnv.getMenu();
+    MenuItem menuItem= menu.findItem(R.id.Appuntamento);
 
-menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-    @Override
-    public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
 
-        Intent intent=new Intent(Logopedista.this, AppuntamentiLogopedista.class);
-        intent.putExtra("logopedista_email",emailLogopedista);
-        startActivity(intent);
+            Intent intent=new Intent(Logopedista.this, AppuntamentiLogopedista.class);
+            intent.putExtra("logopedista_email",emailLogopedista);
+            startActivity(intent);
 
-        return true;
-    }
-});
-
-
+            return true;
+        }
+    });
 
 
     db = new DBHelper(Logopedista.this);
@@ -117,6 +115,7 @@ menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                                intent.putExtra("bambino", richiesta.getNomeBambino());
                                intent.putExtra("motivo", richiesta.getMotivoRichiesta());
                                intent.putExtra("durata", richiesta.getDurataTerapia());
+                               intent.putExtra("logopedista", emailLogopedista);
                                intent.putExtra("source", TAG);
                                startActivity(intent);
 

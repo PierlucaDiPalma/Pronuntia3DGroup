@@ -29,6 +29,9 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
     private static final String TAG = "MainActivity";
     private TextView punteggioText;
     private String email;
+    private String bambino;
+    private String logopedista;
+
     private int i;
     private int livello;
     private boolean isDone;
@@ -54,11 +57,14 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
         punteggioText = findViewById(R.id.punteggio);
         db = new DBHelper(this);
 
-        //email = getIntent().getStringExtra("Email");
-        //i = getIntent().getIntExtra("Posizione", 0);
+        email = getIntent().getStringExtra("Email");
+        bambino = getIntent().getStringExtra("Bambino");
+        logopedista = getIntent().getStringExtra("Logopedista");
+
         punteggio = getIntent().getIntExtra("Punteggio", 0);
         livello = getIntent().getIntExtra("Livello", 0);
         esercizio = getIntent().getParcelableExtra("Esercizio");
+
 
         Log.d(TAG, "Livello: " + livello);
         Log.d(TAG, "Tipo: " + esercizio.getTipo() + " " + esercizio.getName() + " " + esercizio.getGiorno() + " "
@@ -133,13 +139,14 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
         punteggio = points;
         isDone = done;
         punteggioText.setText("Punteggio: " + punteggio);
-        Log.d("MainActivity", "Dato elaborato dal Fragment: " + punteggio);
+        Log.d(TAG, "Dato elaborato dal Fragment: " + punteggio);
 
         this.numeroAiuti = numeroAiuti;
         this.corretti = corretti;
         this.sbagliati = sbagliati;
+        Log.d(TAG, "Logopedista: " + logopedista);
 
-        resoconto = new Resoconto("Luigi", "paoloneri@gmail.com", "marcorossi@gmail.com",
+        resoconto = new Resoconto(bambino, email, logopedista,
                 esercizio, punteggio, this.corretti, this.sbagliati, this.numeroAiuti);
 
         /*boolean isInserted = db.addResoconto(resoconto);

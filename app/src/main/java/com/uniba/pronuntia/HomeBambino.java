@@ -29,8 +29,11 @@ public class HomeBambino extends AppCompatActivity {
     private ArrayList<Esercizio> eserciziList = new ArrayList<>();
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
     private DBHelper db;
+
     private String email;
     private String bambino;
+    private String logopedista;
+
     private final static String TAG = "HomeBambino";
     private Button avanti, sceltaPersonaggi;
     private ArrayList<Resoconto> resoconti;
@@ -65,6 +68,8 @@ public class HomeBambino extends AppCompatActivity {
         bambino = intent.getStringExtra("bambino"); // Ottieni il nome del bambino
         nomeBambinoTextView = findViewById(R.id.textView);
         email = intent.getStringExtra("email");
+
+
 
 
         picPersonaggioView = findViewById(R.id.pic);
@@ -111,6 +116,10 @@ public class HomeBambino extends AppCompatActivity {
         esercizi = db.getDenominazione(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR));
         esercizi.addAll(db.getSequenza(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
         esercizi.addAll(db.getCoppia(email, bambino, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.YEAR)));
+
+        logopedista = db.getLogopedista(bambino, email);
+
+        Log.d(TAG, "LOGOPEDISTA: " + logopedista);
 
         Log.d(TAG, "onCreate: email recuperata " + email);
 
@@ -163,6 +172,7 @@ public class HomeBambino extends AppCompatActivity {
                         intent.putExtra("Bambino", bambino);
                         intent.putExtra("punteggio", punti);
                         intent.putExtra("pathPersonaggio", path);
+                        intent.putExtra("logopedista", logopedista);
                         startActivityForResult(intent, 1);
                     }else{
                         Toast.makeText(HomeBambino.this, "Seleziona un personaggio", Toast.LENGTH_SHORT).show();

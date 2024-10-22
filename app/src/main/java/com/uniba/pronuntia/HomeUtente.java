@@ -41,14 +41,14 @@ public class HomeUtente extends AppCompatActivity {
            @Override
            public void onClick(View view) {
 
-               Intent intent=getIntent();
-              email=intent.getStringExtra("email");
+                Intent intent=getIntent();
+                email=intent.getStringExtra("email");
 
 
-               Intent intentBambino=new Intent(HomeUtente.this, CreazioneBambino.class);
-               intentBambino.putExtra("email", email);
+                Intent intentBambino=new Intent(HomeUtente.this, CreazioneBambino.class);
+                intentBambino.putExtra("email", email);
 
-               startActivity(intentBambino);
+                startActivity(intentBambino);
 
            }
         });

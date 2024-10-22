@@ -45,6 +45,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private String data;
     private String email;
     private String bambino;
+    private String logopedista;
     private String motivo;
 
     private String source;
@@ -75,6 +76,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
         bambino = intent.getStringExtra("bambino");
         motivo = intent.getStringExtra("motivo");
         durata = intent.getIntExtra("durata", 1);
+        logopedista = intent.getStringExtra("logopedista");
 
         source = intent.getStringExtra("source");
 
@@ -113,6 +115,10 @@ public class CreazioneEsercizi extends AppCompatActivity {
             data = intent.getStringExtra("data");
             dataText.setText(data);
         }else{
+
+        /*if(db.getLogopedista(bambino, email)==null){
+            db.addPazienti(bambino, email, logopedista);
+        }*/
         calendario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,7 +174,6 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
 
         }
-
 
 
         addEsercizio.setOnClickListener(new View.OnClickListener() {
