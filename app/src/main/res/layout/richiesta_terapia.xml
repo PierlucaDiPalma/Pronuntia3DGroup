@@ -58,21 +58,17 @@
         <TextView
             android:layout_width="208dp"
             android:layout_height="35dp"
-            android:text="Nome bambino:"
+            android:text="Seleziona bambino:"
             android:textSize="20dp"
             tools:layout_editor_absoluteX="45dp"
             tools:layout_editor_absoluteY="121dp" />
 
-        <EditText
-            android:id="@+id/CampoNomeBambino"
-            android:layout_width="match_parent"
+        <Spinner
+            android:id="@+id/SpinnerBambini"
+            android:layout_width="172dp"
             android:layout_height="wrap_content"
-            android:hint="inserire nome"
-            android:inputType="textPersonName"
             android:padding="16dp"
-            android:textSize="20dp"
-            tools:layout_editor_absoluteX="45dp"
-            tools:layout_editor_absoluteY="140dp" />
+            android:textSize="30sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -103,9 +99,10 @@
 
         <Spinner
             android:id="@+id/Spinner"
-            android:layout_width="wrap_content"
+            android:layout_width="174dp"
             android:layout_height="wrap_content"
             android:padding="16dp"
+
             android:textSize="20dp" />
     </LinearLayout>
 
@@ -113,8 +110,7 @@
         android:id="@+id/InviaRichiestabtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="259dp"
-        android:layout_marginTop="229dp"
+
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="96dp"
         android:text="Invia"

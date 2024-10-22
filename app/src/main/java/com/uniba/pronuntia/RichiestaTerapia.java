@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+
 public class RichiestaTerapia extends AppCompatActivity {
 private int logopedistaId;
 private String nomeBambino;
@@ -26,15 +28,17 @@ private String motivoRichiesta;
 private int durataTerapia;
 private String emailGenitore;
 private String getEmailLogopedista;
-    private EditText nomeBambinoEditText;
+
     private EditText motivoRichiestaEditText;
     private Spinner durataSpinner;
     private String emailLogopedista;
     private Button inviaButton;
 private ImageView backBtn;
 private BottomNavigationView bottombar;
-
+    private ArrayList<Bambino> bambini;
     private DBHelper databaseHelper;
+    private Spinner spinner1;
+
     public RichiestaTerapia() {
     }
     public RichiestaTerapia(int logopedistaId, String nomeBambino, String motivoRichiesta, int durataTerapia, String emailGenitore, String getEmailLogopedista) {
@@ -76,7 +80,15 @@ private BottomNavigationView bottombar;
         super.onCreate(savedInstance);
 
         setContentView(R.layout.richiesta_terapia);
+
+        databaseHelper = new DBHelper(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String emailGenitore = sharedPreferences.getString("userEmail", null);
+        this.bambini=databaseHelper.getBambiniByEmail(emailGenitore);
+
+
         Spinner spinner=findViewById(R.id.Spinner);
+         spinner1=findViewById(R.id.SpinnerBambini);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -89,13 +101,20 @@ private BottomNavigationView bottombar;
 
 
 
+        ArrayList<String> bambiniString=new ArrayList<>();
+        for(Bambino bambino:bambini){
+            bambiniString.add(bambino.getNome());
+        }
+
+        ArrayAdapter<String> adapterString=new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,bambiniString);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner1.setAdapter(adapterString);
 
 
-        databaseHelper = new DBHelper(this);
 
 
 
-        nomeBambinoEditText = findViewById(R.id.CampoNomeBambino);
+
         motivoRichiestaEditText = findViewById(R.id.CampoMotivoRichiesta);
         durataSpinner = findViewById(R.id.Spinner);
 
@@ -141,7 +160,7 @@ backBtn.setOnClickListener(new View.OnClickListener() {
     }
 
     private void inserisciTerapiaNelDB() {
-        String nomeBambino = nomeBambinoEditText.getText().toString();
+        String nomeBambino =spinner1.getSelectedItem().toString();
         String motivoRichiesta = motivoRichiestaEditText.getText().toString();
         String durataString = durataSpinner.getSelectedItem().toString();
         String[] parts = durataString.split(" ");
@@ -151,11 +170,10 @@ backBtn.setOnClickListener(new View.OnClickListener() {
             Toast.makeText(this, "Errore: email del logopedista non trovata", Toast.LENGTH_SHORT).show();
             return;
         }
+        SharedPreferences sdf = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+String emailGen=sdf.getString("userEmail", null);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String emailGenitore = sharedPreferences.getString("userEmail", "default@example.com");
-
-        databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, emailGenitore, emailLogopedista);
+        databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, emailGen, emailLogopedista);
 
         Toast.makeText(this, "Terapia inserita con successo", Toast.LENGTH_SHORT).show();
     }
