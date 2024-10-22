@@ -50,7 +50,7 @@ pulsanteLogopedista.setOnClickListener(new View.OnClickListener() {
             intent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
             startActivity(intent);
         } else if (nomeActivity.equals("richiestaAppuntamento")) {
-            Intent intent=new Intent(SceltaLogopedista.this,RichiestaAppuntamento.class);
+            Intent intent=new Intent(SceltaLogopedista.this,AppuntamentiGenitore.class);
             intent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
             startActivity(intent);
         }

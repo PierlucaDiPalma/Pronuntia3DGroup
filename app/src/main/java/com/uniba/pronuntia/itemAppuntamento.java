@@ -16,7 +16,7 @@ public class itemAppuntamento {
         return Ora;
     }
 
-    public String getEmailGenitore() {
+    public String getNomeGenitore() {
         return NomeGenitore;
     }
 

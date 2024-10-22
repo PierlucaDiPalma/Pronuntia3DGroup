@@ -90,11 +90,11 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String ORA="ORA";
     private static final String ISBOOKED="ISBOOKED";
 
-
+private static final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
 
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 9);
+        super(context, DATABASE_NAME, null, 10);
     }
 
     private static final String TAG = "DBHelper";
@@ -263,6 +263,19 @@ public class DBHelper extends SQLiteOpenHelper {
                     + NUMERO_PREMI + " INTEGER, "
                     + "PRIMARY KEY (BAMBINO, GENITORE))");
         }
+        if(oldVersion<10){
+            db.execSQL("CREATE TABLE IF NOT EXISTS " + APPUNTAMENTI_FISSATI + " ("
+                    + email_logopedista + " TEXT, "
+                    + email_genitore + " TEXT, "
+                    + DATA + " TEXT, "
+                    + ORA + " TEXT, "
+                    + "PRIMARY KEY (" + DATA + ", " + ORA + "), "
+                    + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
+                    + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                    + ")");
+
+
+        }
 
 
 
@@ -371,6 +384,75 @@ private ArrayList<String> generaFasceOrarie(){
 
 
     }
+    public void inserisciAppuntamentifissati(String email_genitore,String email_logopedista,String data,String ora){
+
+
+
+
+        try(SQLiteDatabase db=this.getWritableDatabase()){
+            ContentValues cv=new ContentValues();
+            cv.put("email_genitore",email_genitore);
+            cv.put("email_logopedista",email_logopedista);
+            cv.put("DATA",data);
+            cv.put("ORA",ora);
+           long result= db.insert(APPUNTAMENTI_FISSATI,null,cv);
+            if (result == -1) {
+                Log.e(TAG, "Errore nell'inserimento appuntamento");
+            } else {
+                Log.d(TAG, "appuntamento inserito con successo, ID: " + result);
+            }
+
+        }
+
+
+
+    }
+
+public List<itemAppuntamento> getInfoAppuntamentoFissato(String email_genitore) {
+    ArrayList<itemAppuntamento> infoAppuntamento = new ArrayList<>();
+    String query = "SELECT " + TABLE_NAME + ".NOME, " + TABLE_NAME + ".COGNOME," + APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA " +
+            "FROM " + TABLE_NAME + " JOIN " + APPUNTAMENTI_FISSATI + " ON " +
+            TABLE_NAME + ".EMAIL = " + APPUNTAMENTI_FISSATI + ".email_logopedista " +
+            "WHERE " + APPUNTAMENTI_FISSATI + ".email_genitore = ?";
+
+    String[] valori = {email_genitore};
+    try (SQLiteDatabase db = this.getReadableDatabase()) {
+        Cursor cursor = db.rawQuery(query, valori);
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                String nome = cursor.getString(cursor.getColumnIndexOrThrow("NOME"));
+                String cognome = cursor.getString(cursor.getColumnIndexOrThrow("COGNOME"));
+
+                String Data = cursor.getString(cursor.getColumnIndexOrThrow("DATA"));
+                String ora = cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
+                itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data + " ", ora);
+                infoAppuntamento.add(item);
+            } while (cursor.moveToNext());
+
+        }
+        cursor.close();
+
+
+    }
+    return infoAppuntamento;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public List<itemAppuntamento> getInfoAppuntamentoPendente(String email_logopedista){
 
         ArrayList<itemAppuntamento> infoAppuntamento=new ArrayList<>();

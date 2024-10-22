@@ -62,7 +62,7 @@
             android:name=".HomeUtente"
             android:exported="false" />
         <activity
-            android:name=".RichiestaAppuntamento"
+            android:name=".AppuntamentiGenitore"
             android:exported="false" />
         <activity
             android:name=".HomeGenitore"

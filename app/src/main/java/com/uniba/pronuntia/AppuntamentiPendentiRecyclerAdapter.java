@@ -1,6 +1,7 @@
 package com.uniba.pronuntia;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,9 +41,13 @@ this.context=context;
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
 itemAppuntamento itemAppuntamento=this.itemAppuntamentoList.get(position);
 db=new DBHelper(this.context);
+        SharedPreferences sdp= context.getSharedPreferences("LogoPrefs",context.MODE_PRIVATE);
+        String emailLogo=sdp.getString("userEmail",null);
 
+        SharedPreferences sdp2= context.getSharedPreferences("UserPrefs",context.MODE_PRIVATE);
+      String emailGenitore=sdp2.getString("userEmail",null);
 
-holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getEmailGenitore());
+holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getNomeGenitore());
         holder.data.setText("Data:"+" "+itemAppuntamento.getData());
         holder.ora.setText("Ora:"+" "+itemAppuntamento.getOra());
 
@@ -51,6 +56,13 @@ holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getEmailGenitore(
             @Override
             public void onClick(View view) {
             db.SetUnBooked(itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim());
+            }
+        });
+
+        holder.accetta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+              db.inserisciAppuntamentifissati(emailGenitore,emailLogo, itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim());
             }
         });
 
