@@ -26,7 +26,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
     private DBHelper db;
     private Button avanti;
     private int punteggio = 0;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "Game";
     private TextView punteggioText;
     private String email;
     private String bambino;
@@ -88,6 +88,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
                 intent.putExtra("Corretti", corretti);
                 intent.putExtra("Sbagliati", sbagliati);
                 intent.putExtra("Resoconto", resoconto);
+                intent.putExtra("source", TAG);
 
                 setResult(RESULT_OK, intent); // Imposta il risultato come RESULT_OK
                 finish();

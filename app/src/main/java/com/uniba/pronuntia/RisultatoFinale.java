@@ -41,6 +41,7 @@ public class RisultatoFinale extends AppCompatActivity {
     private DBHelper db;
     private ArrayList<Resoconto> resoconti;
 
+    private String source;
     private static final String TAG = "RisultatoFinale";
 
     @Override
@@ -58,7 +59,19 @@ public class RisultatoFinale extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         bambino = getIntent().getStringExtra("Bambino");
 
-        resoconti = db.getResoconto(email, bambino);
+        source = getIntent().getStringExtra("source");
+
+        if(source.equals("GamePath")){
+            resoconti = getIntent().getParcelableArrayListExtra("Resoconti");
+            for(int i=0;i<resoconti.size();i++){
+                db.addResoconto(resoconti.get(i));
+            }
+        }else{
+            resoconti = db.getResoconto(email, bambino);
+
+        }
+
+
         //totaleCorretti = db.getCorretti(bambino, email);
         totalePremi = db.getPremi(bambino, email);
 

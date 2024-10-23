@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -50,7 +51,7 @@ public class GamePath extends AppCompatActivity {
     private String path;
     private String logopedista;
     private ArrayList<Resoconto> resoconti = new ArrayList<>();
-
+    private String source;
     private final static String TAG = "GamePath";
 
     @Override
@@ -109,12 +110,16 @@ public class GamePath extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                for(int i = 0; i<resoconti.size();i++){
-                    Log.d(TAG, "STAMPA RESOCONTI: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getBambino()
-                            + " " + resoconti.get(i).getEsercizio().getTipo());
+               /* if(source.equals("Game")) {
+                    for (int i = 0; i < resoconti.size(); i++) {
+                        Log.d(TAG, "STAMPA RESOCONTI: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getBambino()
+                                + " " + resoconti.get(i).getEsercizio().getTipo());
 
-                    db.addResoconto(resoconti.get(i));
-                }
+                        db.addResoconto(resoconti.get(i));
+                    }
+                }else{
+                    Toast.makeText(GamePath.this, "Non è necessario salvare nel DB", Toast.LENGTH_LONG).show();
+                }*/
 
                 Intent intent = new Intent(GamePath.this, RisultatoFinale.class);
                 intent.putExtra("Bambino", bambino);
@@ -123,6 +128,8 @@ public class GamePath extends AppCompatActivity {
                 intent.putExtra("Aiuti", numeroAiuti);
                 intent.putExtra("Corretti", corretti);
                 intent.putExtra("Sbagliati", sbagliati);
+                intent.putParcelableArrayListExtra("Resoconti", resoconti);
+                intent.putExtra("source", TAG);
                 startActivity(intent);
 
             }
@@ -154,11 +161,11 @@ public class GamePath extends AppCompatActivity {
                 livello = nuovoLivello;
                 customAdapter.setLivello(nuovoLivello);  // Metodo da creare nell'Adapter
 
+
                 //resoconto = new Resoconto(bambino, email, "marcorossi@gmai.com", )
 
                 resoconto = data.getParcelableExtra("Resoconto");
                 resoconti.add(resoconto);
-
 
                  /*resoconti.add(resoconto);
 
