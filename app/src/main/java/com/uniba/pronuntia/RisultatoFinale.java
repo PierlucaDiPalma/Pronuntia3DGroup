@@ -62,10 +62,30 @@ public class RisultatoFinale extends AppCompatActivity {
         source = getIntent().getStringExtra("source");
 
         if(source.equals("GamePath")){
+
+            ArrayList<Resoconto> temp = db.getResoconto(email, bambino);
             resoconti = getIntent().getParcelableArrayListExtra("Resoconti");
-            for(int i=0;i<resoconti.size();i++){
-                db.addResoconto(resoconti.get(i));
+            boolean isPresent = false;
+
+            for(int i=0;i<temp.size();i++){
+                for(int j=0;j<resoconti.size();j++){
+                    if(resoconti.get(j).getEsercizio().getName().equals(temp.get(i).getEsercizio().getName()) &&
+                            resoconti.get(j).getEsercizio().getGiorno() == temp.get(i).getEsercizio().getGiorno() &&
+                            resoconti.get(j).getEsercizio().getMese() == temp.get(i).getEsercizio().getMese() &&
+                            resoconti.get(j).getEsercizio().getAnno() == temp.get(i).getEsercizio().getAnno()){
+
+                        isPresent = true;
+                    }
+                }
+
             }
+
+            if(!isPresent){
+                for(int i=0;i<resoconti.size();i++){
+                    db.addResoconto(resoconti.get(i));
+                }
+            }
+
         }else{
             resoconti = db.getResoconto(email, bambino);
 
