@@ -163,6 +163,7 @@ public class HomeBambino extends AppCompatActivity {
                     intent.putExtra("email", email);
                     intent.putExtra("Bambino", bambino);
                     intent.putExtra("punteggio", punti);
+                    intent.putExtra("logopedista", logopedista);
                     intent.putExtra("source", TAG);
                     startActivityForResult(intent, 1);
 

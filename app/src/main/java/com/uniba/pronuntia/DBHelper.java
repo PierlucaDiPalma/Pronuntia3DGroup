@@ -729,15 +729,33 @@ return infoAppuntamento;
 
 
             }while(cursor.moveToNext());
-
-
-
         }
         cursor.close();
         db.close();
 
         return logopedisti;
 
+    }
+
+    public ArrayList<Giocatore> getGiocatori(String med){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        ArrayList<Giocatore> giocatori = new ArrayList<>();
+
+        if(db!=null){
+            cursor = db.rawQuery("SELECT " + nome_bambino+ ","+ email_genitore+ ","+ email_logopedista + " FROM " + TABLE_TERAPIE + " WHERE " + email_logopedista + " = ?", new String[]{med});
+        }
+
+        while (cursor.moveToNext()){
+            String bambino = cursor.getString(0);
+            String genitore = cursor.getString(1);
+            String logopedista = cursor.getString(2);
+
+            Giocatore giocatore = new Giocatore(bambino, genitore, logopedista, 0);
+            giocatori.add(giocatore);
+        }
+
+        return giocatori;
     }
 
     public boolean addUser(Utente utente) {
@@ -754,6 +772,26 @@ return infoAppuntamento;
         long result = db.insert(TABLE_NAME, null, contentValues);
         Log.d(TAG, "addUser: " + result);
         return result != -1;
+    }
+
+    public Utente getUtente(String userEmail){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        Utente utente = null;
+
+        if(db != null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE EMAIL = ?", new String[]{userEmail});
+        }
+
+        while (cursor.moveToNext()){
+            String email = cursor.getString(0);
+            String nome = cursor.getString(1);
+            String cognome = cursor.getString(2);
+            utente = new Utente(email, nome, cognome, null, null, false);
+        }
+
+        return utente;
+
     }
 
     public Bitmap getAllImages(String id) {
@@ -1065,10 +1103,10 @@ return infoAppuntamento;
             int valore = cursor.getInt(3);
             valori.add(valore);
 
-            for (int i = 0; i < valori.size(); i++) {
-                spesa += valori.get(i);
-            }
+        }
 
+        for (int i = 0; i < valori.size(); i++) {
+            spesa += valori.get(i);
         }
         return spesa;
     }
@@ -1093,31 +1131,6 @@ return infoAppuntamento;
         }
         return personaggi;
     }
-
-    public Personaggio getPersonaggio(String child, String user, String name){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        Personaggio personaggio = null;
-
-        if(db!= null){
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_ACQUISTI + " WHERE BAMBINO = ? AND GENITORE = ? AND PERSONAGGIO = ?", new String[]{child, user, name});
-        }
-
-        while(cursor.moveToNext()) {
-            String nome = cursor.getString(2);
-            int valore = cursor.getInt(3);
-            byte[] pic = cursor.getBlob(4);
-
-            Log.d(TAG, "getPersonaggio DB: " + nome + " " + valore);
-            Bitmap picPersonaggio = BitmapFactory.decodeByteArray(pic, 0, pic.length);
-
-            personaggio = new Personaggio(nome, valore, picPersonaggio);
-        }
-
-        return personaggio;
-    }
-
 
 
     public ArrayList<Resoconto> getResoconto(String user, String child){
@@ -1156,6 +1169,7 @@ return infoAppuntamento;
         }
         return resoconti;
     }
+
 
 
     public ArrayList<Esercizio> getDenominazione(String user, String child, int day, int month, int year){
