@@ -20,6 +20,9 @@
         android:theme="@style/Theme.Pronuntia"
         tools:targetApi="31">
         <activity
+            android:name=".Classifica"
+            android:exported="false" />
+        <activity
             android:name=".Trofeo"
             android:exported="false" />
         <activity

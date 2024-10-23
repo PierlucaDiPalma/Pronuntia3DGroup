@@ -124,6 +124,7 @@ public class GamePath extends AppCompatActivity {
                 Intent intent = new Intent(GamePath.this, RisultatoFinale.class);
                 intent.putExtra("Bambino", bambino);
                 intent.putExtra("email", email);
+                intent.putExtra("logopedista", logopedista);
                 intent.putExtra("Punteggio", punteggio);
                 intent.putExtra("Aiuti", numeroAiuti);
                 intent.putExtra("Corretti", corretti);

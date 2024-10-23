@@ -3,6 +3,8 @@ package com.uniba.pronuntia;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,12 +27,15 @@ public class RisultatoFinale extends AppCompatActivity {
     private TextView correttiText;
     private TextView sbagliatiText;
 
+    private Button classifica;
+
     private int punteggio;
     private int numeroAiuti;
     private int corretti;
     private int sbagliati;
     private String email;
     private String bambino;
+    private String logopedista;
 
     private int totaleCorretti = 0;
     private int premio = 1;
@@ -56,10 +61,15 @@ public class RisultatoFinale extends AppCompatActivity {
         });
 
         db = new DBHelper(this);
+        classifica = findViewById(R.id.classifica);
+
         email = getIntent().getStringExtra("email");
         bambino = getIntent().getStringExtra("Bambino");
+        logopedista = getIntent().getStringExtra("logopedista");
 
         source = getIntent().getStringExtra("source");
+
+        Log.d(TAG, "LOGOPEDISTA: " + logopedista);
 
         if(source.equals("GamePath")){
 
@@ -152,6 +162,17 @@ public class RisultatoFinale extends AppCompatActivity {
 
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(RisultatoFinale.this));
+
+        classifica.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RisultatoFinale.this, Classifica.class);
+                intent.putExtra("genitore", email);
+                intent.putExtra("bambino", bambino);
+                intent.putExtra("logopedista", logopedista);
+                startActivity(intent);
+            }
+        });
 
     }
 }
