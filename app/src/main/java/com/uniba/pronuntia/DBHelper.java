@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -90,10 +91,12 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     private static final String ORA="ORA";
     private static final String ISBOOKED="ISBOOKED";
 
-
+private  static final String LUOGO_LAVORO_LOGOPEDISTA="LUOGO_LAVORO_LOGOPEDISTA";
+private static final String NOME_LUOGO="NOME_LUOGO";
+private static final String INDIRIZZO="INDIRIZZO";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 10);
+        super(context, DATABASE_NAME, null, 12);
     }
 
     private static final String TAG = "DBHelper";
@@ -271,8 +274,31 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
                 + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
                 + ")");
+if(oldVersion<11){
 
 
+    db.execSQL("CREATE TABLE IF NOT EXISTS " + LUOGO_LAVORO_LOGOPEDISTA + "("
+            + EMAIL + " TEXT,"
+            + NOME_LUOGO +" TEXT,"
+            + INDIRIZZO +" TEXT,"
+            + "PRIMARY KEY (" + INDIRIZZO+"),"
+            + "FOREIGN KEY ("+ EMAIL + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+            + ")");
+
+
+
+
+
+
+
+
+}
+if(oldVersion<12){
+    db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN LUOGO_INCONTRO TEXT");
+
+
+    db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN INDIRIZZO TEXT");
+}
 
 
     }
@@ -379,7 +405,7 @@ private ArrayList<String> generaFasceOrarie(){
 
     }
 
-    public void inserisciAppuntamentifissati(String email_genitore,String email_logopedista,String data,String ora){
+    public void inserisciAppuntamentifissati(String email_genitore,String email_logopedista,String data,String ora,String luogo,String indirizzo){
 
 
 
@@ -390,6 +416,8 @@ private ArrayList<String> generaFasceOrarie(){
             cv.put("email_logopedista",email_logopedista);
             cv.put("DATA",data);
             cv.put("ORA",ora);
+            cv.put("LUOGO_INCONTRO",luogo);
+            cv.put("INDIRIZZO",indirizzo);
             long result= db.insert(APPUNTAMENTI_FISSATI,null,cv);
             if (result == -1) {
                 Log.e(TAG, "Errore nell'inserimento appuntamento");
@@ -470,9 +498,15 @@ return infoAppuntamento;
 
     public List<itemAppuntamento> getInfoAppuntamentoFissato(String email_genitore) {
         ArrayList<itemAppuntamento> infoAppuntamento = new ArrayList<>();
-        String query = "SELECT " + TABLE_NAME + ".NOME, " + TABLE_NAME + ".COGNOME," + APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA " +
-                "FROM " + TABLE_NAME + " JOIN " + APPUNTAMENTI_FISSATI + " ON " +
+        String query = "SELECT " + TABLE_NAME + ".NOME, " + TABLE_NAME + ".COGNOME, " +
+                APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA, " +
+                LUOGO_LAVORO_LOGOPEDISTA + ".INDIRIZZO, " +
+                APPUNTAMENTI_FISSATI + ".LUOGO_INCONTRO " +  // Assicurati che LUOGO_INCONTRO sia una colonna nella tabella APPUNTAMENTI_FISSATI
+                "FROM " + TABLE_NAME + " " +
+                "JOIN " + APPUNTAMENTI_FISSATI + " ON " +
                 TABLE_NAME + ".EMAIL = " + APPUNTAMENTI_FISSATI + ".email_logopedista " +
+                "JOIN " + LUOGO_LAVORO_LOGOPEDISTA + " ON " +
+                LUOGO_LAVORO_LOGOPEDISTA + ".EMAIL = " + APPUNTAMENTI_FISSATI + ".email_logopedista " +
                 "WHERE " + APPUNTAMENTI_FISSATI + ".email_genitore = ?";
 
         String[] valori = {email_genitore};
@@ -488,7 +522,9 @@ return infoAppuntamento;
 
                     String Data = cursor.getString(cursor.getColumnIndexOrThrow("DATA"));
                     String ora = cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
-                    itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data + " ", ora);
+                    String luogoIncontro = cursor.getString(cursor.getColumnIndexOrThrow("LUOGO_INCONTRO"));
+                    String indirizzo = cursor.getString(cursor.getColumnIndexOrThrow("INDIRIZZO"));
+                    itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data + " ", ora,luogoIncontro,indirizzo);
                     infoAppuntamento.add(item);
                 } while (cursor.moveToNext());
 
@@ -499,6 +535,36 @@ return infoAppuntamento;
         }
         return infoAppuntamento;
     }
+    public List<String> getLuogoIncontro(String email_logopedista){
+
+        ArrayList<String> info=new ArrayList<>();
+        String query = "SELECT * FROM " + LUOGO_LAVORO_LOGOPEDISTA + " WHERE " + EMAIL + " = ?";
+
+
+        String[] valori={email_logopedista};
+        try(SQLiteDatabase db=this.getReadableDatabase()){
+            Cursor cursor=db.rawQuery(query,valori);
+
+            if(cursor.moveToFirst()){
+
+                do{
+
+                    String luogo=cursor.getString(cursor.getColumnIndexOrThrow("NOME_LUOGO"));
+                    String indirizzo=cursor.getString(cursor.getColumnIndexOrThrow("INDIRIZZO"));
+                    info.add(luogo);
+                    info.add(indirizzo);
+                }while(cursor.moveToNext());
+
+            }
+            cursor.close();
+
+        }
+
+        return info;
+
+    }
+
+
 
 
     public List<itemAppuntamento> getInfoAppuntamentoPendente(String email_logopedista){
@@ -739,8 +805,30 @@ return infoAppuntamento;
         return logopedisti;
 
     }
+    public void AddInfoLavoroLogopedista(String nomeLuogo,String Indirizzo,String email){
+
+        try(SQLiteDatabase db=this.getWritableDatabase()){
+            ContentValues cv=new ContentValues();
+            cv.put("EMAIL",email);
+            cv.put("NOME_LUOGO",nomeLuogo);
+            cv.put("INDIRIZZO",Indirizzo);
+Long result=db.insert(LUOGO_LAVORO_LOGOPEDISTA,null,cv);
+if(result!=-1){
+    Log.i("Riga inserita con successo","ok");
+}
+
+        }catch (SQLiteCantOpenDatabaseException e){
+            Log.e(e.getMessage(),e.getLocalizedMessage());
+        }
+
+
+
+    }
+
 
     public boolean addUser(Utente utente) {
+        this.popolaTabellaAppuntamenti();
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         Log.d(TAG, "addUser: " + utente.getEmail());

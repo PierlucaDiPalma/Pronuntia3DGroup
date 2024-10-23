@@ -22,6 +22,7 @@ public class AppuntamentiPendentiRecyclerAdapter extends  RecyclerView.Adapter<A
 private List<itemAppuntamento> itemAppuntamentoList;
 private DBHelper db;
 private Context context;
+private List<String> info;
     public AppuntamentiPendentiRecyclerAdapter(Context context , List<itemAppuntamento> item) {
 this.context=context;
         this.itemAppuntamentoList=item;
@@ -41,12 +42,13 @@ this.context=context;
     public void onBindViewHolder(@NonNull Viewholder holder, int position) {
 itemAppuntamento itemAppuntamento=this.itemAppuntamentoList.get(position);
 db=new DBHelper(this.context);
+
         SharedPreferences sdp= context.getSharedPreferences("LogoPrefs",context.MODE_PRIVATE);
         String emailLogo=sdp.getString("userEmail",null);
 
         SharedPreferences sdp2= context.getSharedPreferences("UserPrefs",context.MODE_PRIVATE);
       String emailGenitore=sdp2.getString("userEmail",null);
-
+        info=db.getLuogoIncontro(emailLogo);
 holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getNomeGenitore());
         holder.data.setText("Data:"+" "+itemAppuntamento.getData());
         holder.ora.setText("Ora:"+" "+itemAppuntamento.getOra());
@@ -61,7 +63,7 @@ holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getNomeGenitore()
         holder.accetta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              db.inserisciAppuntamentifissati(emailGenitore,emailLogo, itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim());
+              db.inserisciAppuntamentifissati(emailGenitore,emailLogo, itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim(),info.get(0),info.get(1));
             }
         });
 

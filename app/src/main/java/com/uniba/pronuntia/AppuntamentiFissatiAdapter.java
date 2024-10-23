@@ -39,8 +39,8 @@ itemAppuntamento itemAppuntamento=this.appuntamentiFissati.get(position);
         holder.nomeLogopedista.setText("Nome logopedista:"+itemAppuntamento.getNomeGenitore());
         holder.data.setText("Data:"+" "+itemAppuntamento.getData());
         holder.ora.setText("Ora:"+" "+itemAppuntamento.getOra());
-
-
+holder.LuogoIncontro.setText("Luogo Incotro"+" "+itemAppuntamento.getLuogoincotro());
+holder.Indirizzo.setText("Indirizzo"+" "+itemAppuntamento.getIndirizzo());
 
     }
 
@@ -53,11 +53,13 @@ itemAppuntamento itemAppuntamento=this.appuntamentiFissati.get(position);
         TextView nomeLogopedista;
         TextView data;
         TextView ora;
-
+TextView LuogoIncontro;
+TextView Indirizzo;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
+LuogoIncontro=itemView.findViewById(R.id.LuogoIncotro);
+Indirizzo=itemView.findViewById(R.id.Indirizzo);
          nomeLogopedista=itemView.findViewById(R.id.nomeLogopedista);
          data=itemView.findViewById(R.id.data);
          ora=itemView.findViewById(R.id.Ora);

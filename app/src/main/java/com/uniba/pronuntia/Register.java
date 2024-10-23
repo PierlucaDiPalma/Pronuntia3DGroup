@@ -2,11 +2,13 @@ package com.uniba.pronuntia;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,18 +50,20 @@ public class Register extends AppCompatActivity {
 
     private Button regBtn;
     private TextView logLink;
-
+private  String LuogoLavoro;
+private String IndirizzoLavoro;
     private static final String TAG = "Register";
     private boolean emailIsPresent = false;
-
-
+private EditText nomeLuogoLavoro;
+private EditText IndirizzoLuogoLavoro;
+private LinearLayout linearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
 
-
+linearLayout=findViewById(R.id.editTexts);
         emailEdit = findViewById(R.id.email);
         nomeEdit = findViewById(R.id.nome);
         cognomeEdit = findViewById(R.id.cognome);
@@ -79,9 +83,23 @@ public class Register extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked){
+
+                    nomeLuogoLavoro=new EditText(Register.this);
+                    IndirizzoLuogoLavoro=new EditText(Register.this);
+
+                    nomeLuogoLavoro.setHint("Luogo di lavoro");
+                    IndirizzoLuogoLavoro.setHint("Domicilio lavorativo");
+                    linearLayout.addView(nomeLuogoLavoro);
+                    linearLayout.addView(IndirizzoLuogoLavoro);
+
+                    ImpostaEditext(nomeLuogoLavoro,linearLayout);
+                    ImpostaEditext(IndirizzoLuogoLavoro,linearLayout);
+
                     Toast.makeText(Register.this, "Sei un logopedista", Toast.LENGTH_SHORT).show();
                     isLogopedista = true;
                 }else{
+                    linearLayout.removeView(nomeLuogoLavoro);
+                    linearLayout.removeView(IndirizzoLuogoLavoro);
                     Toast.makeText(Register.this, "Non sei un logopedista", Toast.LENGTH_SHORT).show();
                     isLogopedista = false;
                 }
@@ -103,6 +121,8 @@ public class Register extends AppCompatActivity {
 
                 Utente utente = new Utente(email, nome, cognome, telefono, password, isLogopedista);
 
+
+
                 if(email.isEmpty() || nome.isEmpty() || cognome.isEmpty() || telefono.isEmpty() || password.isEmpty()){
                     Toast.makeText(Register.this, "Alcuni campi sono vuoti", Toast.LENGTH_SHORT).show();
                 }else if(!password.equals(conPassword)){
@@ -112,6 +132,12 @@ public class Register extends AppCompatActivity {
                     if(!db.isSigned(email)){
 
                         if(db.addUser(utente)){
+
+                            if(isLogopedista){
+                                LuogoLavoro=nomeLuogoLavoro.getText().toString().trim();
+                                IndirizzoLavoro=IndirizzoLuogoLavoro.getText().toString().trim();
+                                db.AddInfoLavoroLogopedista(LuogoLavoro,IndirizzoLavoro,email);
+                            }
                             Toast.makeText(Register.this, "Registrazione avvenuta", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(Register.this, Login.class));
                             
@@ -138,6 +164,18 @@ public class Register extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    public void ImpostaEditext(EditText text,LinearLayout parent){
+        text.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        text.setLines(2);
+        text.setPadding(50,0,20,0);
+       LinearLayout.LayoutParams parametri= (LinearLayout.LayoutParams) text.getLayoutParams();
+
+
+        parametri.setMargins(50,15,50,0);
+        text.setLayoutParams(parametri);
+
     }
 
 

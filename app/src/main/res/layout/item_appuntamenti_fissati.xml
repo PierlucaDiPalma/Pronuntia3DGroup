@@ -15,7 +15,7 @@
 
             android:id="@+id/textContainer"
             android:layout_width="300dp"
-            android:layout_height="100dp"
+            android:layout_height="150dp"
 
             android:orientation="vertical"
 
@@ -30,6 +30,20 @@
                 android:text="Nomelogopedista"
                 android:textSize="16sp" />
 
+            <TextView
+                android:id="@+id/LuogoIncotro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="LuogoIncontro"
+                android:textSize="16sp" />
+            <TextView
+                android:id="@+id/Indirizzo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Indirizzo"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/data"
