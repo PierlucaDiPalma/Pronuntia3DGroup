@@ -61,7 +61,7 @@ holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getNomeGenitore()
         holder.accetta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //db.inserisciAppuntamentifissati(emailGenitore,emailLogo, itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim());
+              db.inserisciAppuntamentifissati(emailGenitore,emailLogo, itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim());
             }
         });
 

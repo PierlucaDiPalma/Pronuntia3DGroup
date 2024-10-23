@@ -13,6 +13,7 @@ import android.telephony.ims.ImsMmTelManager;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String contenuti_terapia = "contenuti_terapia";
     private static final String email_genitore = "email_genitore";
     private static final String email_logopedista = "email_logopedista";
-
+private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     private static final String TABLE_RESOCONTO = "RISULTATI_ESERCIZI";
     private static final String BAMBINO = "BAMBINO";
     private static final String PUNTEGGIO = "PUNTEGGIO";
@@ -261,7 +262,15 @@ public class DBHelper extends SQLiteOpenHelper {
                     + NUMERO_PREMI + " INTEGER, "
                     + "PRIMARY KEY (BAMBINO, GENITORE))");
         }
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + APPUNTAMENTI_FISSATI + " ("
+                + email_logopedista + " TEXT, "
+                + email_genitore + " TEXT, "
+                + DATA + " TEXT, "
+                + ORA + " TEXT, "
+                + "PRIMARY KEY (" + DATA + ", " + ORA + "), "
+                + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
+                + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                + ")");
 
 
 
@@ -369,6 +378,129 @@ private ArrayList<String> generaFasceOrarie(){
 
 
     }
+
+    public void inserisciAppuntamentifissati(String email_genitore,String email_logopedista,String data,String ora){
+
+
+
+
+        try(SQLiteDatabase db=this.getWritableDatabase()){
+            ContentValues cv=new ContentValues();
+            cv.put("email_genitore",email_genitore);
+            cv.put("email_logopedista",email_logopedista);
+            cv.put("DATA",data);
+            cv.put("ORA",ora);
+            long result= db.insert(APPUNTAMENTI_FISSATI,null,cv);
+            if (result == -1) {
+                Log.e(TAG, "Errore nell'inserimento appuntamento");
+            } else {
+                Log.d(TAG, "appuntamento inserito con successo, ID: " + result);
+            }
+
+        }
+
+
+
+    }
+
+
+    public List<itemAppuntamento> getInfoAppuntamentiPassati(String email_genitore){
+        ArrayList<itemAppuntamento> infoAppuntamento = new ArrayList<>();
+        Calendar calendar=Calendar.getInstance();
+        Date dataCompleta=calendar.getTime();
+SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd",Locale.getDefault());
+SimpleDateFormat sdf2=new SimpleDateFormat("HH:mm",Locale.getDefault());
+  String dataAttuale=sdf.format(dataCompleta);
+String oraAttuale=sdf2.format(dataCompleta);
+
+        String query = "SELECT " + TABLE_NAME + ".NOME, " + TABLE_NAME + ".COGNOME, " +
+                APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA " +
+                "FROM " + TABLE_NAME +
+                " JOIN " + APPUNTAMENTI_FISSATI + " ON " +
+                TABLE_NAME + ".EMAIL = " + APPUNTAMENTI_FISSATI + ".email_logopedista " +
+                "WHERE "+APPUNTAMENTI_FISSATI + ".email_genitore = ?";
+
+        String[] valori={email_genitore};
+
+try(SQLiteDatabase db=this.getReadableDatabase()){
+
+    Cursor cursor= db.rawQuery(query,valori);
+    if(cursor.moveToFirst()){
+    do{
+     String nome=   cursor.getString(cursor.getColumnIndexOrThrow("NOME"));
+    String cognome=    cursor.getString(cursor.getColumnIndexOrThrow("COGNOME"));
+     String Data=   cursor.getString(cursor.getColumnIndexOrThrow("DATA"));
+      String Ora=  cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
+
+      String[] splitted=Ora.split("-");
+        if (splitted.length == 2) {
+            String oraFinale = splitted[1].trim();
+
+
+            if (Data.compareTo(dataAttuale) < 0) {
+
+                itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data, Ora);
+                infoAppuntamento.add(item);
+            } else if (Data.equals(dataAttuale)) {
+
+                if (oraFinale.compareTo(oraAttuale) < 0) {
+                    itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data, Ora);
+                    infoAppuntamento.add(item);
+                }
+            }
+        }
+    }while (cursor.moveToNext());
+
+    }
+
+
+
+cursor.close();
+}
+
+return infoAppuntamento;
+
+    }
+
+
+
+
+
+
+
+    public List<itemAppuntamento> getInfoAppuntamentoFissato(String email_genitore) {
+        ArrayList<itemAppuntamento> infoAppuntamento = new ArrayList<>();
+        String query = "SELECT " + TABLE_NAME + ".NOME, " + TABLE_NAME + ".COGNOME," + APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA " +
+                "FROM " + TABLE_NAME + " JOIN " + APPUNTAMENTI_FISSATI + " ON " +
+                TABLE_NAME + ".EMAIL = " + APPUNTAMENTI_FISSATI + ".email_logopedista " +
+                "WHERE " + APPUNTAMENTI_FISSATI + ".email_genitore = ?";
+
+        String[] valori = {email_genitore};
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            Cursor cursor = db.rawQuery(query, valori);
+
+            if (cursor.moveToFirst()) {
+
+                do {
+
+                    String nome = cursor.getString(cursor.getColumnIndexOrThrow("NOME"));
+                    String cognome = cursor.getString(cursor.getColumnIndexOrThrow("COGNOME"));
+
+                    String Data = cursor.getString(cursor.getColumnIndexOrThrow("DATA"));
+                    String ora = cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
+                    itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data + " ", ora);
+                    infoAppuntamento.add(item);
+                } while (cursor.moveToNext());
+
+            }
+            cursor.close();
+
+
+        }
+        return infoAppuntamento;
+    }
+
+
     public List<itemAppuntamento> getInfoAppuntamentoPendente(String email_logopedista){
 
         ArrayList<itemAppuntamento> infoAppuntamento=new ArrayList<>();

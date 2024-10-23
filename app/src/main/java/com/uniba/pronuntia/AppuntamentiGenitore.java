@@ -63,7 +63,7 @@ LoadFragment(0);
 fragment=new Appuntamenti_fissati_Fragment();
                 break;
             case 1:
-
+fragment=new Appuntamenti_passati_fragment();
                 break;
             case 2:
 fragment=new RichiestaAppuntamentoFragment();
