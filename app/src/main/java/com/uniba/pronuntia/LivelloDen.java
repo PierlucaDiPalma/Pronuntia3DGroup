@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +84,7 @@ public class LivelloDen extends Fragment {
     private int numeroAiuti = 0;
     private int corretti = 0;
     private int sbagliati = 0;
+    private Esercizio esercizio;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,14 +99,25 @@ public class LivelloDen extends Fragment {
         titolo = view.findViewById(R.id.livello);
 
         if(getArguments() != null){
-            titolo.setText(getArguments().getString("Titolo"));
-            punteggio = getArguments().getInt("Punteggio");
+            /*titolo.setText(getArguments().getString("Titolo"));
             byte[] byteArray = getArguments().getByteArray("Immagine");
             Bitmap image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
             immagine.setImageBitmap(image);
 
-            parola = getArguments().getString("Aiuto");
 
+            parola = getArguments().getString("Aiuto");
+*/
+            punteggio = getArguments().getInt("Punteggio");
+            esercizio = getArguments().getParcelable("esercizio");
+            titolo.setText(esercizio.getName());
+            parola = esercizio.getAiuto();
+            String imagePath = esercizio.getImmagine1();
+
+            Log.d("LivelloDen", "PATH: " + imagePath);
+
+            if (imagePath != null) {
+                immagine.setImageURI(Uri.parse(imagePath));
+            }
         }
 
         parla.setOnClickListener(new View.OnClickListener() {

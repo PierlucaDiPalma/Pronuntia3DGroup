@@ -12,14 +12,14 @@ public class Esercizio implements Parcelable {
     private String email;
     private String name;
     private String tipo;
-    private byte[] immagine1;
-    private byte[] immagine2;
+    private String immagine1;
+    private String immagine2;
     private String aiuto;
     private String[] sequenza = new String[3];
     private int giorno, mese, anno;
     private String bambino;
 
-    public Esercizio(String email, String bambino, String name, String tipo, byte[] immagine1, byte[] immagine2, String aiuto, String[] sequenza, int giorno, int mese, int anno) {
+    public Esercizio(String email, String bambino, String name, String tipo, String immagine1, String immagine2, String aiuto, String[] sequenza, int giorno, int mese, int anno) {
         this.email = email;
         this.bambino = bambino;
         this.name = name;
@@ -39,11 +39,8 @@ public class Esercizio implements Parcelable {
         bambino = in.readString();
         name = in.readString();
         tipo = in.readString();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            immagine1 = in.readBlob();
-            immagine2 = in.readBlob();
-        }
-
+        immagine1 = in.readString();
+        immagine2 = in.readString();
         aiuto = in.readString();
         sequenza = in.createStringArray();
         giorno = in.readInt();
@@ -75,6 +72,22 @@ public class Esercizio implements Parcelable {
        return bambino;
     }
 
+    public String getImmagine1() {
+        return immagine1;
+    }
+
+    public void setImmagine1(String immagine1) {
+        this.immagine1 = immagine1;
+    }
+
+    public String getImmagine2() {
+        return immagine2;
+    }
+
+    public void setImmagine2(String immagine2) {
+        this.immagine2 = immagine2;
+    }
+
     public void setBambino(String bambino) {
         this.bambino = bambino;
     }
@@ -97,22 +110,6 @@ public class Esercizio implements Parcelable {
 
     public String getAiuto() {
         return aiuto;
-    }
-
-    public byte[] getImmagine1() {
-        return immagine1;
-    }
-
-    public void setImmagine1(byte[] immagine1) {
-        this.immagine1 = immagine1;
-    }
-
-    public byte[] getImmagine2() {
-        return immagine2;
-    }
-
-    public void setImmagine2(byte[] immagine2) {
-        this.immagine2 = immagine2;
     }
 
     public String[] getSequenza() {
@@ -163,11 +160,8 @@ public class Esercizio implements Parcelable {
         parcel.writeString(bambino);
         parcel.writeString(name);
         parcel.writeString(tipo);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            parcel.writeBlob(immagine1);
-            parcel.writeBlob(immagine2);
-        }
-
+        parcel.writeString(immagine1);
+        parcel.writeString(immagine2);
         parcel.writeString(aiuto);
         parcel.writeStringArray(sequenza);
         parcel.writeInt(giorno);
