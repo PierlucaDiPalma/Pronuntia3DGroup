@@ -443,6 +443,13 @@ private ArrayList<String> generaFasceOrarie(){
             } else {
                 Log.d(TAG, "appuntamento inserito con successo, ID: " + result);
             }
+            String deleteQuery = "DELETE FROM CALENDARIO WHERE DATA = ? AND ORA = ? AND ISBOOKED = 1";
+            db.execSQL(deleteQuery, new Object[]{data, ora});
+
+        } catch (Exception e) {
+            Log.e(TAG, "Errore durante l'operazione di database", e);
+
+
 
         }
 
@@ -514,6 +521,31 @@ return infoAppuntamento;
 
     }
 
+public boolean isPassato(String Data,String ora) {
+
+    Calendar calendar = Calendar.getInstance();
+    Date dataCompleta = calendar.getTime();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    String dataAttuale = sdf.format(dataCompleta);
+    String oraAttuale = sdf2.format(dataCompleta);
+    String[] splitted = ora.split("-");
+    if (splitted.length == 2) {
+        String oraFinale = splitted[1].trim();
+
+
+        if (Data.compareTo(dataAttuale) < 0) {
+           return true;
+
+        } else if (Data.equals(dataAttuale)) {
+
+            if (oraFinale.compareTo(oraAttuale) < 0) {
+                return true;
+            }
+        }
+    }
+    return  false;
+}
 
 
 
@@ -525,7 +557,7 @@ return infoAppuntamento;
         String query = "SELECT " + TABLE_NAME + ".NOME, " + TABLE_NAME + ".COGNOME, " +
                 APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA, " +
                 LUOGO_LAVORO_LOGOPEDISTA + ".INDIRIZZO, " +
-                APPUNTAMENTI_FISSATI + ".LUOGO_INCONTRO " +  // Assicurati che LUOGO_INCONTRO sia una colonna nella tabella APPUNTAMENTI_FISSATI
+                APPUNTAMENTI_FISSATI + ".LUOGO_INCONTRO " +
                 "FROM " + TABLE_NAME + " " +
                 "JOIN " + APPUNTAMENTI_FISSATI + " ON " +
                 TABLE_NAME + ".EMAIL = " + APPUNTAMENTI_FISSATI + ".email_logopedista " +
@@ -548,8 +580,11 @@ return infoAppuntamento;
                     String ora = cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
                     String luogoIncontro = cursor.getString(cursor.getColumnIndexOrThrow("LUOGO_INCONTRO"));
                     String indirizzo = cursor.getString(cursor.getColumnIndexOrThrow("INDIRIZZO"));
-                    itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data + " ", ora,luogoIncontro,indirizzo);
-                    infoAppuntamento.add(item);
+
+                    if(!isPassato(Data,ora)) {
+                        itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data + " ", ora, luogoIncontro, indirizzo);
+                        infoAppuntamento.add(item);
+                    }
                 } while (cursor.moveToNext());
 
             }

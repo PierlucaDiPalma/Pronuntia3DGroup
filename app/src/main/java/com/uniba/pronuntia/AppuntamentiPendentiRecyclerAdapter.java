@@ -69,6 +69,10 @@ holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getNomeGenitore()
             @Override
             public void onClick(View view) {
               db.inserisciAppuntamentifissati(emailGenitore,emailLogo, itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim(),info.get(0),info.get(1));
+                if (context instanceof Activity) {
+                    Activity activity = (Activity) context;
+                    activity.recreate();
+                }
             }
         });
 
