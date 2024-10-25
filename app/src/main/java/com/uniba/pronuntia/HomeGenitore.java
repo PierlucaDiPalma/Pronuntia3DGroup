@@ -69,8 +69,8 @@ public class HomeGenitore extends AppCompatActivity {
         richiediAppuntamento.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-             Intent intent=new Intent(HomeGenitore.this,SceltaLogopedista.class);
-             intent.putExtra("nomeActivity","richiestaAppuntamento");
+             Intent intent=new Intent(HomeGenitore.this,AppuntamentiGenitore.class);
+
 
              startActivity(intent);
              return true;

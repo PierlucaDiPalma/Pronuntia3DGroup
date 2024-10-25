@@ -139,6 +139,7 @@ linearLayout=findViewById(R.id.editTexts);
                                 db.AddInfoLavoroLogopedista(LuogoLavoro,IndirizzoLavoro,email);
                             }
                             Toast.makeText(Register.this, "Registrazione avvenuta", Toast.LENGTH_SHORT).show();
+
                             startActivity(new Intent(Register.this, Login.class));
                             
 

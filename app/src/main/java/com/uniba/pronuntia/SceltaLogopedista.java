@@ -49,10 +49,11 @@ pulsanteLogopedista.setOnClickListener(new View.OnClickListener() {
             Intent intent = new Intent(SceltaLogopedista.this, RichiestaTerapia.class);
             intent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
             startActivity(intent);
-        } else if (nomeActivity.equals("richiestaAppuntamento")) {
-            Intent intent=new Intent(SceltaLogopedista.this,AppuntamentiGenitore.class);
-            intent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
-            startActivity(intent);
+        } else if (nomeActivity.equals("AppuntamentoGenitore")) {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("EMAIL_LOGOPEDISTA", logopedista.getEmail());
+            setResult(RESULT_OK, resultIntent);
+            finish();
         }
     }
 });

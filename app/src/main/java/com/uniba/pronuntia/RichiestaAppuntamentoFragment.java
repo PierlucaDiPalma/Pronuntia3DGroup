@@ -3,10 +3,12 @@ package com.uniba.pronuntia;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Intent.getIntent;
 
+import static androidx.core.app.ActivityCompat.recreate;
+
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +20,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +36,13 @@ public class RichiestaAppuntamentoFragment extends Fragment {
     private DBHelper db;
     private String emailGenitore;
 
+    public static RichiestaAppuntamentoFragment newInstance(String email) {
+        RichiestaAppuntamentoFragment fragment = new RichiestaAppuntamentoFragment();
+        Bundle args = new Bundle();
+        args.putString("EMAIL_LOGOPEDISTA", email);
+        fragment.setArguments(args);
+        return fragment;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,9 +110,18 @@ return view;
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 db.SetBooked(emailLogopedista,data,ora,emailGenitore);
+
                 Toast.makeText(getActivity().getApplicationContext(), "Appuntamento richiesto", Toast.LENGTH_SHORT).show();
 
+                RichiestaAppuntamentoFragment richiestaAppuntamento = RichiestaAppuntamentoFragment.newInstance(emailLogopedista);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.FragmentContainer, richiestaAppuntamento);
+                transaction.commit();
+
             }
+
+
+
         });
 
         builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {

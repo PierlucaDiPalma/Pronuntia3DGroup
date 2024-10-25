@@ -96,7 +96,7 @@ private static final String NOME_LUOGO="NOME_LUOGO";
 private static final String INDIRIZZO="INDIRIZZO";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 12);
+        super(context, DATABASE_NAME, null, 13);
     }
 
     private static final String TAG = "DBHelper";
@@ -244,7 +244,7 @@ private static final String INDIRIZZO="INDIRIZZO";
                     + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
                     + ")");
 
-            this.popolaTabellaAppuntamenti();
+
 
         }
 
@@ -300,6 +300,21 @@ if(oldVersion<12){
     db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN INDIRIZZO TEXT");
 }
 
+if(oldVersion<13){
+    db.execSQL("DROP TABLE IF EXISTS " + CALENDARIO);
+    db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
+            + email_logopedista + " TEXT, "
+            + email_genitore + " TEXT, "
+            + DATA + " TEXT, "
+            + ORA + " TEXT, "
+            + ISBOOKED + " BOOLEAN, "
+            + "PRIMARY KEY (" + email_logopedista + ", " + DATA + ", " + ORA + "), "
+            + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "), "
+            + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+            + ")");
+
+}
+
 
     }
 
@@ -309,7 +324,7 @@ private ArrayList<String> generaDate(){
         ArrayList<String> date=new ArrayList<String>();
 Calendar calendar=Calendar.getInstance();
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-for(int i=0;i<5*30;i++) {
+for(int i=0;i<1*30;i++) {
 
 
     Date data=calendar.getTime();
@@ -333,9 +348,13 @@ private ArrayList<String> generaFasceOrarie(){
 
     public void popolaTabellaAppuntamenti() {
         ArrayList<Utente> logopedisti = this.getLogopedisti();
+
+
+
+
         try(SQLiteDatabase db = this.getWritableDatabase()) {
 
-
+            db.execSQL("DELETE FROM CALENDARIO WHERE ISBOOKED=0");
 
             ArrayList<String> date = this.generaDate();
             ArrayList<String> fasceOrarie = this.generaFasceOrarie();
@@ -442,11 +461,15 @@ SimpleDateFormat sdf2=new SimpleDateFormat("HH:mm",Locale.getDefault());
 String oraAttuale=sdf2.format(dataCompleta);
 
         String query = "SELECT " + TABLE_NAME + ".NOME, " + TABLE_NAME + ".COGNOME, " +
-                APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA " +
+                APPUNTAMENTI_FISSATI + ".DATA, " + APPUNTAMENTI_FISSATI + ".ORA, " +
+                LUOGO_LAVORO_LOGOPEDISTA + ".NOME_LUOGO, " + LUOGO_LAVORO_LOGOPEDISTA + ".INDIRIZZO " +
                 "FROM " + TABLE_NAME +
                 " JOIN " + APPUNTAMENTI_FISSATI + " ON " +
                 TABLE_NAME + ".EMAIL = " + APPUNTAMENTI_FISSATI + ".email_logopedista " +
-                "WHERE "+APPUNTAMENTI_FISSATI + ".email_genitore = ?";
+                "JOIN " + LUOGO_LAVORO_LOGOPEDISTA + " ON " +
+                LUOGO_LAVORO_LOGOPEDISTA + ".EMAIL = " + TABLE_NAME + ".EMAIL " +
+                "WHERE " + APPUNTAMENTI_FISSATI + ".email_genitore = ?";
+
 
         String[] valori={email_genitore};
 
@@ -455,11 +478,12 @@ try(SQLiteDatabase db=this.getReadableDatabase()){
     Cursor cursor= db.rawQuery(query,valori);
     if(cursor.moveToFirst()){
     do{
-     String nome=   cursor.getString(cursor.getColumnIndexOrThrow("NOME"));
-    String cognome=    cursor.getString(cursor.getColumnIndexOrThrow("COGNOME"));
-     String Data=   cursor.getString(cursor.getColumnIndexOrThrow("DATA"));
+      String nome=   cursor.getString(cursor.getColumnIndexOrThrow("NOME"));
+      String cognome=    cursor.getString(cursor.getColumnIndexOrThrow("COGNOME"));
+      String Data=   cursor.getString(cursor.getColumnIndexOrThrow("DATA"));
       String Ora=  cursor.getString(cursor.getColumnIndexOrThrow("ORA"));
-
+      String luogoLavoro=cursor.getString(cursor.getColumnIndexOrThrow("NOME_LUOGO"));
+      String indirizzo=cursor.getString(cursor.getColumnIndexOrThrow("INDIRIZZO"));
       String[] splitted=Ora.split("-");
         if (splitted.length == 2) {
             String oraFinale = splitted[1].trim();
@@ -467,12 +491,12 @@ try(SQLiteDatabase db=this.getReadableDatabase()){
 
             if (Data.compareTo(dataAttuale) < 0) {
 
-                itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data, Ora);
+                itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data, Ora,luogoLavoro,indirizzo);
                 infoAppuntamento.add(item);
             } else if (Data.equals(dataAttuale)) {
 
                 if (oraFinale.compareTo(oraAttuale) < 0) {
-                    itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data, Ora);
+                    itemAppuntamento item = new itemAppuntamento(nome + " " + cognome, Data, Ora,luogoLavoro,indirizzo);
                     infoAppuntamento.add(item);
                 }
             }
@@ -719,15 +743,15 @@ return infoAppuntamento;
         ArrayList<Utente> logopedisti = new ArrayList<>();
         try(SQLiteDatabase db = this.getReadableDatabase()) { // Ottieni un'istanza del database
 
-            // Query per selezionare solo gli utenti che sono logopedisti
+
             String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + ISLOGOPEDISTA + " = 1";
 
-            // Esegui la query
+
             Cursor cursor = db.rawQuery(query, null);
 
             if (cursor.moveToFirst()) {
                 do {
-                    // Estrai i valori delle colonne
+
                     int columnEmail = cursor.getColumnIndex(EMAIL);
                     String email = cursor.getString(columnEmail);
 
@@ -743,16 +767,16 @@ return infoAppuntamento;
                     int columnPassword = cursor.getColumnIndex(PASSWORD);
                     String password = cursor.getString(columnPassword);
 
-                    // Crea un oggetto RichiestaTerapia per ogni logopedista
+
                     Utente logopedista = new Utente(email, nome, cognome, telefono, password, true);
 
-                    // Aggiungi alla lista
+
                     logopedisti.add(logopedista);
 
                 } while (cursor.moveToNext());
             }
 
-            cursor.close(); // Chiudi il Cursor
+            cursor.close();
         }catch(Exception e){
            Log.e("errore nell'apertura del db",e.getMessage());
             }

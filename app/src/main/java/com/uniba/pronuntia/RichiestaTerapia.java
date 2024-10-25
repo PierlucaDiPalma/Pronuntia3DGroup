@@ -146,6 +146,7 @@ backBtn.setOnClickListener(new View.OnClickListener() {
                 if (item.getItemId() == R.id.RichiediTerapia) {
 
                     Intent intent = new Intent(RichiestaTerapia.this, SceltaLogopedista.class);
+                    intent.putExtra("nomeActivity","richiediTerapia");
                     startActivity(intent);
                     return true;
                 }

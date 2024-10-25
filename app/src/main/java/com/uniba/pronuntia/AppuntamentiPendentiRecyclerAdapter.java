@@ -1,5 +1,6 @@
 package com.uniba.pronuntia;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -58,6 +59,10 @@ holder.emailGenitore.setText("Nome genitore:"+itemAppuntamento.getNomeGenitore()
             @Override
             public void onClick(View view) {
             db.SetUnBooked(itemAppuntamento.getData().trim(),itemAppuntamento.getOra().trim());
+                if (context instanceof Activity) {
+                    Activity activity = (Activity) context;
+                    activity.recreate();
+                }
             }
         });
         holder.accetta.setOnClickListener(new View.OnClickListener() {
