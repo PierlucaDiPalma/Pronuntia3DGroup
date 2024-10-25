@@ -2,6 +2,7 @@ package com.uniba.pronuntia;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -78,7 +79,7 @@ public class LivelloCop extends Fragment {
     private int numeroAiuti = 0;
     private int corretti = 0;
     private int sbagliati = 0;
-
+    private Esercizio esercizio;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,16 +98,22 @@ public class LivelloCop extends Fragment {
         immagine1 = view.findViewById(R.id.img1);
         immagine2 = view.findViewById(R.id.img2);
 
-        ArrayList<byte[]> immagini = new ArrayList<>();
+        ArrayList<String> immagini = new ArrayList<>();
 
         if(getArguments() != null){
 
-            titolo.setText(getArguments().getString("Titolo"));
+
+            /*titolo.setText(getArguments().getString("Titolo"));
             parola = getArguments().getString("Aiuto");
-            contenuto.setText(getArguments().getString("Aiuto"));
+            contenuto.setText(getArguments().getString("Aiuto"));*/
+
+            esercizio = getArguments().getParcelable("esercizio");
+            titolo.setText(esercizio.getName());
+            parola = esercizio.getAiuto();
+            contenuto.setText(esercizio.getAiuto());
             punteggio = getArguments().getInt("Punteggio");
-            byte[] correctImage = getArguments().getByteArray("Immagine1");
-            byte[] incorrectImage = getArguments().getByteArray("Immagine2");
+            String correctImage = esercizio.getImmagine1();
+            String incorrectImage = esercizio.getImmagine2();
 
             if(rand == 0) {
                 immagini.add(correctImage);
@@ -117,11 +124,13 @@ public class LivelloCop extends Fragment {
             }
 
 
-            Bitmap image = BitmapFactory.decodeByteArray(immagini.get(0), 0, immagini.get(0).length);
+            /*Bitmap image = BitmapFactory.decodeByteArray(immagini.get(0), 0, immagini.get(0).length);
             immagine1.setImageBitmap(image);
 
             image = BitmapFactory.decodeByteArray(immagini.get(1), 0, immagini.get(1).length);
-            immagine2.setImageBitmap(image);
+            immagine2.setImageBitmap(image);*/
+            immagine1.setImageURI(Uri.parse(immagini.get(0)));
+            immagine2.setImageURI(Uri.parse(immagini.get(1)));
 
             immagine1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -172,7 +181,7 @@ public class LivelloCop extends Fragment {
         return view;
     }
 
-    private void checkAnswer(byte[] selectedImageUrl, byte[] correctImage, TextView giudizio) {
+    private void checkAnswer(String selectedImageUrl, String correctImage, TextView giudizio) {
         if (selectedImageUrl.equals(correctImage)) {
             giudizio.setText("Giusto!");
             punteggio +=  10;

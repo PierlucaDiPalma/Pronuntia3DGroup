@@ -1,7 +1,9 @@
 package com.uniba.pronuntia;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -222,7 +224,10 @@ public class Coppia extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == AppCompatActivity.RESULT_OK){
+
                         Uri imageUri = result.getData().getData();
+                        String path = getRealPathFromURI(imageUri);
+
                         immagine1.setVisibility(View.VISIBLE);
                         immagine1.setImageURI(imageUri);
                         imageLoad1.setText("Cambia immagine");
@@ -241,7 +246,7 @@ public class Coppia extends AppCompatActivity {
                         byte[] imageBytes = outputStreamCorrect.toByteArray();
 
 
-                        esercizio.setImmagine1(imageBytes);
+                        esercizio.setImmagine1(path);
 
                     }
                 }
@@ -259,7 +264,10 @@ public class Coppia extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == AppCompatActivity.RESULT_OK){
+
                         Uri imageUri = result.getData().getData();
+                        String path = getRealPathFromURI(imageUri);
+
                         immagine2.setVisibility(View.VISIBLE);
                         immagine2.setImageURI(imageUri);
                         imageLoad2.setText("Cambia immagine");
@@ -277,7 +285,7 @@ public class Coppia extends AppCompatActivity {
                         byte[] imageBytes = outputStreamCorrect.toByteArray();
 
 
-                        esercizio.setImmagine2(imageBytes);
+                        esercizio.setImmagine2(path);
 
                     }
                 }
@@ -298,6 +306,7 @@ public class Coppia extends AppCompatActivity {
 
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         try{
@@ -307,6 +316,11 @@ public class Coppia extends AppCompatActivity {
                 if (requestCode == PICK_IMAGE_REQUEST_1) {
 
                     imagePath = data.getData();
+                    String path = getRealPathFromURI(imagePath);
+
+                    final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(imagePath, takeFlags);
+
                     image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                     immagine1.setImageBitmap(image);
                     imageLoad1.setText("Cambia immagine");
@@ -315,10 +329,15 @@ public class Coppia extends AppCompatActivity {
                     image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
                     byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
-                    esercizio.setImmagine1(imageBytes);
+                    esercizio.setImmagine1(path);
 
                 }else if(requestCode == PICK_IMAGE_REQUEST_2){
                     imagePath = data.getData();
+                    String path = getRealPathFromURI(imagePath);
+
+                    final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(imagePath, takeFlags);
+
                     image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                     immagine2.setImageBitmap(image);
                     imageLoad2.setText("Cambia immagine");
@@ -327,7 +346,7 @@ public class Coppia extends AppCompatActivity {
                     image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
                     byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
-                    esercizio.setImmagine2(imageBytes);
+                    esercizio.setImmagine2(path);
                 }
             }
         }catch (Exception e){
@@ -336,4 +355,16 @@ public class Coppia extends AppCompatActivity {
     }
 
 
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(column_index);
+            cursor.close();
+            return path;
+        }
+        return null;
+    }
 }

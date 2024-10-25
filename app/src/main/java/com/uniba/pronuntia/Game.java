@@ -101,9 +101,10 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
     private void loadFragment(int i, Esercizio esercizio, Bundle args){
         if(esercizio.getTipo().equals("Denominazione")){
 
-            args.putString("Titolo", esercizio.getName());
-            args.putByteArray("Immagine", esercizio.getImmagine1());
-            args.putString("Aiuto", esercizio.getAiuto());
+            /*args.putString("Titolo", esercizio.getName());
+            args.putString("Immagine", esercizio.getImmagine1());
+            args.putString("Aiuto", esercizio.getAiuto());*/
+            args.putParcelable("esercizio", esercizio);
             args.putInt("Punteggio", punteggio);
 
             LivelloDen fragment = new LivelloDen();
@@ -123,10 +124,11 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
 
         }else if(esercizio.getTipo().equals("Coppia")){
 
-            args.putString("Titolo", esercizio.getName());
-            args.putByteArray("Immagine1", esercizio.getImmagine1());
-            args.putByteArray("Immagine2",esercizio.getImmagine2());
-            args.putString("Aiuto", esercizio.getAiuto());
+            /*args.putString("Titolo", esercizio.getName());
+            args.putString("Immagine1", esercizio.getImmagine1());
+            args.putString("Immagine2",esercizio.getImmagine2());
+            args.putString("Aiuto", esercizio.getAiuto());*/
+            args.putParcelable("esercizio", esercizio);
             args.putInt("Punteggio", punteggio);
             LivelloCop fragment = new LivelloCop();
             fragment.setArguments(args);

@@ -127,7 +127,7 @@ private static final String INDIRIZZO="INDIRIZZO";
                 + BAMBINO + " TEXT, "
                 + TITOLO +" TEXT, "
                 + TIPO +" TEXT, "
-                + IMMAGINE + " BLOB, "
+                + IMMAGINE + " TEXT, "
                 + AIUTO + " TEXT, "
                 + GIORNO + " INTEGER, "
                 + MESE + " INTEGER, "
@@ -153,8 +153,8 @@ private static final String INDIRIZZO="INDIRIZZO";
                 + BAMBINO + " TEXT, "
                 + TITOLO +" TEXT, "
                 + TIPO +" TEXT, "
-                + IMMAGINE_1 + " BLOB, "
-                + IMMAGINE_2 + " BLOB, "
+                + IMMAGINE_1 + " TEXT, "
+                + IMMAGINE_2 + " TEXT, "
                 + AIUTO + " TEXT, "
                 + GIORNO + " INTEGER, "
                 + MESE + " INTEGER, "
@@ -906,7 +906,7 @@ if(result!=-1){
 
     }
 
-    public Bitmap getAllImages(String id) {
+    /*public Bitmap getAllImages(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Bitmap bt = null;
         Cursor cursor = db.rawQuery("SELECT * FROM "+ TABLE_DENOMINAZIONE +" WHERE ID = ?", new String[]{String.valueOf(id)});
@@ -916,7 +916,7 @@ if(result!=-1){
             bt = BitmapFactory.decodeByteArray(image, 0, image.length);
         }
         return bt;
-    }
+    }*/
 
     public boolean isSigned(String email){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1314,7 +1314,7 @@ if(result!=-1){
             String bambino = cursor.getString(2);
             String titolo = cursor.getString(3).replace("+", " ");
             String tipo = cursor.getString(4);
-            byte[] immagine1 = cursor.getBlob(5);
+            String immagine1 = cursor.getString(5);
             String aiuto = cursor.getString(6);
             int giorno = cursor.getInt(7);
             int mese = cursor.getInt(8);
@@ -1402,8 +1402,8 @@ if(result!=-1){
             String titolo = cursor.getString(3).replace("+", " ");
             String tipo = cursor.getString(4);
 
-            byte[] immagine1 = cursor.getBlob(5);
-            byte[] immagine2 = cursor.getBlob(6);
+            String immagine1 = cursor.getString(5);
+            String immagine2 = cursor.getString(6);
             String aiuto = cursor.getString(7);
 
             int giorno = cursor.getInt(8);

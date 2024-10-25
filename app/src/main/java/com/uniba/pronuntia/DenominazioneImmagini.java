@@ -3,6 +3,7 @@ package com.uniba.pronuntia;
 import static androidx.activity.result.ActivityResultCallerKt.registerForActivityResult;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
@@ -235,6 +236,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
     }
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         try{
@@ -243,6 +245,13 @@ public class DenominazioneImmagini extends AppCompatActivity {
             if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null ){
 
                 imagePath = data.getData();
+                String path = imagePath.toString();
+
+                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(imagePath, takeFlags);
+
+                Log.d(TAG, "PATH: " + path);
+
                 image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                 immagine.setImageBitmap(image);
                 imgLoad.setText("Cambia immagine");
@@ -251,7 +260,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
                 byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
-                esercizio.setImmagine1(imageBytes);
+                esercizio.setImmagine1(path);
             }
 
         }catch (Exception e){
@@ -259,5 +268,16 @@ public class DenominazioneImmagini extends AppCompatActivity {
         }
     }
 
-
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(column_index);
+            cursor.close();
+            return path;
+        }
+        return null;
+    }
 }
