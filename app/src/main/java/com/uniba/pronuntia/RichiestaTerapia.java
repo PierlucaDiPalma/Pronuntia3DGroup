@@ -175,7 +175,7 @@ backBtn.setOnClickListener(new View.OnClickListener() {
 String emailGen=sdf.getString("userEmail", null);
 
         databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, emailGen, emailLogopedista);
-
+        databaseHelper.addGiocatore(new Giocatore(nomeBambino, emailGen, emailLogopedista, 0));
         Toast.makeText(this, "Terapia inserita con successo", Toast.LENGTH_SHORT).show();
     }
 }

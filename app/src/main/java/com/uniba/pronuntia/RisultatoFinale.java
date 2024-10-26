@@ -170,6 +170,7 @@ public class RisultatoFinale extends AppCompatActivity {
                 intent.putExtra("genitore", email);
                 intent.putExtra("bambino", bambino);
                 intent.putExtra("logopedista", logopedista);
+                intent.putExtra("punteggio", punteggio);
                 startActivity(intent);
             }
         });

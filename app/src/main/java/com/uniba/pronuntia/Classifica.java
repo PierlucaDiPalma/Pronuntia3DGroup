@@ -61,13 +61,12 @@ public class Classifica extends AppCompatActivity {
         titolo = findViewById(R.id.logopedista);
         titolo.setText("Classifica presso: " + utente.getNome() + " " + utente.getCognome() );
 
-        giocatori = db.getGiocatori(logopedista);
+        giocatori = db.getPlayers(logopedista);
 
         for(int i=0;i<giocatori.size();i++){
+
             spesa = db.getSpesa(giocatori.get(i).getBambino(), giocatori.get(i).getGenitore());
-
             punteggio = 0;
-
             resoconti = db.getResoconto(giocatori.get(i).getGenitore(), giocatori.get(i).getBambino());
 
             for(int j = 0; j<resoconti.size();j++){
@@ -77,7 +76,6 @@ public class Classifica extends AppCompatActivity {
             }
 
             punteggio -= spesa;
-
             giocatori.get(i).setPunteggio(punteggio);
 
             Log.d(TAG, "Persone: " + giocatori.get(i).getBambino() + " " + giocatori.get(i).getGenitore()

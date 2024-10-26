@@ -91,12 +91,14 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     private static final String ORA="ORA";
     private static final String ISBOOKED="ISBOOKED";
 
-private  static final String LUOGO_LAVORO_LOGOPEDISTA="LUOGO_LAVORO_LOGOPEDISTA";
-private static final String NOME_LUOGO="NOME_LUOGO";
-private static final String INDIRIZZO="INDIRIZZO";
+    private  static final String LUOGO_LAVORO_LOGOPEDISTA="LUOGO_LAVORO_LOGOPEDISTA";
+    private static final String NOME_LUOGO="NOME_LUOGO";
+    private static final String INDIRIZZO="INDIRIZZO";
+
+    private static final String TABLE_GIOCATORI = "GIOCATORI";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 13);
+        super(context, DATABASE_NAME, null, 14);
     }
 
     private static final String TAG = "DBHelper";
@@ -211,6 +213,13 @@ private static final String INDIRIZZO="INDIRIZZO";
                 + NUMERO_PREMI + " INTEGER, "
                 + "PRIMARY KEY (BAMBINO, GENITORE, NUMERO_PREMI))");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_GIOCATORI + " ("
+                + BAMBINO + " TEXT, "
+                + GENITORE + " TEXT, "
+                + LOGOPEDISTA + " TEXT, "
+                + PUNTEGGIO + " INTEGER, "
+                + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
+
 
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
@@ -292,28 +301,37 @@ if(oldVersion<11){
 
 
 
-}
-if(oldVersion<12){
-    db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN LUOGO_INCONTRO TEXT");
+    }
+    if(oldVersion<12){
+        db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN LUOGO_INCONTRO TEXT");
 
 
-    db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN INDIRIZZO TEXT");
-}
+        db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN INDIRIZZO TEXT");
+    }
 
-if(oldVersion<13){
-    db.execSQL("DROP TABLE IF EXISTS " + CALENDARIO);
-    db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
-            + email_logopedista + " TEXT, "
-            + email_genitore + " TEXT, "
-            + DATA + " TEXT, "
-            + ORA + " TEXT, "
-            + ISBOOKED + " BOOLEAN, "
-            + "PRIMARY KEY (" + email_logopedista + ", " + DATA + ", " + ORA + "), "
-            + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "), "
-            + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
-            + ")");
+    if(oldVersion<13){
+        db.execSQL("DROP TABLE IF EXISTS " + CALENDARIO);
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
+                + email_logopedista + " TEXT, "
+                + email_genitore + " TEXT, "
+                + DATA + " TEXT, "
+                + ORA + " TEXT, "
+                + ISBOOKED + " BOOLEAN, "
+                + "PRIMARY KEY (" + email_logopedista + ", " + DATA + ", " + ORA + "), "
+                + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "), "
+                + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                + ")");
 
-}
+    }
+
+    if(oldVersion<14){
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_GIOCATORI + " ("
+                + BAMBINO + " TEXT, "
+                + GENITORE + " TEXT, "
+                + LOGOPEDISTA + " TEXT, "
+                + PUNTEGGIO + " INTEGER, "
+                + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
+    }
 
 
     }
@@ -425,8 +443,6 @@ private ArrayList<String> generaFasceOrarie(){
     }
 
     public void inserisciAppuntamentifissati(String email_genitore,String email_logopedista,String data,String ora,String luogo,String indirizzo){
-
-
 
 
         try(SQLiteDatabase db=this.getWritableDatabase()){
@@ -624,12 +640,54 @@ public boolean isPassato(String Data,String ora) {
     }
 
 
+    public boolean addGiocatore(Giocatore giocatore){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
+        values.put(BAMBINO, giocatore.getBambino());
+        values.put(GENITORE, giocatore.getGenitore());
+        values.put(LOGOPEDISTA, giocatore.getLogopedista());
+        values.put(PUNTEGGIO, giocatore.getPunteggio());
+        long result = db.insert(TABLE_GIOCATORI, null, values);
+        return result!=-1;
+    }
+
+    public ArrayList<Giocatore> getPlayers(String med){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        ArrayList<Giocatore> giocatori = new ArrayList<>();
+
+        if(db!=null){
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_GIOCATORI + " WHERE LOGOPEDISTA = ?", new String[]{med});
+        }
+
+        while(cursor.moveToNext()){
+
+            String bambino = cursor.getString(0);
+            String genitore = cursor.getString(1);
+            String logopedista = cursor.getString(2);
+            int punteggio = cursor.getInt(3);
+            Giocatore giocatore = new Giocatore(bambino, genitore, logopedista, punteggio);
+            giocatori.add(giocatore);
+        }
+
+        return giocatori;
+    }
+
+    public void updatePunteggio(Giocatore giocatore){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(PUNTEGGIO, giocatore.getPunteggio());
+
+        db.update(TABLE_GIOCATORI, values, "BAMBINO = ? AND GENITORE = ? AND LOGOPEDISTA ?", new String[]{giocatore.getBambino(), giocatore.getGenitore(), giocatore.getLogopedista()});
+
+    }
 
     public List<itemAppuntamento> getInfoAppuntamentoPendente(String email_logopedista){
 
         ArrayList<itemAppuntamento> infoAppuntamento=new ArrayList<>();
-        String query = "SELECT " + TABLE_NAME + ".NOME, "+TABLE_NAME + ".COGNOME," + CALENDARIO + ".DATA, " + CALENDARIO + ".ORA " +
+        String query = "SELECT " + TABLE_NAME + ".NOME, "+TABLE_NAME + ". COGNOME," + CALENDARIO + ".DATA, " + CALENDARIO + ".ORA " +
                 "FROM " + TABLE_NAME + " JOIN " + CALENDARIO + " ON " +
                 TABLE_NAME + ".EMAIL = " + CALENDARIO + ".email_genitore " +
                 "WHERE " + CALENDARIO + ".email_logopedista = ? AND " + CALENDARIO + ".ISBOOKED = 1;";
