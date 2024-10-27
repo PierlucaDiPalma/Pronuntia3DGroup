@@ -169,10 +169,12 @@ public class GamePath extends AppCompatActivity {
                 resoconti.add(resoconto);
 
                  /*resoconti.add(resoconto);
-
-                Log.d(TAG, "STAMPA RESOCONTI: " + resoconto.getEsercizio().getName() + " " + resoconto.getBambino()
-                        + " " + resoconto.getEsercizio().getTipo());
 */
+
+                for(int i = 0;i<resoconti.size();i++) {
+                    Log.d(TAG, "STAMPA RESOCONTI: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getBambino()
+                            + " " + resoconti.get(i).getEsercizio().getTipo() + " " +resoconti.get(i).getAudio());
+                }
                 if(livello > esercizi.size()){
                     risultato.setVisibility(View.VISIBLE);
 

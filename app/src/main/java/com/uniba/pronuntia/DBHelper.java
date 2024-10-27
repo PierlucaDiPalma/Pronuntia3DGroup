@@ -97,6 +97,8 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
 
     private static final String TABLE_GIOCATORI = "GIOCATORI";
 
+    private static final String AUDIO = "AUDIO";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 14);
     }
@@ -169,6 +171,7 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + LOGOPEDISTA + " TEXT, "
                 + TITOLO + " TEXT, "
                 + TIPO + " TEXT, "
+                + AUDIO + " TEXT, "
                 + GIORNO + " INTEGER, "
                 + MESE + " INTEGER, "
                 + ANNO + " INTEGER, "
@@ -220,6 +223,8 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + PUNTEGGIO + " INTEGER, "
                 + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS AUDIO ( " +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, AUDIO TEXT)");
 
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
@@ -283,25 +288,20 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
                 + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
                 + ")");
-if(oldVersion<11){
+    if(oldVersion<11){
 
 
-    db.execSQL("CREATE TABLE IF NOT EXISTS " + LUOGO_LAVORO_LOGOPEDISTA + "("
-            + EMAIL + " TEXT,"
-            + NOME_LUOGO +" TEXT,"
-            + INDIRIZZO +" TEXT,"
-            + "PRIMARY KEY (" + INDIRIZZO+"),"
-            + "FOREIGN KEY ("+ EMAIL + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
-            + ")");
-
-
-
-
-
-
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + LUOGO_LAVORO_LOGOPEDISTA + "("
+                + EMAIL + " TEXT,"
+                + NOME_LUOGO +" TEXT,"
+                + INDIRIZZO +" TEXT,"
+                + "PRIMARY KEY (" + INDIRIZZO+"),"
+                + "FOREIGN KEY ("+ EMAIL + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                + ")");
 
 
     }
+
     if(oldVersion<12){
         db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN LUOGO_INCONTRO TEXT");
 
@@ -333,28 +333,49 @@ if(oldVersion<11){
                 + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
     }
 
+    if(oldVersion<15){
+        db.execSQL("CREATE TABLE IF NOT EXISTS AUDIO ( " +
+                "ID PRIMARY KEY AUTOINCREMENT, AUDIO TEXT)");
+
+        db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
+                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,  "
+                + GENITORE + " TEXT, "
+                + BAMBINO + " TEXT, "
+                + LOGOPEDISTA + " TEXT, "
+                + TITOLO + " TEXT, "
+                + TIPO + " TEXT, "
+                + AUDIO + " TEXT, "
+                + GIORNO + " INTEGER, "
+                + MESE + " INTEGER, "
+                + ANNO + " INTEGER, "
+                + PUNTEGGIO + " INTEGER, "
+                + CORRETTO + " INTEGER, "
+                + SBAGLIATO + " INTEGER, "
+                + AIUTI + " INTEGER )");
+
+    }
 
     }
 
 
-private ArrayList<String> generaDate(){
+    private ArrayList<String> generaDate(){
 
-        ArrayList<String> date=new ArrayList<String>();
-Calendar calendar=Calendar.getInstance();
-SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-for(int i=0;i<1*30;i++) {
+            ArrayList<String> date=new ArrayList<String>();
+    Calendar calendar=Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    for(int i=0;i<1*30;i++) {
 
 
-    Date data=calendar.getTime();
-    date.add(sdf.format(data));
+        Date data=calendar.getTime();
+        date.add(sdf.format(data));
 
-    calendar.add(Calendar.DAY_OF_YEAR,1);
+        calendar.add(Calendar.DAY_OF_YEAR,1);
 
-}
+    }
 
-return date;
+    return date;
 
-}
+    }
 
 
 private ArrayList<String> generaFasceOrarie(){
@@ -682,6 +703,32 @@ public boolean isPassato(String Data,String ora) {
 
         db.update(TABLE_GIOCATORI, values, "BAMBINO = ? AND GENITORE = ? AND LOGOPEDISTA ?", new String[]{giocatore.getBambino(), giocatore.getGenitore(), giocatore.getLogopedista()});
 
+    }
+
+    public boolean saveAudio(String filepath){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("AUDIO", filepath);
+
+        long result = db.insert("AUDIO", null, values);
+        return result!=-1;
+    }
+
+    public String getAudio(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String filepath = null;
+
+        if(db!=null){
+            cursor = db.rawQuery("SELECT AUDIO FROM AUDIO WHERE ID = ?", new String[]{String.valueOf(id)});
+        }
+
+        while (cursor.moveToNext()){
+            filepath = cursor.getString(0);
+        }
+
+        return filepath;
     }
 
     public List<itemAppuntamento> getInfoAppuntamentoPendente(String email_logopedista){
@@ -1258,6 +1305,7 @@ if(result!=-1){
         contentValues.put(LOGOPEDISTA, resoconto.getLogopedista());
         contentValues.put(TITOLO, resoconto.getEsercizio().getName());
         contentValues.put(TIPO, resoconto.getEsercizio().getTipo());
+        contentValues.put(AUDIO, resoconto.getAudio());
         contentValues.put(GIORNO, resoconto.getEsercizio().getGiorno());
         contentValues.put(MESE, resoconto.getEsercizio().getMese());
         contentValues.put(ANNO, resoconto.getEsercizio().getAnno());
@@ -1359,17 +1407,18 @@ if(result!=-1){
             String logopedista = cursor.getString(3);
             String titolo = cursor.getString(4);
             String tipo = cursor.getString(5);
-            int giorno = cursor.getInt(6);
-            int mese = cursor.getInt(7);
-            int anno = cursor.getInt(8);
-            int punteggio = cursor.getInt(9);
-            int corretto = cursor.getInt(10);
-            int sbagliato = cursor.getInt(11);
-            int aiuti = cursor.getInt(12);
+            String audio = cursor.getString(6);
+            int giorno = cursor.getInt(7);
+            int mese = cursor.getInt(8);
+            int anno = cursor.getInt(9);
+            int punteggio = cursor.getInt(10);
+            int corretto = cursor.getInt(11);
+            int sbagliato = cursor.getInt(12);
+            int aiuti = cursor.getInt(13);
 
             Esercizio esercizio = new Esercizio(genitore, bambino, titolo, tipo, null, null, null, null, giorno, mese, anno);
 
-            Resoconto resoconto = new Resoconto(bambino, genitore, logopedista, esercizio, punteggio, corretto, sbagliato, aiuti);
+            Resoconto resoconto = new Resoconto(bambino, genitore, logopedista, esercizio, audio, punteggio, corretto, sbagliato, aiuti);
             resoconti.add(resoconto);
         }
         return resoconti;

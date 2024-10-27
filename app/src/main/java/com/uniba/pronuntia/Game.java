@@ -40,6 +40,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
     private int sbagliati = 0;
     private Esercizio esercizio;
     private Resoconto resoconto;
+    private String audioFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +138,11 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
     }
 
     @Override
-    public void onDataPass(int points, boolean done, int numeroAiuti, int corretti, int sbagliati) {
+    public void onDataPass(int points, boolean done, int numeroAiuti, int corretti, int sbagliati, String path) {
         // Ricevi il dato elaborato e fai qualcosa con esso (ad esempio, stampalo)
+
+        Log.d(TAG, "AUDIO FILE PATH: " + path);
+        audioFilePath = path;
         punteggio = points;
         isDone = done;
         punteggioText.setText("Punteggio: " + punteggio);
@@ -150,7 +154,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
         Log.d(TAG, "Logopedista: " + logopedista);
 
         resoconto = new Resoconto(bambino, email, logopedista,
-                esercizio, punteggio, this.corretti, this.sbagliati, this.numeroAiuti);
+                esercizio, audioFilePath, punteggio, this.corretti, this.sbagliati, this.numeroAiuti);
 
         /*boolean isInserted = db.addResoconto(resoconto);
         if (isInserted) {

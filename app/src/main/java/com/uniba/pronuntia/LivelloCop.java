@@ -198,12 +198,12 @@ public class LivelloCop extends Fragment {
             sbagliati++;
         }
 
-        passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati);
+        passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati, null);
     }
 
-    private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati) {
+    private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati, String path) {
         if (getActivity() instanceof OnDataPassListener) {
-            ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati);
+            ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati, path);
         }
     }
 }

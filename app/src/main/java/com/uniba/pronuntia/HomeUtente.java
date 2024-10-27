@@ -17,7 +17,7 @@ public class HomeUtente extends AppCompatActivity {
 
 
     private DBHelper db;
-    private Button genitoreBTN ;
+    private Button genitoreBTN, risultati;
     private LinearLayout linearLayout;
     private Button pulsanteAggiungiBambino;
     private String email;
@@ -33,7 +33,7 @@ public class HomeUtente extends AppCompatActivity {
 
         genitoreBTN = findViewById(R.id.pulsanteGenitore);
         linearLayout = findViewById(R.id.containerBambini);
-
+        risultati = findViewById(R.id.results);
 
         pulsanteAggiungiBambino = findViewById(R.id.pulsanteAggiungiBambino);
 
@@ -78,6 +78,16 @@ public class HomeUtente extends AppCompatActivity {
                 startActivity(intent);
 
 
+            }
+        });
+
+        risultati.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeUtente.this, CorrezioneRisultati.class);
+                intent.putExtra("genitore", email);
+                //intent.putExtra("logopedista", )
+                startActivity(intent);
             }
         });
 

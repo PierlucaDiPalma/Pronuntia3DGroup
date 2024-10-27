@@ -1,12 +1,15 @@
 package com.uniba.pronuntia;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
@@ -18,6 +21,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -70,7 +74,7 @@ public class LivelloSeq extends Fragment {
     }
 
     private TextView parola1Text, parola2Text, parola3Text, titolo, giudizio;
-    private Button parla, aiuto;
+    private Button parla, aiuto, record;
     private TextToSpeech tts;
     private int punteggio;
 
@@ -84,6 +88,11 @@ public class LivelloSeq extends Fragment {
     private int corretti = 0;
     private int sbagliati = 0;
 
+    private boolean isRecording = false;
+    private MediaRecorder mediaRecorder;
+    private String audioFilePath;
+    private DBHelper db;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,8 +105,10 @@ public class LivelloSeq extends Fragment {
         parola3Text = view.findViewById(R.id.parola3);
         giudizio = view.findViewById(R.id.giudizio);
         parla = view.findViewById(R.id.speakButton);
+        record = view.findViewById(R.id.recordButton);
         aiuto = view.findViewById(R.id.aiuto);
 
+        db = new DBHelper(getActivity());
 
         parola1 = getArguments().getString("Parola1");
         parola2 = getArguments().getString("Parola2");
@@ -152,11 +163,25 @@ public class LivelloSeq extends Fragment {
             }
         });
 
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                startRecording();
+            }
+        });
 
         parla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                speak(view, parola1, parola2, parola3);
+
+                if(audioFilePath!=null){
+                    speak(view, parola1, parola2, parola3);
+                }else{
+                    Toast.makeText(getActivity(), "Registra prima la risposta", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -174,6 +199,69 @@ public class LivelloSeq extends Fragment {
         startActivityForResult(intent, 100);
     }
 
+    private void startRecording() {
+        // Definisci un nome personalizzato per il file audio
+        String fileName = "registrazione_personalizzata_" + System.currentTimeMillis() + ".3gp";
+        audioFilePath = getActivity().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
+
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+        mediaRecorder.setOutputFile(audioFilePath);
+
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+            isRecording = true;
+            record.setText("Interrompi registrazione");
+
+            record.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    stopRecording();
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopRecording() {
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        isRecording = false;
+        record.setText("Registra");
+
+        // Salva il percorso nel database
+        db.saveAudio(audioFilePath);
+        Toast.makeText(getActivity(), "Audio salvato nel database", Toast.LENGTH_SHORT).show();
+
+
+        new Handler().postDelayed(() -> {
+            MediaPlayer player = new MediaPlayer();
+            try {
+                player.setDataSource(audioFilePath);
+                player.prepare();
+                player.start();
+                Toast.makeText(getActivity(), "Riproduzione in corso", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                Log.e("Playback Error", "Errore durante la riproduzione dell'audio", e);
+            }
+        }, 1000);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mediaRecorder != null) {
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+        super.onDestroy();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -186,8 +274,6 @@ public class LivelloSeq extends Fragment {
             String[] inputSplitted = input.split(" ");
 
             inputSplitted = manageArray(inputSplitted);
-
-
 
             Log.d(TAG, "onActivityResult: " + inputSplitted[0]);
             Log.d(TAG, "onActivityResult: " + inputSplitted[1]);
@@ -216,7 +302,7 @@ public class LivelloSeq extends Fragment {
                 sbagliati++;
             }
 
-            passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati);
+            passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati, audioFilePath);
         }
     }
 
@@ -244,9 +330,9 @@ public class LivelloSeq extends Fragment {
     }
 
 
-    private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati) {
+    private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati, String path) {
         if (getActivity() instanceof OnDataPassListener) {
-            ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati);
+            ((OnDataPassListener) getActivity()).onDataPass(points, isDone, numeroAiuti, corretti, sbagliati, path);
         }
     }
 }

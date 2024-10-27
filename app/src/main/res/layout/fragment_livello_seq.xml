@@ -58,6 +58,18 @@
 
         </LinearLayout>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registra la risposta"/>
+
+        <Button
+            android:id="@+id/recordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registra"/>
+
         <TextView
             android:id="@+id/giudizio"
             android:layout_width="wrap_content"
@@ -69,6 +81,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Parla"/>
+
+
 
         <Button
             android:id="@+id/aiuto"

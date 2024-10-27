@@ -28,19 +28,32 @@
             android:layout_marginTop="15dp"
             />
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registra la risposta"/>
+
+        <Button
+            android:id="@+id/recordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registra"/>
+
         <TextView
             android:id="@+id/contenuto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="contenuto"
             android:textAlignment="center"
-        />
-
+            />
         <Button
             android:id="@+id/speakButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Parla"/>
+
+
 
         <Button
             android:id="@+id/playButton"

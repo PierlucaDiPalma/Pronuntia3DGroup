@@ -15,12 +15,14 @@ public class Resoconto implements Parcelable {
     private int corretti;
     private int sbagliati;
     private int aiuti;
+    private String audio;
 
-    public Resoconto(String bambino, String genitore, String logopedista, Esercizio esercizio, int punteggio, int corretti, int sbagliati, int aiuti) {
+    public Resoconto(String bambino, String genitore, String logopedista, Esercizio esercizio, String audio, int punteggio, int corretti, int sbagliati, int aiuti) {
         this.bambino = bambino;
         this.genitore = genitore;
         this.logopedista = logopedista;
         this.esercizio = esercizio;
+        this.audio = audio;
         this.punteggio = punteggio;
         this.corretti = corretti;
         this.sbagliati = sbagliati;
@@ -32,6 +34,7 @@ public class Resoconto implements Parcelable {
         genitore = in.readString();
         logopedista = in.readString();
         esercizio = in.readParcelable(Esercizio.class.getClassLoader());
+        audio = in.readString();
         punteggio = in.readInt();
         corretti = in.readInt();
         sbagliati = in.readInt();
@@ -82,6 +85,10 @@ public class Resoconto implements Parcelable {
         this.esercizio = esercizio;
     }
 
+    public String getAudio() { return audio; }
+
+    public void setAudio(String audio) { this.audio = audio;}
+
     public int getPunteggio() {
         return punteggio;
     }
@@ -102,9 +109,7 @@ public class Resoconto implements Parcelable {
         return sbagliati;
     }
 
-    public void setSbagliati(int sbagliati) {
-        this.sbagliati = sbagliati;
-    }
+    public void setSbagliati(int sbagliati) {this.sbagliati = sbagliati;}
 
     public int getAiuti() {
         return aiuti;
@@ -125,6 +130,7 @@ public class Resoconto implements Parcelable {
         parcel.writeString(genitore);
         parcel.writeString(logopedista);
         parcel.writeParcelable(esercizio, i);
+        parcel.writeString(audio);
         parcel.writeInt(punteggio);
         parcel.writeInt(corretti);
         parcel.writeInt(sbagliati);

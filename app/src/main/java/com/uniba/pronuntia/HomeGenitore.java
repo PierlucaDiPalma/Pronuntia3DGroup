@@ -31,9 +31,6 @@ public class HomeGenitore extends AppCompatActivity {
         String emailLogopedista=intent.getStringExtra("logopedista_email");
 
 
-
-
-
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
