@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="160dp">
+    android:layout_height="170dp">
 
     <TextView
         android:id="@+id/position"
@@ -67,6 +67,7 @@
         android:gravity="left"
         android:orientation="horizontal"
         android:visibility="visible"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="16dp">
 
@@ -80,7 +81,7 @@
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="183dp"
+            android:layout_width="145dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
@@ -99,7 +100,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
 
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="13dp"
             android:src="@drawable/no_ok" />
     </LinearLayout>
 

@@ -1,6 +1,9 @@
 package com.uniba.pronuntia;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
@@ -24,15 +28,18 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
 
     private Context context;
     private ArrayList<Resoconto> resoconti;
-    private String audioPath = null;
-    private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
-    private Handler handler = new Handler();
 
+    private DBHelper db;
+
+    private static final String CORRETTO = "CORRETTO";
+    private static final String SBAGLIATO = "SBAGLIATO";
 
     public CorrectionAdapter(Context context, ArrayList<Resoconto> resoconti) {
         this.context = context;
         this.resoconti = resoconti;
+        db = new DBHelper(this.context);
+
     }
 
     @NonNull
@@ -46,12 +53,14 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
     @Override
     public void onBindViewHolder(@NonNull CorrectionViewHolder holder, int position) {
 
+        int day = resoconti.get(position).getEsercizio().getGiorno();
+        int month = resoconti.get(position).getEsercizio().getMese();
+        int year = resoconti.get(position).getEsercizio().getAnno();
+
         holder.posizione.setText(String.valueOf(position+1));
         holder.titolo.setText(resoconti.get(position).getEsercizio().getName());
-        holder.data.setText(resoconti.get(position).getEsercizio().getTipo());
+        holder.data.setText(day +"-"+ month + "-" + year);
         holder.aiuti.setText("Aiuti usati: " + resoconti.get(position).getAiuti());
-
-
 
 
         if(resoconti.get(position).getCorretti()!=0){
@@ -64,7 +73,7 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
             holder.linearLayout.setVisibility(View.GONE);
         }else{
             holder.linearLayout.setVisibility(View.VISIBLE);
-            audioPath = resoconti.get(position).getAudio();
+
         }
 
         holder.play.setOnClickListener(new View.OnClickListener() {
@@ -75,17 +84,32 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
 
                 MediaPlayer player = new MediaPlayer();
                 try {
-                    player.setDataSource(audioPath);
+                    player.setDataSource(resoconti.get(holder.getAdapterPosition()).getAudio());
                     player.prepare();
                     player.start();
-                    Toast.makeText(context, "Riproduzione in corso", Toast.LENGTH_SHORT).show();
+                    holder.progressBar.setMax(player.getDuration());
+                   // Toast.makeText(context, "Riproduzione in corso", Toast.LENGTH_SHORT).show();
+
+                    Handler handler = new Handler();
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (player.isPlaying()) {
+                                holder.progressBar.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#DB5C00")));
+                                holder.progressBar.setProgress(player.getCurrentPosition());
+                                handler.postDelayed(this, 100);
+                            }
+                        }
+                    };
+                    handler.post(runnable);
+
 
                     player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
                             holder.play.setImageResource(R.drawable.play);
                             isPlaying = false;
-
+                            holder.progressBar.setProgress(0);
                         }
                     });
 
@@ -96,10 +120,54 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
             }
         });
 
+        holder.corretto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("CorrectionAdapter", resoconti.get(holder.getAdapterPosition()).getEsercizio().getName() + " ");
+                ActionConfirm(resoconti.get(holder.getAdapterPosition()), 0);
+
+            }
+        });
+
+        holder.sbagliato.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActionConfirm(resoconti.get(holder.getAdapterPosition()), 1);
+
+            }
+        });
 
     }
 
+    public void ActionConfirm(Resoconto resoconto, int code) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Conferma");
+        builder.setMessage("Vuoi cambiare l'esito dell'esercizio?");
 
+        // Pulsante di conferma
+        builder.setPositiveButton("Conferma", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Toast.makeText(context, "Confermato!", Toast.LENGTH_SHORT).show();
+                db.updateResoconto(resoconto, code);
+                notifyDataSetChanged();
+            }
+        });
+
+        // Pulsante di annullamento
+        builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        // Mostra il dialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
     @Override
     public int getItemCount() {
         return resoconti.size();
@@ -115,6 +183,7 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
 
         public CorrectionViewHolder(@NonNull View view) {
             super(view);
+
             posizione = view.findViewById(R.id.position);
             titolo = view.findViewById(R.id.nomeEsercizio);
             data = view.findViewById(R.id.data);
