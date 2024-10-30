@@ -62,6 +62,18 @@
             android:name=".Genitore"
             android:exported="false" />
         <activity
+            android:name=".Seleziona_ambientazione"
+            android:exported="false" />
+        <activity
+            android:name=".Seleziona_personaggi"
+            android:exported="false" />
+        <activity
+            android:name=".Anteprima_ambientazione"
+            android:exported="false" />
+        <activity
+            android:name=".Impostazioni"
+            android:exported="false" />
+        <activity
             android:name=".Logopedista"
             android:exported="false" />
         <activity

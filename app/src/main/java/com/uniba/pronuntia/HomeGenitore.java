@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 
 public class HomeGenitore extends AppCompatActivity {
     private DBHelper dbHelper;
-
+private ImageButton settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class HomeGenitore extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-
+settings=findViewById(R.id.Impostazioni);
         ImageView backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> {
 
@@ -75,7 +76,13 @@ public class HomeGenitore extends AppCompatActivity {
         });
 
 
-
+settings.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent intent=new Intent(HomeGenitore.this,Impostazioni.class);
+        startActivity(intent);
+    }
+});
 
 
 

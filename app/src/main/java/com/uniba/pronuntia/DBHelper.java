@@ -100,7 +100,7 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     private static final String AUDIO = "AUDIO";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 14);
+        super(context, DATABASE_NAME, null, 15);
     }
 
     private static final String TAG = "DBHelper";
@@ -334,9 +334,8 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     }
 
     if(oldVersion<15){
-        db.execSQL("CREATE TABLE IF NOT EXISTS AUDIO ( " +
-                "ID PRIMARY KEY AUTOINCREMENT, AUDIO TEXT)");
 
+db.execSQL("DROP TABLE "+TABLE_RESOCONTO);
         db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
                 + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,  "
                 + GENITORE + " TEXT, "

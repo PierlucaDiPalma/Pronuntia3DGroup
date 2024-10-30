@@ -45,6 +45,19 @@
 
 
 
+<ImageButton
+    android:id="@+id/Impostazioni"
+    android:layout_width="70dp"
+    android:layout_height="70dp"
+android:scaleType="centerCrop"
+    android:backgroundTint="@color/white"
+    android:src="@drawable/settings"
+    app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+    app:layout_constraintEnd_toEndOf="parent"
+
+
+    />
+
 
 
 
