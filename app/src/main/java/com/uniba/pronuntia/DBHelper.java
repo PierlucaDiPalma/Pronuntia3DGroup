@@ -165,7 +165,7 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + ANNO + " INTEGER )");
 
         db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
-                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,  "
+                + " ( "
                 + GENITORE + " TEXT, "
                 + BAMBINO + " TEXT, "
                 + LOGOPEDISTA + " TEXT, "
@@ -178,7 +178,8 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + PUNTEGGIO + " INTEGER, "
                 + CORRETTO + " INTEGER, "
                 + SBAGLIATO + " INTEGER, "
-                + AIUTI + " INTEGER )");
+                + AIUTI + " INTEGER, "
+                + "PRIMARY KEY(" +GENITORE + "," + BAMBINO + ","+ LOGOPEDISTA + "," + TITOLO + "," + GIORNO +","+MESE+ ","+ANNO+")  )");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
                 + BAMBINO + " TEXT, "
@@ -223,8 +224,6 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + PUNTEGGIO + " INTEGER, "
                 + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
 
-        db.execSQL("CREATE TABLE IF NOT EXISTS AUDIO ( " +
-                "ID INTEGER PRIMARY KEY AUTOINCREMENT, AUDIO TEXT)");
 
         //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
@@ -334,11 +333,10 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     }
 
     if(oldVersion<15){
-        db.execSQL("CREATE TABLE IF NOT EXISTS AUDIO ( " +
-                "ID PRIMARY KEY AUTOINCREMENT, AUDIO TEXT)");
+
 
         db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
-                + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,  "
+                + " ( "
                 + GENITORE + " TEXT, "
                 + BAMBINO + " TEXT, "
                 + LOGOPEDISTA + " TEXT, "
@@ -351,7 +349,8 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + PUNTEGGIO + " INTEGER, "
                 + CORRETTO + " INTEGER, "
                 + SBAGLIATO + " INTEGER, "
-                + AIUTI + " INTEGER )");
+                + AIUTI + " INTEGER, "
+                + "PRIMARY KEY(" +GENITORE + "," + BAMBINO + ","+ LOGOPEDISTA + "," + TITOLO + "," + GIORNO +","+MESE+ ","+ANNO+")  )");
 
     }
 
@@ -1377,14 +1376,51 @@ if(result!=-1){
         while(cursor.moveToNext()){
 
             String personaggio = cursor.getString(2);
-
-
             personaggi.add(personaggio);
 
         }
         return personaggi;
     }
 
+
+    public void updateResoconto(Resoconto resoconto, int code){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+
+        if(code == 0){
+            resoconto.setPunteggio(10);
+            resoconto.setCorretti(1);
+            resoconto.setSbagliati(0);
+        }else{
+            resoconto.setCorretti(0);
+            resoconto.setSbagliati(1);
+            resoconto.setPunteggio(-3);
+        }
+
+        contentValues.put(BAMBINO, resoconto.getBambino());
+        contentValues.put(GENITORE, resoconto.getGenitore());
+        contentValues.put(LOGOPEDISTA, resoconto.getLogopedista());
+        contentValues.put(TITOLO, resoconto.getEsercizio().getName());
+        contentValues.put(TIPO, resoconto.getEsercizio().getTipo());
+        contentValues.put(AUDIO, resoconto.getAudio());
+        contentValues.put(GIORNO, resoconto.getEsercizio().getGiorno());
+        contentValues.put(MESE, resoconto.getEsercizio().getMese());
+        contentValues.put(ANNO, resoconto.getEsercizio().getAnno());
+        contentValues.put(PUNTEGGIO, resoconto.getPunteggio());
+        contentValues.put(CORRETTO, resoconto.getCorretti());
+        contentValues.put(SBAGLIATO, resoconto.getSbagliati());
+        contentValues.put(AIUTI, resoconto.getAiuti());
+
+        Log.d(TAG, "updateResoconto: " + resoconto.getBambino() + " " + resoconto.getGenitore() + " " + resoconto.getLogopedista()  + "\n " +
+                resoconto.getEsercizio().getName()  + " CORRETTO: " + resoconto.getCorretti() +" Sbagliato: " + resoconto.getSbagliati() + " " +  resoconto.getEsercizio().getGiorno()  + " " + resoconto.getEsercizio().getMese()  + " " + resoconto.getEsercizio().getAnno());
+
+        db.update(TABLE_RESOCONTO, contentValues, "BAMBINO = ? AND GENITORE = ? AND LOGOPEDISTA = ? AND TITOLO = ? AND GIORNO = ? AND MESE = ? AND ANNO = ? ",
+                new String[]{resoconto.getBambino(), resoconto.getGenitore(), resoconto.getLogopedista(), resoconto.getEsercizio().getName(),
+                            String.valueOf(resoconto.getEsercizio().getGiorno()), String.valueOf(resoconto.getEsercizio().getMese()), String.valueOf(resoconto.getEsercizio().getAnno())});
+
+    }
 
     public ArrayList<Resoconto> getResoconto(String user, String child){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1402,19 +1438,19 @@ if(result!=-1){
         }
 
         while (cursor.moveToNext()){
+            String genitore = cursor.getString(0);
             String bambino = cursor.getString(1);
-            String genitore = cursor.getString(2);
-            String logopedista = cursor.getString(3);
-            String titolo = cursor.getString(4);
-            String tipo = cursor.getString(5);
-            String audio = cursor.getString(6);
-            int giorno = cursor.getInt(7);
-            int mese = cursor.getInt(8);
-            int anno = cursor.getInt(9);
-            int punteggio = cursor.getInt(10);
-            int corretto = cursor.getInt(11);
-            int sbagliato = cursor.getInt(12);
-            int aiuti = cursor.getInt(13);
+            String logopedista = cursor.getString(2);
+            String titolo = cursor.getString(3);
+            String tipo = cursor.getString(4);
+            String audio = cursor.getString(5);
+            int giorno = cursor.getInt(6);
+            int mese = cursor.getInt(7);
+            int anno = cursor.getInt(8);
+            int punteggio = cursor.getInt(9);
+            int corretto = cursor.getInt(10);
+            int sbagliato = cursor.getInt(11);
+            int aiuti = cursor.getInt(12);
 
             Esercizio esercizio = new Esercizio(genitore, bambino, titolo, tipo, null, null, null, null, giorno, mese, anno);
 

@@ -110,11 +110,6 @@ private BottomNavigationView bottombar;
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner1.setAdapter(adapterString);
 
-
-
-
-
-
         motivoRichiestaEditText = findViewById(R.id.CampoMotivoRichiesta);
         durataSpinner = findViewById(R.id.Spinner);
 
