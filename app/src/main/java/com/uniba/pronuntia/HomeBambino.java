@@ -68,7 +68,8 @@ public class HomeBambino extends AppCompatActivity {
         int idBambino = intent.getIntExtra("idBambino", -1); // Ottieni l'ID del bambino
         bambino = intent.getStringExtra("bambino"); // Ottieni il nome del bambino
         nomeBambinoTextView = findViewById(R.id.textView);
-        email = intent.getStringExtra("email");
+
+        email = intent.getStringExtra("email");//email del genitore
 
 
         audio = findViewById(R.id.audio);

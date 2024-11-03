@@ -1,13 +1,16 @@
 package com.uniba.pronuntia;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,10 +30,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class GamePath extends AppCompatActivity {
-
+private List<byte[]> immagini;
+    private ImageView imageViewAmbientazione;
+    private ImageView imageViewPersonaggio1;
+    private ImageView imageViewPersonaggio2;
+    private ImageView imageViewPersonaggio3;
     private RecyclerView recyclerView;
     private LevelAdapter customAdapter;
     private DBHelper db;
@@ -53,7 +61,7 @@ public class GamePath extends AppCompatActivity {
     private ArrayList<Resoconto> resoconti = new ArrayList<>();
     private String source;
     private final static String TAG = "GamePath";
-
+private  LinearLayout linearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +87,28 @@ public class GamePath extends AppCompatActivity {
         correttiText = findViewById(R.id.corretti);
         sbagliatiText = findViewById(R.id.sbagliati);
         risultato = findViewById(R.id.fine);
+FrameLayout frameLayout =findViewById(R.id.main);
 
+        imageViewAmbientazione=findViewById(R.id.imageViewAmbientazione);
+        imageViewPersonaggio1 =findViewById(R.id.imageViewPersonaggio1);
+                imageViewPersonaggio2=findViewById(R.id.imageViewPersonaggio2);
+        imageViewPersonaggio3=findViewById(R.id.imageViewPersonaggio3);
+immagini=db.getImmaginiAmbientazione(email,bambino);
+
+        if (immagini != null && immagini.size() >= 4) {
+            if (immagini.get(0) != null) {
+                imageViewAmbientazione.setImageBitmap(BitmapFactory.decodeByteArray(immagini.get(0), 0, immagini.get(0).length));
+            }
+            if (immagini.get(1) != null) {
+                imageViewPersonaggio1.setImageBitmap(BitmapFactory.decodeByteArray(immagini.get(1), 0, immagini.get(1).length));
+            }
+            if (immagini.get(2) != null) {
+                imageViewPersonaggio2.setImageBitmap(BitmapFactory.decodeByteArray(immagini.get(2), 0, immagini.get(2).length));
+            }
+            if (immagini.get(3) != null) {
+                imageViewPersonaggio3.setImageBitmap(BitmapFactory.decodeByteArray(immagini.get(3), 0, immagini.get(3).length));
+            }
+        }
 
 
 

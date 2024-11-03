@@ -1,73 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="@drawable/jungle_background"
-    tools:context=".GamePath">
+    android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/levelView"
+
+    <ImageView
+        android:id="@+id/imageViewAmbientazione"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/jungle_background" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="-132dp" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/punteggio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Punteggio"
-        android:textAlignment="center"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/levelView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="-132dp" />
 
-    <TextView
-        android:id="@+id/aiuti"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Numero aiuti"
-        android:textAlignment="center"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        />
+        <TextView
+            android:id="@+id/punteggio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Punteggio"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
 
-    <TextView
-        android:id="@+id/corretti"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Esercizi corretti"
-        android:textAlignment="center"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        />
+        <TextView
+            android:id="@+id/aiuti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Numero aiuti"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
 
-    <TextView
-        android:id="@+id/sbagliati"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Esercizi sbagliati"
-        android:textAlignment="center"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        />
+        <TextView
+            android:id="@+id/corretti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Esercizi corretti"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
 
-    <Button
-        android:id="@+id/fine"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:text="Risultato finale"
-        />
+        <TextView
+            android:id="@+id/sbagliati"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Esercizi sbagliati"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/fine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="Risultato finale" />
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/imageViewPersonaggio1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="20dp"
+        android:src="@drawable/personaggio1" />
+
+    <!-- Immagine in basso a sinistra -->
+    <ImageView
+        android:id="@+id/imageViewPersonaggio2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="20dp"
+        android:src="@drawable/personaggio2" />
+
+
+    <ImageView
+        android:id="@+id/imageViewPersonaggio3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="20dp"
+        android:src="@drawable/personaggio2" />
+
+</FrameLayout>

@@ -65,82 +65,210 @@
 
 
         <TableRow>
-            <ImageButton
+
+            <FrameLayout
                 android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:src="@drawable/img_8"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                >
+                <ImageButton
+                    android:id="@+id/personaggio1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_8"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/personaggio1ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
 
 
-            <ImageButton
-                android:layout_width="100dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_9"
-                android:layout_marginTop="14dp"
-                android:layout_marginEnd="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
 
 
-        </TableRow>
+                    />
 
-        <TableRow>
-            <ImageButton
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_13"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+            </FrameLayout>
 
 
-            <ImageButton
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_11"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
 
-
-        </TableRow>
-
-        <TableRow>
-
-
-            <ImageButton
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_12"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
-
-
-            <ImageButton
-                android:layout_width="150dp"
+            <FrameLayout
+                android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:src="@drawable/img_15"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:scaleType="fitCenter"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <ImageButton
+                    android:id="@+id/personaggio2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_9"
 
-                android:background="@android:color/transparent"
-                ></ImageButton>
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/personaggio2ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+
+
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
+
+
+        </TableRow>
+
+        <TableRow>
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <ImageButton
+                    android:id="@+id/personaggio3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_13"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/personaggio3ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
+
+
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <ImageButton
+                    android:id="@+id/personaggio4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_11"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/personaggio4ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
+
+
+        </TableRow>
+
+        <TableRow>
+
+
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <ImageButton
+                    android:id="@+id/personaggio5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_12"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/personaggio5ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
+
+
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <ImageButton
+                    android:id="@+id/personaggio6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_15"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/personaggio6ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
 
 
         </TableRow>

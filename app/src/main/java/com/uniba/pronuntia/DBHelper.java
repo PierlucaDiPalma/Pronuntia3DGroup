@@ -94,13 +94,13 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     private  static final String LUOGO_LAVORO_LOGOPEDISTA="LUOGO_LAVORO_LOGOPEDISTA";
     private static final String NOME_LUOGO="NOME_LUOGO";
     private static final String INDIRIZZO="INDIRIZZO";
-
+    private static final String PERSONALIZZA_AMBIENTAZIONE="PERSONALIZZA_AMBIENTAZIONE";
     private static final String TABLE_GIOCATORI = "GIOCATORI";
 
     private static final String AUDIO = "AUDIO";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 14);
+        super(context, DATABASE_NAME, null, 18);
     }
 
     private static final String TAG = "DBHelper";
@@ -332,7 +332,7 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
     }
 
-    if(oldVersion<15){
+    if(oldVersion<16){
 
 
         db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
@@ -353,8 +353,27 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + "PRIMARY KEY(" +GENITORE + "," + BAMBINO + ","+ LOGOPEDISTA + "," + TITOLO + "," + GIORNO +","+MESE+ ","+ANNO+")  )");
 
     }
+    if(oldVersion<18){
+
+        db.execSQL("CREATE TABLE  " + PERSONALIZZA_AMBIENTAZIONE + " ("
+                + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + BAMBINO + " TEXT, "
+                + GENITORE + " TEXT, "
+                + "AMBIENTAZIONE BLOB, "
+                + "PERSONAGGIO1 BLOB, "
+                + "PERSONAGGIO2 BLOB, "
+                + "PERSONAGGIO3 BLOB"
+                + ");");
+
 
     }
+
+
+
+
+    }
+
+
 
 
     private ArrayList<String> generaDate(){
@@ -376,8 +395,124 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
 
     }
 
+    public List<byte[]> getImmaginiAmbientazione(String email_genitore, String nome_bambino) {
+        List<byte[]> immagini = new ArrayList<>();
+        String query = "SELECT AMBIENTAZIONE, PERSONAGGIO1, PERSONAGGIO2, PERSONAGGIO3 FROM "
+                + PERSONALIZZA_AMBIENTAZIONE + " WHERE GENITORE=? AND BAMBINO=?";
+        String[] valori = {email_genitore, nome_bambino};
 
-private ArrayList<String> generaFasceOrarie(){
+        try (SQLiteDatabase db = this.getReadableDatabase();
+             Cursor cursor = db.rawQuery(query, valori)) {
+
+            if (cursor.moveToFirst()) {
+
+                immagini.add(cursor.getBlob(cursor.getColumnIndexOrThrow("AMBIENTAZIONE")));
+                immagini.add(cursor.getBlob(cursor.getColumnIndexOrThrow("PERSONAGGIO1")));
+                immagini.add(cursor.getBlob(cursor.getColumnIndexOrThrow("PERSONAGGIO2")));
+                immagini.add(cursor.getBlob(cursor.getColumnIndexOrThrow("PERSONAGGIO3")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return immagini;
+    }
+
+public void modificaAmbientazione(String nome_bambino,String email_genitore,byte[] immagine){
+
+if(isBambinoAmbientazioneExisting(nome_bambino,email_genitore)){
+
+    try(SQLiteDatabase db=getWritableDatabase()){
+
+        ContentValues cv=new ContentValues();
+        cv.put("AMBIENTAZIONE",immagine);
+
+        db.update(PERSONALIZZA_AMBIENTAZIONE, cv, "BAMBINO=? AND GENITORE=?", new String[]{nome_bambino, email_genitore});
+
+    }
+}else{
+
+    try(SQLiteDatabase db=getWritableDatabase()){
+
+        ContentValues cv=new ContentValues();
+        cv.put("AMBIENTAZIONE",immagine);
+        cv.put("BAMBINO",nome_bambino);
+        cv.put("GENITORE",email_genitore);
+        db.insert(PERSONALIZZA_AMBIENTAZIONE,null,cv);
+
+
+    }
+}
+
+
+}
+    public void modificaPersonaggi(String nome_bambino,String email_genitore,List<byte[]> personaggi){
+
+        if(isBambinoAmbientazioneExisting(nome_bambino,email_genitore)){
+
+            try(SQLiteDatabase db=getWritableDatabase()){
+
+                ContentValues cv=new ContentValues();
+
+                if (personaggi.size() > 0 && personaggi.get(0) != null) {
+                    cv.put("PERSONAGGIO1", personaggi.get(0));
+                }
+                if (personaggi.size() > 1 && personaggi.get(1) != null) {
+                    cv.put("PERSONAGGIO2", personaggi.get(1));
+                }
+                if (personaggi.size() > 2 && personaggi.get(2) != null) {
+                    cv.put("PERSONAGGIO3", personaggi.get(2));
+                }
+
+
+                db.update(PERSONALIZZA_AMBIENTAZIONE, cv, "BAMBINO=? AND GENITORE=?", new String[]{nome_bambino, email_genitore});
+
+            }
+        }else{
+
+            try(SQLiteDatabase db=getWritableDatabase()){
+
+                ContentValues cv=new ContentValues();
+                if (personaggi.size() > 0 && personaggi.get(0) != null) {
+                    cv.put("PERSONAGGIO1", personaggi.get(0));
+                }
+                if (personaggi.size() > 1 && personaggi.get(1) != null) {
+                    cv.put("PERSONAGGIO2", personaggi.get(1));
+                }
+                if (personaggi.size() > 2 && personaggi.get(2) != null) {
+                    cv.put("PERSONAGGIO3", personaggi.get(2));
+                }
+                cv.put("BAMBINO",nome_bambino);
+                cv.put("GENITORE",email_genitore);
+                db.insert(PERSONALIZZA_AMBIENTAZIONE,null,cv);
+
+
+            }
+        }
+
+
+    }
+
+public boolean isBambinoAmbientazioneExisting(String nome_bambino,String email_genitore){
+
+        String query="SELECT * FROM "+ PERSONALIZZA_AMBIENTAZIONE + " WHERE BAMBINO=? AND GENITORE=? ";
+String [] valori={nome_bambino,email_genitore};
+        try(SQLiteDatabase db=getReadableDatabase()){
+
+Cursor cursor= db.rawQuery(query,valori);
+if(cursor.moveToFirst()==false){
+    return false;
+}
+
+
+        }
+
+
+return true;
+
+}
+
+    private ArrayList<String> generaFasceOrarie(){
 
         return new ArrayList<>( Arrays.asList("09:00-10:00","10:00-11:00","11:00-12:00","12:00-13:00","15:00-16:00","16:00-17:00"));
 

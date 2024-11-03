@@ -24,7 +24,9 @@
             android:layout_height="60dp"
             android:layout_gravity="start"
             android:padding="8dp"
-            android:src="@drawable/icons8_back_50" />
+            android:src="@drawable/icons8_back_50"
+
+            />
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -65,81 +67,201 @@
 
 
         <TableRow>
-            <ImageButton
+
+            <FrameLayout
                 android:layout_width="160dp"
                 android:layout_height="160dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+               >
+            <ImageButton
+                android:id="@+id/ambientazione1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:src="@drawable/img_2"
+
+                android:scaleType="centerCrop"
+                android:backgroundTint="@color/white"
+                ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/ambientazione1ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                >
+                <ImageButton
+                    android:id="@+id/ambientazione2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_3"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/ambientazione2ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
 
 
-            <ImageButton
-                android:layout_width="100dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_3"
-                android:layout_marginTop="14dp"
-                android:layout_marginEnd="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="8dp"
+
+
+                    />
+
+            </FrameLayout>
 
 
         </TableRow>
 
         <TableRow>
-            <ImageButton
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_4"
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                >
+                <ImageButton
+                    android:id="@+id/ambientazione3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_4"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/ambientazione3ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
 
 
-            <ImageButton
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_5"
-                android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_marginEnd="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <ImageButton
+                    android:id="@+id/ambientazione4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_5"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/ambientazione4ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
 
 
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
         </TableRow>
 
         <TableRow>
 
 
-            <ImageButton
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_6"
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                >
+                <ImageButton
+                    android:id="@+id/ambientazione5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_6"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/ambientazione5ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
 
 
-            <ImageButton
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/img_7"
-                android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="14dp"
+
+
+                    />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="160dp"
+                android:layout_height="160dp"
                 android:layout_marginEnd="8dp"
-                android:scaleType="centerCrop"
-                android:backgroundTint="@color/white"
-                ></ImageButton>
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                >
+                <ImageButton
+                    android:id="@+id/ambientazione6"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/img_7"
+
+                    android:scaleType="centerCrop"
+                    android:backgroundTint="@color/white"
+                    ></ImageButton>
+
+                <ImageView
+                    android:id="@+id/ambientazione6ok"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="12dp"
+
+
+                    />
+
+            </FrameLayout>
 
 
         </TableRow>
@@ -149,7 +271,7 @@
 
 
     <Button
-        android:id="@+id/ConfirmButton"
+        android:id="@+id/ConfirmButtonAmbientazione"
         android:layout_width="300dp"
         android:layout_height="55dp"
         android:text="Conferma"
