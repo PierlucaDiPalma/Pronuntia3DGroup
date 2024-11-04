@@ -205,6 +205,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 for(int i = 0; i<esercizi.size();i++){
+
                     if(esercizi.get(i).getTipo().equals("Denominazione")){
                         db.addDenominazione(esercizi.get(i));
                     }else if(esercizi.get(i).getTipo().equals("Sequenza")){
@@ -212,6 +213,10 @@ public class CreazioneEsercizi extends AppCompatActivity {
                     }else{
                         db.addCoppia(esercizi.get(i));
                     }
+                }
+
+                for(int i = 0; i<eserciziList.size();i++){
+                    db.addExercises(eserciziList.get(i));
                 }
 
                 finish();
