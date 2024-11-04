@@ -137,11 +137,11 @@ public class RipetizioneSequenza extends AppCompatActivity {
                 esercizio.setSequenza(sequenza);
 
                 if(!titolo.isEmpty() || !isNull){
-                    try {
+                   /* try {
                         titolo = URLEncoder.encode(titolo, "UTF-8");
                     } catch (UnsupportedEncodingException e) {
                         throw new RuntimeException(e);
-                    }
+                    }*/
 
                     for(int i = 0; i<dateList.size();i++) {
 
@@ -152,17 +152,23 @@ public class RipetizioneSequenza extends AppCompatActivity {
 
                         String[] dateContent = dateList.get(i).split("/");
 
-                        esercizio.setGiorno(Integer.valueOf(dateContent[0]));
+                       /* esercizio.setGiorno(Integer.valueOf(dateContent[0]));
                         esercizio.setMese(Integer.valueOf(dateContent[1]));
                         esercizio.setAnno(Integer.valueOf(dateContent[2]));
 
                         if (db.addSequenza(esercizio)) {
                             added++;
 
-                        }
+                        }*/
                     }
 
-                    if(added == dateList.size() && db.addExercises(esercizio)){
+                    Intent intent = new Intent();
+                    intent.putExtra("Esercizio", esercizio);
+                    intent.putExtra("source", TAG);
+                    setResult(1, intent);
+                    finish();
+
+                    /*if(added == dateList.size() && db.addExercises(esercizio)){
                         Log.d(TAG, "onClick: Scrittura");
                         Toast.makeText(RipetizioneSequenza.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(RipetizioneSequenza.this, CreazioneEsercizi.class);
@@ -174,7 +180,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
 
                     }else{
                         Toast.makeText(RipetizioneSequenza.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
 
                 }else{
                     Toast.makeText(RipetizioneSequenza.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();

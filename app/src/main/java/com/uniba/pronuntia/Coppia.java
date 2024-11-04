@@ -165,14 +165,14 @@ public class Coppia extends AppCompatActivity {
                 int added = 0;
                 titolo = titoloEdit.getText().toString().trim();
                 soluzione = soluzioneEdit.getText().toString().trim();
-
+/*
                 try {
                     titolo = URLEncoder.encode(titolo, "UTF-8");
 
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
                 }
-
+*/
 
                 if(!titolo.isEmpty() || !soluzione.isEmpty() || immagine1.getDrawable()!=null || immagine2.getDrawable()!=null){
                     for(int i = 0; i<dateList.size();i++){
@@ -183,7 +183,7 @@ public class Coppia extends AppCompatActivity {
                         esercizio.setAiuto(soluzione);
 
                         String[] dateContent = dateList.get(i).split("/");
-
+/*
                         esercizio.setGiorno(Integer.valueOf(dateContent[0]));
                         esercizio.setMese(Integer.valueOf(dateContent[1]));
                         esercizio.setAnno(Integer.valueOf(dateContent[2]));
@@ -192,9 +192,14 @@ public class Coppia extends AppCompatActivity {
                             added++;
 
                         }
-                    }
+*/                    }
+                    Intent intent = new Intent();
+                    intent.putExtra("Esercizio", esercizio);
+                    intent.putExtra("source", TAG);
+                    setResult(1, intent);
+                    finish();
 
-                    if(added==dateList.size() && db.addExercises(esercizio)){
+                    /*if(added==dateList.size() && db.addExercises(esercizio)){
                         Toast.makeText(Coppia.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Coppia.this, CreazioneEsercizi.class);
                         intent.putExtra("email", email);
@@ -206,7 +211,7 @@ public class Coppia extends AppCompatActivity {
                     }else{
                         Toast.makeText(Coppia.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
                     }
-
+*/
                 }
 
             }

@@ -165,12 +165,12 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                 titolo = titoloEdit.getText().toString().trim();
                 aiuto = aiutoEdit.getText().toString().trim();
-                try {
+                /*try {
                     titolo = URLEncoder.encode(titolo, "UTF-8");
                     aiuto = URLEncoder.encode(aiuto, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);
-                }
+                }*/
 
 
                 if (!titolo.isEmpty() || !aiuto.isEmpty() || titolo!= null || aiuto != null || immagine.getDrawable() != null) {
@@ -187,20 +187,26 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                         Log.d(TAG, "data esercizio: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
 
-                        esercizio.setGiorno(Integer.valueOf(dateContent[0]));
+                        /*esercizio.setGiorno(Integer.valueOf(dateContent[0]));
                         esercizio.setMese(Integer.valueOf(dateContent[1]));
                         esercizio.setAnno(Integer.valueOf(dateContent[2]));
-
+*/
                         Log.d(TAG, "data esercizio settata: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
 
-                        if (db.addDenominazione(esercizio)) {
+                        /*if (db.addDenominazione(esercizio)) {
 
                             Log.d(TAG, "onClick: Scrittura");
                             added++;
-                        }
+                        }*/
                     }
 
-                    if(added==dateList.size() && db.addExercises(esercizio)){
+                    Intent intent = new Intent();
+                    intent.putExtra("Esercizio", esercizio);
+                    intent.putExtra("source", TAG);
+                    setResult(1, intent);
+                    finish();
+
+                   /* if(added==dateList.size() && db.addExercises(esercizio)){
                         Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class);
                         intent.putExtra("email", email);
@@ -212,7 +218,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     }else {
 
                         Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
 
                 } else {
                     Toast.makeText(DenominazioneImmagini.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();

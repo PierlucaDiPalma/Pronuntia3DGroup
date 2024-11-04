@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -43,12 +46,17 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private int day, month, year;
     private int durata;
     private String data;
+    private ArrayList<String> dateList = new ArrayList<>();
+
     private String email;
     private String bambino;
     private String logopedista;
     private String motivo;
 
+    private Button sendTerapia;
+
     private String source;
+    private ArrayList<Esercizio> eserciziList = new ArrayList<>();
     private static final String TAG = "CreazioneEsercizi";
 
     @Override
@@ -92,6 +100,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
         emailText.setText(email);
         motivoText.setText(motivo);
 
+
         if(durata>1) {
             durataText.setText(durata + " settimane");
         }else{
@@ -99,82 +108,82 @@ public class CreazioneEsercizi extends AppCompatActivity {
         }
 
         addEsercizio = findViewById(R.id.add);
+        sendTerapia = findViewById(R.id.send);
         recyclerView = findViewById(R.id.exercises);
 
         db = new DBHelper(this);
 
-        esercizi = db.readExercises(email, bambino);
+        //esercizi = db.readExercises(email, bambino);
 
 
-        customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, esercizi);
+        customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, eserciziList);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
 
         Log.d(TAG, "onCreate: " + source);
         if(!source.equals("Logopedista")){
-            data = intent.getStringExtra("data");
-            dataText.setText(data);
+            /*data = intent.getStringExtra("data");
+            dataText.setText(data);*/
         }else{
 
         /*if(db.getLogopedista(bambino, email)==null){
             db.addPazienti(bambino, email, logopedista);
         }*/
-        calendario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                final Calendar calendar = Calendar.getInstance();
+            calendario.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                    final Calendar calendar = Calendar.getInstance();
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(CreazioneEsercizi.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                        data = dayOfMonthDP + " " + (monthDP+1) + " " + yearDP;
-                        dataText.setText(data);
-                        Log.d(TAG, "onDateSet: " + dayOfMonthDP + " " + (monthDP+1) + " " + yearDP);
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(CreazioneEsercizi.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int yearDP, int monthDP, int dayOfMonthDP) {
 
-                        Calendar forWeeks = Calendar.getInstance();
-                        forWeeks.set(yearDP, monthDP, dayOfMonthDP);
+                            data = dayOfMonthDP + " " + (monthDP+1) + " " + yearDP;
+                            dataText.setText(data);
+                            Log.d(TAG, "onDateSet: " + dayOfMonthDP + " " + (monthDP+1) + " " + yearDP);
+
+                            Calendar forWeeks = Calendar.getInstance();
+                            forWeeks.set(yearDP, monthDP, dayOfMonthDP);
 
 
-                        ArrayList<String> dateList = new ArrayList<>();
+                            for (int i = 0; i < (durata*7); i++) {
+                                // Ottieni il giorno, mese e anno corrente
+                                int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
+                                int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
+                                int currentYear = forWeeks.get(Calendar.YEAR);
 
-                        for (int i = 0; i < (durata*7); i++) {
-                            // Ottieni il giorno, mese e anno corrente
-                            int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
-                            int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
-                            int currentYear = forWeeks.get(Calendar.YEAR);
+                                // Aggiungi la data alla lista
+                                String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
+                                dateList.add(currentDate);
 
-                            // Aggiungi la data alla lista
-                            String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
-                            dateList.add(currentDate);
+                                // Aggiungi un giorno al calendario
+                                forWeeks.add(Calendar.DAY_OF_YEAR, 1);
 
-                            // Aggiungi un giorno al calendario
-                            forWeeks.add(Calendar.DAY_OF_YEAR, 1);
+                                //Log.d(TAG, i+1 + " " + currentDate);
+                            }
 
-                            //Log.d(TAG, i+1 + " " + currentDate);
+                            for(int i = 0;i<dateList.size();i++){
+                                Log.d(TAG, i+1 + " " + dateList.get(i));
+                            }
+
+
                         }
-
-                        for(int i = 0;i<dateList.size();i++){
-                            Log.d(TAG, i+1 + " " + dateList.get(i));
-                        }
-
-                    }
-                }, day, month, year);
+                    }, day, month, year);
 
 
-                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis() - 1000);
-                datePickerDialog.show();
-            }
-        });
+                    datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis() - 1000);
+                    datePickerDialog.show();
+                }
+            });
 
 
         }
-
 
         addEsercizio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,10 +191,32 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
                 if(dataText.getText().toString().equals(data)){
                     showExerciseTypeDialog(email);
+                    for(int i = 0;i<dateList.size();i++){
+                        Log.d(TAG, i+1 + " " + dateList.get(i));
+                    }
+
                 }else{
                     Toast.makeText(CreazioneEsercizi.this, "Data non selezionata", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+
+        sendTerapia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(int i = 0; i<esercizi.size();i++){
+                    if(esercizi.get(i).getTipo().equals("Denominazione")){
+                        db.addDenominazione(esercizi.get(i));
+                    }else if(esercizi.get(i).getTipo().equals("Sequenza")){
+                        db.addSequenza(esercizi.get(i));
+                    }else{
+                        db.addCoppia(esercizi.get(i));
+                    }
+                }
+
+                finish();
+            }
+
         });
     }
 
@@ -194,6 +225,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
         super.onRestart();
         
     }
+
 
     private void showExerciseTypeDialog(String email) {
         String[] exerciseTypes = {"Denominazione", "Sequenza", "Coppia"};
@@ -221,9 +253,38 @@ public class CreazioneEsercizi extends AppCompatActivity {
                     intent.putExtra("bambino", bambino);
                     intent.putExtra("durata", durata);
                     intent.putExtra("data", data);
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
                 });
         builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode==1){
+            Esercizio esercizio = data.getParcelableExtra("Esercizio");
+            eserciziList.add(esercizio);
+
+            for(int i = 0; i<dateList.size();i++){
+
+
+                String[] dateContent = dateList.get(i).split("/");
+
+                Log.d(TAG, "DATA: " + Integer.valueOf(dateContent[0])+"/"+Integer.valueOf(dateContent[1])+"/"+Integer.valueOf(dateContent[2]));
+                //Log.d(TAG, "ARRAY ESERCIZI: " + esercizi.get(i).getName() + " " + esercizi.get(i).getGiorno()+"/"+esercizi.get(i).getMese()+"/"+esercizi.get(i).getAnno());
+                esercizi.add(new Esercizio(esercizio.getEmail(), esercizio.getBambino(), esercizio.getName(), esercizio.getTipo(), esercizio.getImmagine1(), esercizio.getImmagine2(),
+                        esercizio.getAiuto(), esercizio.getSequenza(), Integer.valueOf(dateContent[0]), Integer.valueOf(dateContent[1]), Integer.valueOf(dateContent[2])));
+            }
+
+            for(int i = 0;i<esercizi.size();i++){
+                Log.d(TAG, "ARRAY ESERCIZI: " + esercizi.get(i).getName() + " " + esercizi.get(i).getGiorno()+"/"+esercizi.get(i).getMese()+"/"+esercizi.get(i).getAnno());
+
+            }
+
+            customAdapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override
