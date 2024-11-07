@@ -1,6 +1,7 @@
 package com.uniba.pronuntia;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -80,7 +82,7 @@ public class LivelloDen extends Fragment {
     private ImageView immagine;
     private String parola;
     private Button aiuto, parla, record;
-    private TextView titolo, contenuto;
+    private TextView titolo, contenuto, registrazione;
     private int punteggio;
     private int canClick = 3;
     private TextToSpeech tts;
@@ -107,6 +109,7 @@ public class LivelloDen extends Fragment {
         parla = view.findViewById(R.id.speakButton);
         record = view.findViewById(R.id.recordButton);
         titolo = view.findViewById(R.id.livello);
+        registrazione = view.findViewById(R.id.registrazioneText);
 
         db = new DBHelper(getActivity());
 
@@ -211,6 +214,7 @@ public class LivelloDen extends Fragment {
             mediaRecorder.prepare();
             mediaRecorder.start();
             isRecording = true;
+            showRecordingDialog();
             record.setText("Interrompi registrazione");
 
             record.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +229,57 @@ public class LivelloDen extends Fragment {
         }
     }
 
+    private void showRecordingDialog() {
+        // Crea un dialogo per controllare la registrazione
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Registrazione in corso");
+
+        builder.setPositiveButton("Interrompi", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                stopRecording();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (isRecording) {
+                    stopRecording();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Imposta un listener sul pulsante per riavviare la registrazione
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isRecording) {
+                    startRecording();
+                } else {
+                    dialog.show();
+                }
+            }
+        });
+    }
+
+    private void stopRecording() {
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+            isRecording = false;
+            record.setText("Registra");
+            registrazione.setText("Ok");
+        }
+    }
+
+
+    /*
     private void stopRecording() {
         mediaRecorder.stop();
         mediaRecorder.release();
@@ -232,22 +287,6 @@ public class LivelloDen extends Fragment {
         isRecording = false;
         record.setText("Registra");
 
-        // Salva il percorso nel database
-        db.saveAudio(audioFilePath);
-        Toast.makeText(getActivity(), "Audio salvato nel database", Toast.LENGTH_SHORT).show();
-
-/*
-        new Handler().postDelayed(() -> {
-            MediaPlayer player = new MediaPlayer();
-            try {
-                player.setDataSource(audioFilePath);
-                player.prepare();
-                player.start();
-                Toast.makeText(getActivity(), "Riproduzione in corso", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                Log.e("Playback Error", "Errore durante la riproduzione dell'audio", e);
-            }
-        }, 1000);*/
     }
 
     @Override
@@ -258,7 +297,7 @@ public class LivelloDen extends Fragment {
         }
         super.onDestroy();
     }
-
+*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

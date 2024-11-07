@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,7 +41,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
     private Button addEsercizio;
     private RecyclerView recyclerView;
-    private ExerciseAdapter customAdapter;
+    private ExerciseAdapterLogopedista customAdapter;
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
     private DBHelper db;
     private int day, month, year;
@@ -116,9 +117,13 @@ public class CreazioneEsercizi extends AppCompatActivity {
         //esercizi = db.readExercises(email, bambino);
 
 
-        customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, eserciziList);
+        customAdapter = new ExerciseAdapterLogopedista(CreazioneEsercizi.this, recyclerView, eserciziList, esercizi, durata);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        sendTerapia.setVisibility(View.INVISIBLE);
 
         Log.d(TAG, "onCreate: " + source);
         if(!source.equals("Logopedista")){
@@ -286,11 +291,14 @@ public class CreazioneEsercizi extends AppCompatActivity {
                 Log.d(TAG, "ARRAY ESERCIZI: " + esercizi.get(i).getName() + " " + esercizi.get(i).getGiorno()+"/"+esercizi.get(i).getMese()+"/"+esercizi.get(i).getAnno());
 
             }
-
+            if(esercizi.size()!=0 && eserciziList.size()!=0){
+                sendTerapia.setVisibility(View.VISIBLE);
+            }
             customAdapter.notifyDataSetChanged();
         }
 
     }
+
 
     @Override
     protected void onResume() {

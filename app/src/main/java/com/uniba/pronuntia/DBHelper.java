@@ -100,7 +100,7 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     private static final String AUDIO = "AUDIO";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 18);
+        super(context, DATABASE_NAME, null, 19);
     }
 
     private static final String TAG = "DBHelper";

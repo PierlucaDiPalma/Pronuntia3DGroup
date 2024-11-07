@@ -91,7 +91,7 @@ public class LivelloSeq extends Fragment {
     private boolean isRecording = false;
     private MediaRecorder mediaRecorder;
     private String audioFilePath;
-    private DBHelper db;
+    private TextView registrazione;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -107,8 +107,8 @@ public class LivelloSeq extends Fragment {
         parla = view.findViewById(R.id.speakButton);
         record = view.findViewById(R.id.recordButton);
         aiuto = view.findViewById(R.id.aiuto);
-
-        db = new DBHelper(getActivity());
+        registrazione = view.findViewById(R.id.registrazioneText);
+        //db = new DBHelper(getActivity());
 
         parola1 = getArguments().getString("Parola1");
         parola2 = getArguments().getString("Parola2");
@@ -234,12 +234,12 @@ public class LivelloSeq extends Fragment {
         mediaRecorder = null;
         isRecording = false;
         record.setText("Registra");
-
+        registrazione.setText("Ok");
         // Salva il percorso nel database
-        db.saveAudio(audioFilePath);
-        Toast.makeText(getActivity(), "Audio salvato nel database", Toast.LENGTH_SHORT).show();
+        //db.saveAudio(audioFilePath);
+        //Toast.makeText(getActivity(), "Audio salvato nel database", Toast.LENGTH_SHORT).show();
 
-
+/*
         new Handler().postDelayed(() -> {
             MediaPlayer player = new MediaPlayer();
             try {
@@ -250,7 +250,7 @@ public class LivelloSeq extends Fragment {
             } catch (IOException e) {
                 Log.e("Playback Error", "Errore durante la riproduzione dell'audio", e);
             }
-        }, 1000);
+        }, 1000);*/
     }
 
     @Override
