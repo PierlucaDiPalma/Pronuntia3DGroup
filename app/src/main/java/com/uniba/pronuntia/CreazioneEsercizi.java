@@ -282,7 +282,6 @@ public class CreazioneEsercizi extends AppCompatActivity {
                 String[] dateContent = dateList.get(i).split("/");
 
                 Log.d(TAG, "DATA: " + Integer.valueOf(dateContent[0])+"/"+Integer.valueOf(dateContent[1])+"/"+Integer.valueOf(dateContent[2]));
-                //Log.d(TAG, "ARRAY ESERCIZI: " + esercizi.get(i).getName() + " " + esercizi.get(i).getGiorno()+"/"+esercizi.get(i).getMese()+"/"+esercizi.get(i).getAnno());
                 esercizi.add(new Esercizio(esercizio.getEmail(), esercizio.getBambino(), esercizio.getName(), esercizio.getTipo(), esercizio.getImmagine1(), esercizio.getImmagine2(),
                         esercizio.getAiuto(), esercizio.getSequenza(), Integer.valueOf(dateContent[0]), Integer.valueOf(dateContent[1]), Integer.valueOf(dateContent[2])));
             }

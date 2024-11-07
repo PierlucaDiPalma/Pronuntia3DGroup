@@ -200,7 +200,7 @@ public class LivelloDen extends Fragment {
     }
 
     private void startRecording() {
-        // Definisci un nome personalizzato per il file audio
+
         String fileName = "registrazione_personalizzata_" + System.currentTimeMillis() + ".3gp";
         audioFilePath = getActivity().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
@@ -230,7 +230,7 @@ public class LivelloDen extends Fragment {
     }
 
     private void showRecordingDialog() {
-        // Crea un dialogo per controllare la registrazione
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Registrazione in corso");
 
@@ -278,26 +278,6 @@ public class LivelloDen extends Fragment {
         }
     }
 
-
-    /*
-    private void stopRecording() {
-        mediaRecorder.stop();
-        mediaRecorder.release();
-        mediaRecorder = null;
-        isRecording = false;
-        record.setText("Registra");
-
-    }
-
-    @Override
-    public void onDestroy() {
-        if (mediaRecorder != null) {
-            mediaRecorder.release();
-            mediaRecorder = null;
-        }
-        super.onDestroy();
-    }
-*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

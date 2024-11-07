@@ -1,11 +1,13 @@
 package com.uniba.pronuntia;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -214,6 +216,7 @@ public class LivelloSeq extends Fragment {
             mediaRecorder.prepare();
             mediaRecorder.start();
             isRecording = true;
+            showRecordingDialog();
             record.setText("Interrompi registrazione");
 
             record.setOnClickListener(new View.OnClickListener() {
@@ -228,29 +231,54 @@ public class LivelloSeq extends Fragment {
         }
     }
 
-    private void stopRecording() {
-        mediaRecorder.stop();
-        mediaRecorder.release();
-        mediaRecorder = null;
-        isRecording = false;
-        record.setText("Registra");
-        registrazione.setText("Ok");
-        // Salva il percorso nel database
-        //db.saveAudio(audioFilePath);
-        //Toast.makeText(getActivity(), "Audio salvato nel database", Toast.LENGTH_SHORT).show();
+    private void showRecordingDialog() {
 
-/*
-        new Handler().postDelayed(() -> {
-            MediaPlayer player = new MediaPlayer();
-            try {
-                player.setDataSource(audioFilePath);
-                player.prepare();
-                player.start();
-                Toast.makeText(getActivity(), "Riproduzione in corso", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                Log.e("Playback Error", "Errore durante la riproduzione dell'audio", e);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Registrazione in corso");
+
+        builder.setPositiveButton("Interrompi", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                stopRecording();
+                dialog.dismiss();
             }
-        }, 1000);*/
+        });
+
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (isRecording) {
+                    stopRecording();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Imposta un listener sul pulsante per riavviare la registrazione
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isRecording) {
+                    startRecording();
+                } else {
+                    dialog.show();
+                }
+            }
+        });
+    }
+
+    private void stopRecording() {
+
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+            isRecording = false;
+            record.setText("Registra");
+            registrazione.setText("Ok");
+        }
     }
 
     @Override

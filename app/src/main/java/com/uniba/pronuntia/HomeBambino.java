@@ -49,7 +49,6 @@ public class HomeBambino extends AppCompatActivity {
     private String nome;
     private String path;
 
-    private Button audio;
     private TextView nomeBambinoTextView, punteggio;
 
     @Override
@@ -72,7 +71,6 @@ public class HomeBambino extends AppCompatActivity {
         email = intent.getStringExtra("email");//email del genitore
 
 
-        audio = findViewById(R.id.audio);
 
         picPersonaggioView = findViewById(R.id.pic);
         frase = findViewById(R.id.frase);
@@ -186,13 +184,6 @@ public class HomeBambino extends AppCompatActivity {
             }
         });
 
-        audio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeBambino.this, PlayerAudio.class);
-                startActivity(intent);
-            }
-        });
 
         sceltaPersonaggi.setOnClickListener(new View.OnClickListener() {
             @Override

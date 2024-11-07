@@ -18,7 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
@@ -72,6 +74,30 @@ private  LinearLayout linearLayout;
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Mostra il dialog di conferma
+                new AlertDialog.Builder(GamePath.this)
+                        .setTitle("Sei sicuro di voler uscire?")
+                        .setMessage("I risultati ottenuti andranno persi")
+                        .setPositiveButton("Sì", (dialog, which) -> {
+                            // Chiudi l'activity
+                            finish();
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            // Chiudi il dialog e rimani nell'activity
+                            dialog.dismiss();
+                        })
+                        .show();
+            }
+        };
+
+        // Aggiungi il callback al dispatcher
+        getOnBackPressedDispatcher().addCallback(this, callback);
+
 
         recyclerView = findViewById(R.id.levelView);
         db = new DBHelper(GamePath.this);
@@ -218,7 +244,6 @@ immagini=db.getImmaginiAmbientazione(email,bambino);
     public static <T> void shuffleArrayList(ArrayList<T> list) {
         Collections.shuffle(list); // Mescola casualmente l'ArrayList
     }
-
 
 
 }
