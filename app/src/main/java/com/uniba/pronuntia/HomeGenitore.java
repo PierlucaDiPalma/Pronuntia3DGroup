@@ -76,16 +76,13 @@ settings=findViewById(R.id.Impostazioni);
         });
 
 
-settings.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        Intent intent=new Intent(HomeGenitore.this,Impostazioni.class);
-        startActivity(intent);
-    }
-});
-
-
-
+    settings.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent=new Intent(HomeGenitore.this,Impostazioni.class);
+            startActivity(intent);
+        }
+    });
     }
 
     @Override

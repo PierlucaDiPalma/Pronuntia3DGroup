@@ -197,25 +197,4 @@ public class HomeBambino extends AppCompatActivity {
         });
     }
 
-    public boolean isEquals(ArrayList<Esercizio> esercizi, ArrayList<Resoconto> resoconti) {
-        for (Esercizio esercizio : esercizi) {
-            boolean isDone = false; // Variabile esterna per controllare se l'esercizio è completato
-            for (Resoconto resoconto : resoconti) {
-                // Controlla se tutti i parametri corrispondono tra esercizio e resoconto
-                if (esercizio.getName().equals(resoconto.getEsercizio().getName()) &&
-                        esercizio.getEmail().equals(resoconto.getGenitore()) &&
-                        esercizio.getGiorno() == resoconto.getEsercizio().getGiorno() &&
-                        esercizio.getMese() == resoconto.getEsercizio().getMese() &&
-                        esercizio.getAnno() == resoconto.getEsercizio().getAnno()) {
-
-                    // Se c'è una corrispondenza, imposta isDone su true
-                    isDone = true;
-                    return isDone; // Esci dal ciclo, hai trovato un match
-                }
-            }
-
-        }
-
-        return false;
-    }
 }

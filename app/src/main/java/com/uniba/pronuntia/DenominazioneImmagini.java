@@ -72,7 +72,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private int durata;
     private Esercizio esercizio = new Esercizio(null, null, null, "Denominazione", null, null, null, null, 0, 0, 0);
 
-
+    ActivityResultLauncher<String> mPermissioneResultLauncher;
+    private boolean isReadPermissionGranted = false;
     ActivityResultLauncher<Intent> resultLauncher;
 
     private SeekBar audioBar;
@@ -80,6 +81,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private Uri imagePath;
     private Bitmap image;
 
+    private static final int PERMISSION_REQUEST_CODE = 99;
     private static final int PICK_IMAGE_REQUEST = 99;
     private static final String TAG = "DenominazioneImmagini";
 
@@ -103,6 +105,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
         imgLoad = findViewById(R.id.caricaImg);
         immagine = findViewById(R.id.imageEx);
+
 
 
         Intent intent = getIntent();
@@ -206,19 +209,6 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     setResult(1, intent);
                     finish();
 
-                   /* if(added==dateList.size() && db.addExercises(esercizio)){
-                        Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class);
-                        intent.putExtra("email", email);
-                        intent.putExtra("bambino", bambino);
-                        intent.putExtra("data", data);
-                        intent.putExtra("source", TAG);
-                        startActivity(intent);
-
-                    }else {
-
-                        Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
-                    }*/
 
                 } else {
                     Toast.makeText(DenominazioneImmagini.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();
@@ -274,16 +264,13 @@ public class DenominazioneImmagini extends AppCompatActivity {
         }
     }
 
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            cursor.close();
-            return path;
+
+    private void requestPermissions(){
+        isReadPermissionGranted = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        String permissionRequest = new String();
+        if(!isReadPermissionGranted){
+            permissionRequest = Manifest.permission.READ_EXTERNAL_STORAGE;
         }
-        return null;
     }
+
 }
