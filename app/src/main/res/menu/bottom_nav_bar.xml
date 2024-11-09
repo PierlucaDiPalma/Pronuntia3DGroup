@@ -14,7 +14,7 @@
 
     <item
         android:id="@+id/logout"
-        android:icon="@drawable/baseline_phone_in_talk_24"
+        android:icon="@drawable/baseline_logout_24"
         android:title="Logout"
         />
 

@@ -2,6 +2,7 @@ package com.uniba.pronuntia;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -75,6 +77,24 @@ settings=findViewById(R.id.Impostazioni);
             }
         });
 
+        MenuItem logout = menu.findItem(R.id.logout);
+
+        logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                new AlertDialog.Builder(HomeGenitore.this)
+                        .setTitle("Vuoi uscire?")
+                        .setPositiveButton("Sì", (dialog, which) -> {
+                            startActivity(new Intent(HomeGenitore.this, Login.class));
+                            finish();
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+                return true;
+            }
+        });
 
     settings.setOnClickListener(new View.OnClickListener() {
         @Override
