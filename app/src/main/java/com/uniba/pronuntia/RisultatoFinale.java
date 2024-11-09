@@ -102,7 +102,7 @@ public class RisultatoFinale extends AppCompatActivity {
         }
 
 
-        //totaleCorretti = db.getCorretti(bambino, email);
+
         totalePremi = db.getPremi(bambino, email);
 
         punteggioText = findViewById(R.id.punteggio);
@@ -111,7 +111,7 @@ public class RisultatoFinale extends AppCompatActivity {
         sbagliatiText = findViewById(R.id.sbagliati);
 
 
-        //punteggio = getIntent().getIntExtra("Punteggio", 0);
+
         numeroAiuti = getIntent().getIntExtra("Aiuti", 0);
         corretti = getIntent().getIntExtra("Corretti", 0);
         sbagliati = getIntent().getIntExtra("Sbagliati", 0);

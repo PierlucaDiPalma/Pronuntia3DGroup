@@ -45,11 +45,7 @@ public class ExerciseAdapterLogopedista extends RecyclerView.Adapter<ExerciseAda
         holder.titolo.setText(exerciseList.get(position).getName());
         holder.position.setText(String.valueOf(position + 1));
         holder.tipo.setText(exerciseList.get(position).getTipo());
-/*
-        for(int i=0;i<list.size();i++) {
-            Log.d(TAG, "PRIMA DELLA RIMOZIONE: " + list.get(i).getName() + " " + list.get(i).getGiorno() + "/" + list.get(i).getMese() + "/" + list.get(i).getAnno());
-        }
-*/
+
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,9 +72,7 @@ public class ExerciseAdapterLogopedista extends RecyclerView.Adapter<ExerciseAda
                 .withEndAction(() -> {
 
 
-                    /*for(int i = 0;i<exerciseList.size();i++){
-                        Log.d(TAG, "1) PRIMA DELLA RIMOZIONE " + exerciseList.get(i).getName() + " " + exerciseList.get(i).getGiorno() + "/" + exerciseList.get(i).getMese() + "/" + exerciseList.get(i).getAnno());
-                    }*/
+
 
                     for(int i = 0;i<list.size();i++){
                         Log.d(TAG, "2) PRIMA DELLA RIMOZIONE " + list.get(i).getName() + " " + list.get(i).getGiorno() + "/" + list.get(i).getMese() + "/" + list.get(i).getAnno());
@@ -88,15 +82,7 @@ public class ExerciseAdapterLogopedista extends RecyclerView.Adapter<ExerciseAda
                     for(int i = 0;i<durata*7;i++){
                         list.remove(position*7);
                     }
-/*                    for(int i = 0;i<durata*7;i++){
-                        list.remove(position*7);
-                    }
-*/
 
-
-                   /* for(int i = 0;i<exerciseList.size();i++){
-                        Log.d(TAG, i + " 1) DOPO LA RIMOZIONE " + exerciseList.get(i).getName() + " " + exerciseList.get(i).getGiorno() + "/" + exerciseList.get(i).getMese() + "/" + exerciseList.get(i).getAnno());
-                    }*/
 
                     for(int i = 0;i<list.size();i++){
                         Log.d(TAG, i + " 2) DOPO LA RIMOZIONE " + list.get(i).getName() + " " + list.get(i).getGiorno() + "/" + list.get(i).getMese() + "/" + list.get(i).getAnno());
@@ -113,7 +99,7 @@ public class ExerciseAdapterLogopedista extends RecyclerView.Adapter<ExerciseAda
         Button delete;
         public ExerciseViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Inizializza i tuoi componenti di vista qui
+
             titolo = itemView.findViewById(R.id.titleEx);
             position = itemView.findViewById(R.id.positionText);
             tipo = itemView.findViewById(R.id.tipo);

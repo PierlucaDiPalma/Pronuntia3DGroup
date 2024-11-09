@@ -22,13 +22,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <ImageView
-            android:id="@+id/back_button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="start"
-            android:padding="8dp"
-            android:src="@drawable/icons8_back_50" />
+
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -72,6 +66,8 @@
         android:id="@+id/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/requests_list"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -96,7 +97,7 @@ public class Logopedista extends AppCompatActivity {
                     TextView nomeBambino = convertView.findViewById(R.id.nomeBambino);
                     TextView motivo = convertView.findViewById(R.id.motivo);
                     TextView durata = convertView.findViewById(R.id.durata);
-                    ImageButton pulsanteMkTerapia=convertView.findViewById(R.id.PendenteButton);
+                    Button pulsanteMkTerapia=convertView.findViewById(R.id.PendenteButton);
 
                     if (richiesta != null) {
                         nomeBambino.setText(richiesta.getNomeBambino());

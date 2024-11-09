@@ -98,7 +98,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
         Log.d(TAG, "onCreate: Entrato");
         titoloEdit = findViewById(R.id.titoloEsercizio);
         crea = findViewById(R.id.createDen);
-        //calendario = findViewById(R.id.calendar);
+
         aiutoEdit = findViewById(R.id.aiuto);
 
         imgLoad = findViewById(R.id.caricaImg);
@@ -127,16 +127,16 @@ public class DenominazioneImmagini extends AppCompatActivity {
         ArrayList<String> dateList = new ArrayList<>();
         for (int i = 0; i < (durata*7); i++) {
 
-            // Ottieni il giorno, mese e anno corrente
+
             int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
             int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
             int currentYear = forWeeks.get(Calendar.YEAR);
 
-            // Aggiungi la data alla lista
+
             String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
             dateList.add(currentDate);
 
-            // Aggiungi un giorno al calendario
+
             forWeeks.add(Calendar.DAY_OF_YEAR, 1);
 
         }
@@ -154,7 +154,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 choseImage();
             }
         });
-        //registerImageResult(email);
+
         Log.d(TAG, "onPositiveButtonClick: " + day + " " + month + " " + year);
 
 
@@ -165,12 +165,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                 titolo = titoloEdit.getText().toString().trim();
                 aiuto = aiutoEdit.getText().toString().trim();
-                /*try {
-                    titolo = URLEncoder.encode(titolo, "UTF-8");
-                    aiuto = URLEncoder.encode(aiuto, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }*/
+
 
 
                 if (!titolo.isEmpty() || !aiuto.isEmpty() || titolo!= null || aiuto != null || immagine.getDrawable() != null) {
@@ -187,17 +182,10 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                         Log.d(TAG, "data esercizio: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
 
-                        /*esercizio.setGiorno(Integer.valueOf(dateContent[0]));
-                        esercizio.setMese(Integer.valueOf(dateContent[1]));
-                        esercizio.setAnno(Integer.valueOf(dateContent[2]));
-*/
+
                         Log.d(TAG, "data esercizio settata: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
 
-                        /*if (db.addDenominazione(esercizio)) {
 
-                            Log.d(TAG, "onClick: Scrittura");
-                            added++;
-                        }*/
                     }
 
                     Intent intent = new Intent();
@@ -206,19 +194,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     setResult(1, intent);
                     finish();
 
-                   /* if(added==dateList.size() && db.addExercises(esercizio)){
-                        Toast.makeText(DenominazioneImmagini.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DenominazioneImmagini.this, CreazioneEsercizi.class);
-                        intent.putExtra("email", email);
-                        intent.putExtra("bambino", bambino);
-                        intent.putExtra("data", data);
-                        intent.putExtra("source", TAG);
-                        startActivity(intent);
 
-                    }else {
-
-                        Toast.makeText(DenominazioneImmagini.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
-                    }*/
 
                 } else {
                     Toast.makeText(DenominazioneImmagini.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();

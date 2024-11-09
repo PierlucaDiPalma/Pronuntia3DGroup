@@ -89,7 +89,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
         source = intent.getStringExtra("source");
 
-        //data = intent.getStringExtra("data");
+
 
 
         String nome = intent.getStringExtra("nome");
@@ -114,7 +114,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
         db = new DBHelper(this);
 
-        //esercizi = db.readExercises(email, bambino);
+
 
 
         customAdapter = new ExerciseAdapterLogopedista(CreazioneEsercizi.this, recyclerView, eserciziList, esercizi, durata);
@@ -158,19 +158,19 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
 
                             for (int i = 0; i < (durata*7); i++) {
-                                // Ottieni il giorno, mese e anno corrente
+
                                 int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
                                 int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
                                 int currentYear = forWeeks.get(Calendar.YEAR);
 
-                                // Aggiungi la data alla lista
+
                                 String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
                                 dateList.add(currentDate);
 
-                                // Aggiungi un giorno al calendario
+
                                 forWeeks.add(Calendar.DAY_OF_YEAR, 1);
 
-                                //Log.d(TAG, i+1 + " " + currentDate);
+
                             }
 
                             for(int i = 0;i<dateList.size();i++){

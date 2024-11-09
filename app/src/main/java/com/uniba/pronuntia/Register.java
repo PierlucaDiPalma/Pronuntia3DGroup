@@ -36,8 +36,6 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity {
 
-    //DatabaseReference dbRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://pronuntiadb-58c18-default-rtdb.firebaseio.com/");
-    //DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
 
     private EditText emailEdit;
     private EditText nomeEdit;

@@ -88,7 +88,7 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
                     player.prepare();
                     player.start();
                     holder.progressBar.setMax(player.getDuration());
-                   // Toast.makeText(context, "Riproduzione in corso", Toast.LENGTH_SHORT).show();
+
 
                     Handler handler = new Handler();
                     Runnable runnable = new Runnable() {
@@ -156,7 +156,7 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
             }
         });
 
-        // Pulsante di annullamento
+
         builder.setNegativeButton("Annulla", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -164,7 +164,7 @@ public class CorrectionAdapter extends RecyclerView.Adapter<CorrectionAdapter.Co
             }
         });
 
-        // Mostra il dialog
+
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }

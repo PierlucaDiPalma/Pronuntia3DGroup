@@ -30,7 +30,7 @@ import java.util.Random;
 public class LivelloCop extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -94,7 +94,7 @@ public class LivelloCop extends Fragment {
         Random random = new Random();
         int rand = random.nextInt(2);
 
-        //Mescola casualmente le immagini
+
         immagine1 = view.findViewById(R.id.img1);
         immagine2 = view.findViewById(R.id.img2);
 
@@ -103,9 +103,7 @@ public class LivelloCop extends Fragment {
         if(getArguments() != null){
 
 
-            /*titolo.setText(getArguments().getString("Titolo"));
-            parola = getArguments().getString("Aiuto");
-            contenuto.setText(getArguments().getString("Aiuto"));*/
+
 
             esercizio = getArguments().getParcelable("esercizio");
             titolo.setText(esercizio.getName());
@@ -124,11 +122,7 @@ public class LivelloCop extends Fragment {
             }
 
 
-            /*Bitmap image = BitmapFactory.decodeByteArray(immagini.get(0), 0, immagini.get(0).length);
-            immagine1.setImageBitmap(image);
 
-            image = BitmapFactory.decodeByteArray(immagini.get(1), 0, immagini.get(1).length);
-            immagine2.setImageBitmap(image);*/
             immagine1.setImageURI(Uri.parse(immagini.get(0)));
             immagine2.setImageURI(Uri.parse(immagini.get(1)));
 
@@ -177,7 +171,7 @@ public class LivelloCop extends Fragment {
 
         }
 
-        // Inflate the layout for this fragment
+
         return view;
     }
 

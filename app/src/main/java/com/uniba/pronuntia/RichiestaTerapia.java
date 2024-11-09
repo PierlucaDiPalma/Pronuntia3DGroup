@@ -122,6 +122,8 @@ private BottomNavigationView bottombar;
             @Override
             public void onClick(View v) {
                 inserisciTerapiaNelDB();
+               Intent intent=new Intent(RichiestaTerapia.this,HomeGenitore.class);
+               startActivity(intent);
             }
         });
 

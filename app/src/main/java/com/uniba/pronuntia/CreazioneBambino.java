@@ -54,7 +54,7 @@ public class CreazioneBambino extends AppCompatActivity {
                 }
         db.addBambino(nomeBambino,email);
         Intent intent=new Intent(CreazioneBambino.this,HomeUtente.class);
-                intent.putExtra("email", email); // Passa l'email qui
+                intent.putExtra("email", email);
         startActivity(intent);
 
 

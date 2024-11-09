@@ -57,7 +57,7 @@ public class HomeUtente extends AppCompatActivity {
         db=new DBHelper(this);
         Intent intent = getIntent();
         String email = intent.getStringExtra("email");
-        Log.d("Login", "Email passata: " + email); // Log per debugging
+        Log.d("Login", "Email passata: " + email);
         if (email != null) {
             bambini = db.getBambiniByEmail(email);
 
@@ -65,7 +65,7 @@ public class HomeUtente extends AppCompatActivity {
             createButtonForBambino(bambino);
         }
         } else {
-            // Gestisci il caso in cui l'email è null (mostrare un messaggio di errore, ecc.)
+
             Toast.makeText(this, "Email non valida!", Toast.LENGTH_SHORT).show();
         }
 
@@ -86,7 +86,7 @@ public class HomeUtente extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(HomeUtente.this, CorrezioneRisultati.class);
                 intent.putExtra("genitore", email);
-                //intent.putExtra("logopedista", )
+
                 startActivity(intent);
             }
         });
@@ -107,9 +107,9 @@ public class HomeUtente extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeUtente.this, HomeBambino.class); // Assicurati che questa activity esista
-                intent.putExtra("idBambino", bambino.getId()); // Passa l'ID del bambino
-                intent.putExtra("bambino", bambino.getNome()); // Passa il nome del bambino
+                Intent intent = new Intent(HomeUtente.this, HomeBambino.class);
+                intent.putExtra("idBambino", bambino.getId());
+                intent.putExtra("bambino", bambino.getNome());
                 intent.putExtra("email", getIntent().getStringExtra("email"));
                 intent.putExtra("source", TAG);
 
@@ -117,7 +117,7 @@ public class HomeUtente extends AppCompatActivity {
             }
         });
 
-        // Aggiungi il pulsante al LinearLayout
+
         linearLayout.addView(button);
 
     }

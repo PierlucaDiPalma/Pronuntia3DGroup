@@ -66,7 +66,7 @@ public class ImageActivity extends AppCompatActivity {
 
         emailText.setText(email);
         id = idEdit.getText().toString().trim();
-        //image.setImageBitmap(db.getAllImages("1"));
+
 
         Button playButton = findViewById(R.id.playButton);
 

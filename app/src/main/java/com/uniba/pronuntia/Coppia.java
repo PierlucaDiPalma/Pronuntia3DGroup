@@ -53,7 +53,7 @@ public class Coppia extends AppCompatActivity {
     private Uri imagePath;
     private Bitmap image;
 
-    //private static final int PICK_IMAGE_REQUEST = 99;
+
 
     ActivityResultLauncher<Intent> resultLauncher;
     private ActivityResultLauncher<Intent> loadImage1Launcher;
@@ -110,16 +110,16 @@ public class Coppia extends AppCompatActivity {
         ArrayList<String> dateList = new ArrayList<>();
         for (int i = 0; i < (durata*7); i++) {
 
-            // Ottieni il giorno, mese e anno corrente
+
             int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
-            int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
+            int currentMonth = forWeeks.get(Calendar.MONTH) + 1;
             int currentYear = forWeeks.get(Calendar.YEAR);
 
-            // Aggiungi la data alla lista
+
             String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
             dateList.add(currentDate);
 
-            // Aggiungi un giorno al calendario
+
             forWeeks.add(Calendar.DAY_OF_YEAR, 1);
 
         }
@@ -165,14 +165,7 @@ public class Coppia extends AppCompatActivity {
                 int added = 0;
                 titolo = titoloEdit.getText().toString().trim();
                 soluzione = soluzioneEdit.getText().toString().trim();
-/*
-                try {
-                    titolo = URLEncoder.encode(titolo, "UTF-8");
 
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }
-*/
 
                 if(!titolo.isEmpty() || !soluzione.isEmpty() || immagine1.getDrawable()!=null || immagine2.getDrawable()!=null){
                     for(int i = 0; i<dateList.size();i++){
@@ -183,35 +176,14 @@ public class Coppia extends AppCompatActivity {
                         esercizio.setAiuto(soluzione);
 
                         String[] dateContent = dateList.get(i).split("/");
-/*
-                        esercizio.setGiorno(Integer.valueOf(dateContent[0]));
-                        esercizio.setMese(Integer.valueOf(dateContent[1]));
-                        esercizio.setAnno(Integer.valueOf(dateContent[2]));
-
-                        if(db.addCoppia(esercizio)){
-                            added++;
-
-                        }
-*/                    }
+                  }
                     Intent intent = new Intent();
                     intent.putExtra("Esercizio", esercizio);
                     intent.putExtra("source", TAG);
                     setResult(1, intent);
                     finish();
 
-                    /*if(added==dateList.size() && db.addExercises(esercizio)){
-                        Toast.makeText(Coppia.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(Coppia.this, CreazioneEsercizi.class);
-                        intent.putExtra("email", email);
-                        intent.putExtra("bambino", bambino);
-                        intent.putExtra("data", data);
-                        intent.putExtra("source", TAG);
-                        startActivity(intent);
 
-                    }else{
-                        Toast.makeText(Coppia.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
-                    }
-*/
                 }
 
             }

@@ -79,23 +79,23 @@ private  LinearLayout linearLayout;
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Mostra il dialog di conferma
+
                 new AlertDialog.Builder(GamePath.this)
                         .setTitle("Sei sicuro di voler uscire?")
                         .setMessage("I risultati ottenuti andranno persi")
                         .setPositiveButton("Sì", (dialog, which) -> {
-                            // Chiudi l'activity
+
                             finish();
                         })
                         .setNegativeButton("No", (dialog, which) -> {
-                            // Chiudi il dialog e rimani nell'activity
+
                             dialog.dismiss();
                         })
                         .show();
             }
         };
 
-        // Aggiungi il callback al dispatcher
+
         getOnBackPressedDispatcher().addCallback(this, callback);
 
 
@@ -104,7 +104,7 @@ private  LinearLayout linearLayout;
 
         email = getIntent().getStringExtra("email");
         bambino = getIntent().getStringExtra("Bambino");
-        punteggio = 0; //getIntent().getIntExtra("punteggio", 0);
+        punteggio = 0;
         path = getIntent().getStringExtra("pathPersonaggio");
         logopedista = getIntent().getStringExtra("logopedista");
 
@@ -157,24 +157,13 @@ immagini=db.getImmaginiAmbientazione(email,bambino);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(GamePath.this));
 
-        //layoutParams.bottomMargin = 50;
 
-        //setImagePosition(livello);
 
         risultato.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-               /* if(source.equals("Game")) {
-                    for (int i = 0; i < resoconti.size(); i++) {
-                        Log.d(TAG, "STAMPA RESOCONTI: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getBambino()
-                                + " " + resoconti.get(i).getEsercizio().getTipo());
 
-                        db.addResoconto(resoconti.get(i));
-                    }
-                }else{
-                    Toast.makeText(GamePath.this, "Non è necessario salvare nel DB", Toast.LENGTH_LONG).show();
-                }*/
 
                 Intent intent = new Intent(GamePath.this, RisultatoFinale.class);
                 intent.putExtra("Bambino", bambino);
@@ -198,9 +187,9 @@ immagini=db.getImmaginiAmbientazione(email,bambino);
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2) { // Verifica il codice della richiesta
+        if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
-                // Ottieni il risultato passato dall'Activity chiusa
+
                 int nuovoLivello = data.getIntExtra("Livello", livello);
                 punteggio += data.getIntExtra("Punteggio", 0);
                 punteggioText.setText("Punteggio: " + punteggio);
@@ -215,16 +204,15 @@ immagini=db.getImmaginiAmbientazione(email,bambino);
                 sbagliatiText.setText("Esercizi sbagliati: " + sbagliati);
 
                 livello = nuovoLivello;
-                customAdapter.setLivello(nuovoLivello);  // Metodo da creare nell'Adapter
+                customAdapter.setLivello(nuovoLivello);
 
 
-                //resoconto = new Resoconto(bambino, email, "marcorossi@gmai.com", )
+
 
                 resoconto = data.getParcelableExtra("Resoconto");
                 resoconti.add(resoconto);
 
-                 /*resoconti.add(resoconto);
-*/
+
 
                 for(int i = 0;i<resoconti.size();i++) {
                     Log.d(TAG, "STAMPA RESOCONTI: " + resoconti.get(i).getEsercizio().getName() + " " + resoconti.get(i).getBambino()
@@ -234,7 +222,7 @@ immagini=db.getImmaginiAmbientazione(email,bambino);
                     risultato.setVisibility(View.VISIBLE);
 
                 }
-                // Notifica l'Adapter per aggiornare la RecyclerView
+
                 customAdapter.notifyDataSetChanged();
 
             }
@@ -242,7 +230,7 @@ immagini=db.getImmaginiAmbientazione(email,bambino);
     }
 
     public static <T> void shuffleArrayList(ArrayList<T> list) {
-        Collections.shuffle(list); // Mescola casualmente l'ArrayList
+        Collections.shuffle(list);
     }
 
 

@@ -50,7 +50,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
         public ExerciseViewHolder(@NonNull View itemView) {
             super(itemView);
-            // Inizializza i tuoi componenti di vista qui
+
             titolo = itemView.findViewById(R.id.titleEx);
             position = itemView.findViewById(R.id.positionText);
             tipo = itemView.findViewById(R.id.tipo);

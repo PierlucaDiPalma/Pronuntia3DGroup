@@ -42,18 +42,21 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-    <ImageButton
+    <Button
         android:id="@+id/PendenteButton"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
         android:layout_marginTop="12dp"
-        android:scaleType="fitXY"
+        android:text="Avanti"
+        android:backgroundTint="#00BFFF"
+
+
         android:contentDescription="Pulsante per avviare la creazione degli esercizi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textContainer"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/richiesta"
-        android:background="@android:color/transparent"
+
+
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

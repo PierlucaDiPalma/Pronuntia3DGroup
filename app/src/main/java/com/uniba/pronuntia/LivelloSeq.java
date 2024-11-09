@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 public class LivelloSeq extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -45,7 +45,7 @@ public class LivelloSeq extends Fragment {
     private String mParam2;
 
     public LivelloSeq() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -110,7 +110,7 @@ public class LivelloSeq extends Fragment {
         record = view.findViewById(R.id.recordButton);
         aiuto = view.findViewById(R.id.aiuto);
         registrazione = view.findViewById(R.id.registrazioneText);
-        //db = new DBHelper(getActivity());
+
 
         parola1 = getArguments().getString("Parola1");
         parola2 = getArguments().getString("Parola2");
@@ -202,7 +202,7 @@ public class LivelloSeq extends Fragment {
     }
 
     private void startRecording() {
-        // Definisci un nome personalizzato per il file audio
+
         String fileName = "registrazione_personalizzata_" + System.currentTimeMillis() + ".3gp";
         audioFilePath = getActivity().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
@@ -256,7 +256,7 @@ public class LivelloSeq extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Imposta un listener sul pulsante per riavviare la registrazione
+
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

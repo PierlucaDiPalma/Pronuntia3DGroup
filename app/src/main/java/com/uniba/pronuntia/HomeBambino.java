@@ -64,11 +64,11 @@ public class HomeBambino extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        int idBambino = intent.getIntExtra("idBambino", -1); // Ottieni l'ID del bambino
-        bambino = intent.getStringExtra("bambino"); // Ottieni il nome del bambino
+        int idBambino = intent.getIntExtra("idBambino", -1);
+        bambino = intent.getStringExtra("bambino");
         nomeBambinoTextView = findViewById(R.id.textView);
 
-        email = intent.getStringExtra("email");//email del genitore
+        email = intent.getStringExtra("email");
 
 
 
@@ -91,7 +91,7 @@ public class HomeBambino extends AppCompatActivity {
 
 
         if (bambino != null) {
-            nomeBambinoTextView.setText(bambino); // Mostra il nome del bambino
+            nomeBambinoTextView.setText(bambino);
         } else {
             nomeBambinoTextView.setText("Nome non disponibile");
         }
@@ -199,18 +199,18 @@ public class HomeBambino extends AppCompatActivity {
 
     public boolean isEquals(ArrayList<Esercizio> esercizi, ArrayList<Resoconto> resoconti) {
         for (Esercizio esercizio : esercizi) {
-            boolean isDone = false; // Variabile esterna per controllare se l'esercizio è completato
+            boolean isDone = false;
             for (Resoconto resoconto : resoconti) {
-                // Controlla se tutti i parametri corrispondono tra esercizio e resoconto
+
                 if (esercizio.getName().equals(resoconto.getEsercizio().getName()) &&
                         esercizio.getEmail().equals(resoconto.getGenitore()) &&
                         esercizio.getGiorno() == resoconto.getEsercizio().getGiorno() &&
                         esercizio.getMese() == resoconto.getEsercizio().getMese() &&
                         esercizio.getAnno() == resoconto.getEsercizio().getAnno()) {
 
-                    // Se c'è una corrispondenza, imposta isDone su true
+
                     isDone = true;
-                    return isDone; // Esci dal ciclo, hai trovato un match
+                    return isDone;
                 }
             }
 

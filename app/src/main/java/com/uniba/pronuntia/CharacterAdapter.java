@@ -83,10 +83,10 @@ public class CharacterAdapter extends RecyclerView.Adapter<CharacterAdapter.Char
                     listener.onItemClick(punteggio);
 
                     if(db.addAcquisto(personaggi.get(position), bambino, genitore)){
-                        Toast.makeText(context, "Acquisto avvenuto con successo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Acquisto avvenuto con successo", Toast.LENGTH_LONG).show();
                     }
                 }else{
-                    Toast.makeText(context, "Non puoi acquistare questo personaggio", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Non puoi acquistare questo personaggio", Toast.LENGTH_LONG).show();
                 }
             }
         });

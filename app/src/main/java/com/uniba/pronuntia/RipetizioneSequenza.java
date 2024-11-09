@@ -83,16 +83,16 @@ public class RipetizioneSequenza extends AppCompatActivity {
         ArrayList<String> dateList = new ArrayList<>();
         for (int i = 0; i < (durata*7); i++) {
 
-            // Ottieni il giorno, mese e anno corrente
+
             int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
             int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
             int currentYear = forWeeks.get(Calendar.YEAR);
 
-            // Aggiungi la data alla lista
+
             String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
             dateList.add(currentDate);
 
-            // Aggiungi un giorno al calendario
+
             forWeeks.add(Calendar.DAY_OF_YEAR, 1);
 
         }
@@ -137,11 +137,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
                 esercizio.setSequenza(sequenza);
 
                 if(!titolo.isEmpty() || !isNull){
-                   /* try {
-                        titolo = URLEncoder.encode(titolo, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        throw new RuntimeException(e);
-                    }*/
+
 
                     for(int i = 0; i<dateList.size();i++) {
 
@@ -152,14 +148,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
 
                         String[] dateContent = dateList.get(i).split("/");
 
-                       /* esercizio.setGiorno(Integer.valueOf(dateContent[0]));
-                        esercizio.setMese(Integer.valueOf(dateContent[1]));
-                        esercizio.setAnno(Integer.valueOf(dateContent[2]));
 
-                        if (db.addSequenza(esercizio)) {
-                            added++;
-
-                        }*/
                     }
 
                     Intent intent = new Intent();
@@ -168,19 +157,7 @@ public class RipetizioneSequenza extends AppCompatActivity {
                     setResult(1, intent);
                     finish();
 
-                    /*if(added == dateList.size() && db.addExercises(esercizio)){
-                        Log.d(TAG, "onClick: Scrittura");
-                        Toast.makeText(RipetizioneSequenza.this, "Esercizio creato", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(RipetizioneSequenza.this, CreazioneEsercizi.class);
-                        intent.putExtra("email", email);
-                        intent.putExtra("bambino", bambino);
-                        intent.putExtra("data", data);
-                        intent.putExtra("source", TAG);
-                        startActivity(intent);
 
-                    }else{
-                        Toast.makeText(RipetizioneSequenza.this, "Qualcosa è andato storto", Toast.LENGTH_SHORT).show();
-                    }*/
 
                 }else{
                     Toast.makeText(RipetizioneSequenza.this, "Inserire tutti gli elementi", Toast.LENGTH_SHORT).show();

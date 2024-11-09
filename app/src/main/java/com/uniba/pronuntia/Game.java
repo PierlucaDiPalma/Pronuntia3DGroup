@@ -102,9 +102,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
     private void loadFragment(int i, Esercizio esercizio, Bundle args){
         if(esercizio.getTipo().equals("Denominazione")){
 
-            /*args.putString("Titolo", esercizio.getName());
-            args.putString("Immagine", esercizio.getImmagine1());
-            args.putString("Aiuto", esercizio.getAiuto());*/
+
             args.putParcelable("esercizio", esercizio);
             args.putInt("Punteggio", punteggio);
 
@@ -125,10 +123,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
 
         }else if(esercizio.getTipo().equals("Coppia")){
 
-            /*args.putString("Titolo", esercizio.getName());
-            args.putString("Immagine1", esercizio.getImmagine1());
-            args.putString("Immagine2",esercizio.getImmagine2());
-            args.putString("Aiuto", esercizio.getAiuto());*/
+
             args.putParcelable("esercizio", esercizio);
             args.putInt("Punteggio", punteggio);
             LivelloCop fragment = new LivelloCop();
@@ -139,7 +134,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
 
     @Override
     public void onDataPass(int points, boolean done, int numeroAiuti, int corretti, int sbagliati, String path) {
-        // Ricevi il dato elaborato e fai qualcosa con esso (ad esempio, stampalo)
+
 
         Log.d(TAG, "AUDIO FILE PATH: " + path);
         audioFilePath = path;
@@ -156,16 +151,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
         resoconto = new Resoconto(bambino, email, logopedista,
                 esercizio, audioFilePath, punteggio, this.corretti, this.sbagliati, this.numeroAiuti);
 
-        /*boolean isInserted = db.addResoconto(resoconto);
-        if (isInserted) {
-            Log.d(TAG, "Resoconto salvato con successo");
-        } else {
-            Log.d(TAG, "Errore durante il salvataggio del resoconto");
-        }
 
-        Log.d(TAG, "Esercizio: " + resoconto.getEsercizio().getName() + " Numero aiuti: " + resoconto.getAiuti()
-                + " Numero errori: " + resoconto.getSbagliati() + " Numero corretti " + resoconto.getCorretti());
-        */
 
         if(isDone){
             avanti.setVisibility(View.VISIBLE);

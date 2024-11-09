@@ -40,7 +40,7 @@ import java.util.Locale;
 public class LivelloDen extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -49,7 +49,7 @@ public class LivelloDen extends Fragment {
     private String mParam2;
 
     public LivelloDen() {
-        // Required empty public constructor
+
     }
 
     /**
@@ -100,7 +100,7 @@ public class LivelloDen extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_livello_den, container, false);
 
         immagine = view.findViewById(R.id.imageEx);
@@ -114,14 +114,7 @@ public class LivelloDen extends Fragment {
         db = new DBHelper(getActivity());
 
         if(getArguments() != null){
-            /*titolo.setText(getArguments().getString("Titolo"));
-            byte[] byteArray = getArguments().getByteArray("Immagine");
-            Bitmap image = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            immagine.setImageBitmap(image);
 
-
-            parola = getArguments().getString("Aiuto");
-*/
             punteggio = getArguments().getInt("Punteggio");
             esercizio = getArguments().getParcelable("esercizio");
             titolo.setText(esercizio.getName());
@@ -254,7 +247,7 @@ public class LivelloDen extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Imposta un listener sul pulsante per riavviare la registrazione
+
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

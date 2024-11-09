@@ -225,7 +225,6 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
 
 
-        //db.execSQL("CREATE TABLE " + TABLE_COPPIA + "(id INTEGER PRIMARY KEY AUTOINCREMENT," + EMAIL +" TEXT," + TITOLO + " TEXT)");
 
     }
 
@@ -1565,7 +1564,7 @@ if(result!=-1){
 
         if (user == null) {
             Log.e("DBHelper", "Il valore di genitore è null");
-            return resoconti; // Restituisce un array vuoto
+            return resoconti;
         }
 
         if(db!= null){
@@ -1607,7 +1606,7 @@ if(result!=-1){
 
         if (user == null) {
             Log.e(TAG, "User cannot be null");
-            return new ArrayList<>(); // Restituisce un array vuoto
+            return new ArrayList<>();
         }
 
         if(db!=null){
@@ -1650,7 +1649,7 @@ if(result!=-1){
 
         if (user == null) {
             Log.e(TAG, "User cannot be null");
-            return new ArrayList<>(); // Restituisce un array vuoto
+            return new ArrayList<>();
         }
 
         if(db!=null){
