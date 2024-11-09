@@ -34,6 +34,8 @@ public class Logopedista extends AppCompatActivity {
     ArrayList<Utente> users;
     ArrayList<RichiestaTerapia> richieste;
     ListView listView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

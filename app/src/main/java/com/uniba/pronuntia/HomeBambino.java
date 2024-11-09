@@ -64,11 +64,11 @@ public class HomeBambino extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        int idBambino = intent.getIntExtra("idBambino", -1);
-        bambino = intent.getStringExtra("bambino");
+        int idBambino = intent.getIntExtra("idBambino", -1); // Ottieni l'ID del bambino
+        bambino = intent.getStringExtra("bambino"); // Ottieni il nome del bambino
         nomeBambinoTextView = findViewById(R.id.textView);
 
-        email = intent.getStringExtra("email");
+        email = intent.getStringExtra("email");//email del genitore
 
 
 
@@ -91,7 +91,7 @@ public class HomeBambino extends AppCompatActivity {
 
 
         if (bambino != null) {
-            nomeBambinoTextView.setText(bambino);
+            nomeBambinoTextView.setText(bambino); // Mostra il nome del bambino
         } else {
             nomeBambinoTextView.setText("Nome non disponibile");
         }
@@ -197,25 +197,4 @@ public class HomeBambino extends AppCompatActivity {
         });
     }
 
-    public boolean isEquals(ArrayList<Esercizio> esercizi, ArrayList<Resoconto> resoconti) {
-        for (Esercizio esercizio : esercizi) {
-            boolean isDone = false;
-            for (Resoconto resoconto : resoconti) {
-
-                if (esercizio.getName().equals(resoconto.getEsercizio().getName()) &&
-                        esercizio.getEmail().equals(resoconto.getGenitore()) &&
-                        esercizio.getGiorno() == resoconto.getEsercizio().getGiorno() &&
-                        esercizio.getMese() == resoconto.getEsercizio().getMese() &&
-                        esercizio.getAnno() == resoconto.getEsercizio().getAnno()) {
-
-
-                    isDone = true;
-                    return isDone;
-                }
-            }
-
-        }
-
-        return false;
-    }
 }

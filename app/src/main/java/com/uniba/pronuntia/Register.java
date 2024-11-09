@@ -138,7 +138,9 @@ linearLayout=findViewById(R.id.editTexts);
                             }
                             Toast.makeText(Register.this, "Registrazione avvenuta", Toast.LENGTH_SHORT).show();
 
-                            startActivity(new Intent(Register.this, Login.class));
+
+                            finish();
+                            //startActivity(new Intent(Register.this, Login.class));
                             
 
                         }else{

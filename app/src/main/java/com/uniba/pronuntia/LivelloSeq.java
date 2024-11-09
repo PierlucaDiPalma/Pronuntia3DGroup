@@ -2,13 +2,16 @@ package com.uniba.pronuntia;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -94,6 +97,7 @@ public class LivelloSeq extends Fragment {
     private MediaRecorder mediaRecorder;
     private String audioFilePath;
     private TextView registrazione;
+    private static final int RECORD_REQUEST_PERMISSION = 100;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -169,8 +173,16 @@ public class LivelloSeq extends Fragment {
             @Override
             public void onClick(View v) {
 
+                if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
-                startRecording();
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, RECORD_REQUEST_PERMISSION );
+
+                } else {
+
+                    startRecording();
+
+                }
+                //startRecording();
             }
         });
 
@@ -181,13 +193,25 @@ public class LivelloSeq extends Fragment {
                 if(audioFilePath!=null){
                     speak(view, parola1, parola2, parola3);
                 }else{
-                    Toast.makeText(getActivity(), "Registra prima la risposta", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Registra prima la risposta", Toast.LENGTH_LONG).show();
                 }
 
             }
         });
 
         return view;
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                                     @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RECORD_REQUEST_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startRecording();
+            }else{
+                Toast.makeText(getActivity(), "Permessi negati, non posso registrare", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void speak(View view, String parola1, String parola2, String parola3 ){

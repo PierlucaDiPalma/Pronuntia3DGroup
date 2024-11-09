@@ -2,6 +2,7 @@ package com.uniba.pronuntia;
 
 import static androidx.activity.result.ActivityResultCallerKt.registerForActivityResult;
 
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -72,7 +73,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private int durata;
     private Esercizio esercizio = new Esercizio(null, null, null, "Denominazione", null, null, null, null, 0, 0, 0);
 
-
+    ActivityResultLauncher<String> mPermissioneResultLauncher;
+    private boolean isReadPermissionGranted = false;
     ActivityResultLauncher<Intent> resultLauncher;
 
     private SeekBar audioBar;
@@ -80,6 +82,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private Uri imagePath;
     private Bitmap image;
 
+    private static final int READ_EXTERNAL_REQUEST_CODE = 1;
     private static final int PICK_IMAGE_REQUEST = 99;
     private static final String TAG = "DenominazioneImmagini";
 
@@ -98,11 +101,11 @@ public class DenominazioneImmagini extends AppCompatActivity {
         Log.d(TAG, "onCreate: Entrato");
         titoloEdit = findViewById(R.id.titoloEsercizio);
         crea = findViewById(R.id.createDen);
-
         aiutoEdit = findViewById(R.id.aiuto);
 
         imgLoad = findViewById(R.id.caricaImg);
         immagine = findViewById(R.id.imageEx);
+
 
 
         Intent intent = getIntent();
@@ -127,16 +130,16 @@ public class DenominazioneImmagini extends AppCompatActivity {
         ArrayList<String> dateList = new ArrayList<>();
         for (int i = 0; i < (durata*7); i++) {
 
-
+            // Ottieni il giorno, mese e anno corrente
             int currentDay = forWeeks.get(Calendar.DAY_OF_MONTH);
             int currentMonth = forWeeks.get(Calendar.MONTH) + 1;  // Il mese è 0-based
             int currentYear = forWeeks.get(Calendar.YEAR);
 
-
+            // Aggiungi la data alla lista
             String currentDate = currentDay + "/" + currentMonth + "/" + currentYear;
             dateList.add(currentDate);
 
-
+            // Aggiungi un giorno al calendario
             forWeeks.add(Calendar.DAY_OF_YEAR, 1);
 
         }
@@ -151,10 +154,19 @@ public class DenominazioneImmagini extends AppCompatActivity {
         immagine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                choseImage();
+                if (ActivityCompat.checkSelfPermission(DenominazioneImmagini.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(DenominazioneImmagini.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_REQUEST_CODE);
+
+                } else {
+
+                    choseImage();
+
+                }
+
             }
         });
-
+        //registerImageResult(email);
         Log.d(TAG, "onPositiveButtonClick: " + day + " " + month + " " + year);
 
 
@@ -185,7 +197,6 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                         Log.d(TAG, "data esercizio settata: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
 
-
                     }
 
                     Intent intent = new Intent();
@@ -193,7 +204,6 @@ public class DenominazioneImmagini extends AppCompatActivity {
                     intent.putExtra("source", TAG);
                     setResult(1, intent);
                     finish();
-
 
 
                 } else {
@@ -250,16 +260,15 @@ public class DenominazioneImmagini extends AppCompatActivity {
         }
     }
 
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            cursor.close();
-            return path;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == READ_EXTERNAL_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                choseImage();
+            } else {
+                Toast.makeText(this, "Permesso negato. Concedi il permesso dalle impostazioni per continuare.", Toast.LENGTH_LONG).show();
+            }
         }
-        return null;
     }
 }
