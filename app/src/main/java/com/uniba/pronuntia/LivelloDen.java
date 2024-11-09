@@ -3,6 +3,7 @@ package com.uniba.pronuntia;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
@@ -14,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -94,7 +96,7 @@ public class LivelloDen extends Fragment {
     private boolean isRecording = false;
     private MediaRecorder mediaRecorder;
     private String audioFilePath;
-
+    private static final int RECORD_REQUEST_PERMISSION = 100;
     private DBHelper db;
 
     @Override
@@ -259,7 +261,17 @@ public class LivelloDen extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!isRecording) {
-                    startRecording();
+
+                    if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, RECORD_REQUEST_PERMISSION );
+
+                    } else {
+
+                        startRecording();
+
+                    }
+
                 } else {
                     dialog.show();
                 }
@@ -302,6 +314,17 @@ public class LivelloDen extends Fragment {
         }
     }
 
+    @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                                     @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RECORD_REQUEST_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startRecording();
+            }else{
+                Toast.makeText(getActivity(), "Permessi negati, non posso registrare", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     private void passResultToActivity(int points, boolean isDone, int numeroAiuti, int corretti, int sbagliati, String path) {
         if (getActivity() instanceof OnDataPassListener) {

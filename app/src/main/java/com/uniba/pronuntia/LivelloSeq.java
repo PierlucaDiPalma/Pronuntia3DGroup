@@ -175,7 +175,7 @@ public class LivelloSeq extends Fragment {
 
                 if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO},RECORD_REQUEST_PERMISSION );
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.RECORD_AUDIO}, RECORD_REQUEST_PERMISSION );
 
                 } else {
 
@@ -201,6 +201,7 @@ public class LivelloSeq extends Fragment {
 
         return view;
     }
+
     @Override public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                                      @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -212,6 +213,7 @@ public class LivelloSeq extends Fragment {
             }
         }
     }
+
     public void speak(View view, String parola1, String parola2, String parola3 ){
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);

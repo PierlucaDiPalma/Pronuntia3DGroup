@@ -2,6 +2,7 @@ package com.uniba.pronuntia;
 
 import static androidx.activity.result.ActivityResultCallerKt.registerForActivityResult;
 
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -81,7 +82,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
     private Uri imagePath;
     private Bitmap image;
 
-    private static final int PERMISSION_REQUEST_CODE = 99;
+    private static final int READ_EXTERNAL_REQUEST_CODE = 1;
     private static final int PICK_IMAGE_REQUEST = 99;
     private static final String TAG = "DenominazioneImmagini";
 
@@ -100,7 +101,6 @@ public class DenominazioneImmagini extends AppCompatActivity {
         Log.d(TAG, "onCreate: Entrato");
         titoloEdit = findViewById(R.id.titoloEsercizio);
         crea = findViewById(R.id.createDen);
-        //calendario = findViewById(R.id.calendar);
         aiutoEdit = findViewById(R.id.aiuto);
 
         imgLoad = findViewById(R.id.caricaImg);
@@ -154,7 +154,16 @@ public class DenominazioneImmagini extends AppCompatActivity {
         immagine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                choseImage();
+                if (ActivityCompat.checkSelfPermission(DenominazioneImmagini.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(DenominazioneImmagini.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_REQUEST_CODE);
+
+                } else {
+
+                    choseImage();
+
+                }
+
             }
         });
         //registerImageResult(email);
@@ -168,12 +177,7 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                 titolo = titoloEdit.getText().toString().trim();
                 aiuto = aiutoEdit.getText().toString().trim();
-                /*try {
-                    titolo = URLEncoder.encode(titolo, "UTF-8");
-                    aiuto = URLEncoder.encode(aiuto, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException(e);
-                }*/
+
 
 
                 if (!titolo.isEmpty() || !aiuto.isEmpty() || titolo!= null || aiuto != null || immagine.getDrawable() != null) {
@@ -190,17 +194,9 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
                         Log.d(TAG, "data esercizio: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
 
-                        /*esercizio.setGiorno(Integer.valueOf(dateContent[0]));
-                        esercizio.setMese(Integer.valueOf(dateContent[1]));
-                        esercizio.setAnno(Integer.valueOf(dateContent[2]));
-*/
+
                         Log.d(TAG, "data esercizio settata: " + esercizio.getName()+ " "+esercizio.getGiorno() + " " + esercizio.getMese() + " " + esercizio.getAnno());
 
-                        /*if (db.addDenominazione(esercizio)) {
-
-                            Log.d(TAG, "onClick: Scrittura");
-                            added++;
-                        }*/
                     }
 
                     Intent intent = new Intent();
@@ -264,13 +260,15 @@ public class DenominazioneImmagini extends AppCompatActivity {
         }
     }
 
-
-    private void requestPermissions(){
-        isReadPermissionGranted = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        String permissionRequest = new String();
-        if(!isReadPermissionGranted){
-            permissionRequest = Manifest.permission.READ_EXTERNAL_STORAGE;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == READ_EXTERNAL_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                choseImage();
+            } else {
+                Toast.makeText(this, "Permesso negato. Concedi il permesso dalle impostazioni per continuare.", Toast.LENGTH_LONG).show();
+            }
         }
     }
-
 }
