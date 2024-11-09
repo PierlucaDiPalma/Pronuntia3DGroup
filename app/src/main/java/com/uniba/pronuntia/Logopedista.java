@@ -137,4 +137,10 @@ public class Logopedista extends AppCompatActivity {
             listView.setAdapter(adapter);
         }
     }
+
+    public void onRestart(){
+        super.onRestart();
+        recreate();
+    }
+
 }

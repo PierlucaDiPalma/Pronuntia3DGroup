@@ -417,7 +417,24 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
         return immagini;
     }
 
-public void modificaAmbientazione(String nome_bambino,String email_genitore,byte[] immagine){
+    public void deleteTerapia(String email_genitore, String email_logopedista, String nome_bambino) {
+
+        String whereClause = "email_genitore = ? AND email_logopedista = ? AND nome_bambino = ?";
+
+        String[] whereArgs = {email_genitore, email_logopedista, nome_bambino};
+
+
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            db.delete(TABLE_TERAPIE, whereClause, whereArgs);
+        }
+    }
+
+
+
+
+
+
+    public void modificaAmbientazione(String nome_bambino,String email_genitore,byte[] immagine){
 
 if(isBambinoAmbientazioneExisting(nome_bambino,email_genitore)){
 

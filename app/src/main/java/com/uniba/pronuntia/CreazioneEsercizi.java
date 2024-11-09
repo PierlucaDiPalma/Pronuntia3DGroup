@@ -224,6 +224,8 @@ public class CreazioneEsercizi extends AppCompatActivity {
                     db.addExercises(eserciziList.get(i));
                 }
 
+                db.deleteTerapia(email,logopedista,bambino);
+
                 finish();
             }
 
