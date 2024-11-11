@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +39,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private TextView emailText;
     private TextView motivoText;
     private TextView durataText;
-
+private ImageButton back;
     private TextView dataText;
     private Button calendario;
 
@@ -76,15 +77,15 @@ public class CreazioneEsercizi extends AppCompatActivity {
         Log.d(TAG, "onCreate: ");
         Spinner spinnerDurata = findViewById(R.id.spinner_durata);
 
-        // Array degli elementi
+
         String[] settimane = {"1 settimana", "2 settimane", "3 settimane", "4 settimane"};
 
-        // Adattatore per lo spinner
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settimane);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDurata.setAdapter(adapter);
 
-        // Imposta l'OnItemSelectedListener
+
         spinnerDurata.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -131,7 +132,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
         db = new DBHelper(this);
 
-
+back=findViewById(R.id.back_button);
         customAdapter = new ExerciseAdapterLogopedista(CreazioneEsercizi.this, recyclerView, eserciziList, esercizi, durata);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
@@ -204,6 +205,12 @@ public class CreazioneEsercizi extends AppCompatActivity {
 
 
         }
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         addEsercizio.setOnClickListener(new View.OnClickListener() {
             @Override
