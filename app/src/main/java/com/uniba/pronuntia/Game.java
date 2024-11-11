@@ -155,6 +155,7 @@ public class Game extends AppCompatActivity implements OnDataPassListener{
 
         if(isDone){
             avanti.setVisibility(View.VISIBLE);
+
         }
     }
 

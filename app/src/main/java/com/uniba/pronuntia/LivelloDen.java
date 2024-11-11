@@ -288,18 +288,27 @@ public class LivelloDen extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 100 && resultCode == AppCompatActivity.RESULT_OK){
+            final MediaPlayer mediaPlayer;
             String input = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS).get(0);
 
             if(input.toUpperCase().equals(parola.toUpperCase())) {
                 contenuto.setText("Giusto");
+
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.victory);
+
                 punteggio += 10;
                 isDone = true;
                 corretti++;
             }else{
                 contenuto.setText("Sbagliato");
+                mediaPlayer = MediaPlayer.create(getActivity(), R.raw.wrong);
                 punteggio-=3;
                 isDone = true;
                 sbagliati++;
+            }
+
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
             }
 
             parla.setEnabled(false);

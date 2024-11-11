@@ -7,11 +7,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -30,7 +33,6 @@ public class HomeGenitore extends AppCompatActivity {
     private String email;
 
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,18 +40,18 @@ public class HomeGenitore extends AppCompatActivity {
 
 
         dbHelper = new DBHelper(this);
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         profile = findViewById(R.id.profile_image);
 
-        String emailLogopedista=intent.getStringExtra("logopedista_email");
+        String emailLogopedista = intent.getStringExtra("logopedista_email");
         email = intent.getStringExtra("genitore");
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-settings=findViewById(R.id.Impostazioni);
+        settings = findViewById(R.id.Impostazioni);
         ImageView backButton = findViewById(R.id.back_button);
-        risultati =(Button) findViewById(R.id.risultati);
+
         backButton.setOnClickListener(v -> {
 
             onBackPressed();
@@ -57,9 +59,46 @@ settings=findViewById(R.id.Impostazioni);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
+        GridView gridView = findViewById(R.id.gridView);
+        ImageAdapter adapter = new ImageAdapter(this);
+        gridView.setAdapter(adapter);
 
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.BottomNavigationView);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        // Azione per la prima immagine
+                        Intent intent = new Intent(HomeGenitore.this, CorrezioneRisultati.class);
+                        intent.putExtra("genitore", email);
+                        startActivity(intent);
+                        // Inserisci qui il codice per la prima azione
+                        break;
+                    case 1:
+
+                        intent=new Intent(HomeGenitore.this,Impostazioni.class);
+                        startActivity(intent);
+
+
+                        break;
+                    case 2:
+                        intent=new Intent(HomeGenitore.this,AppuntamentiGenitore.class);
+                        startActivity(intent);
+                        break;
+                    case 3:
+                        intent = new Intent(HomeGenitore.this, SceltaLogopedista.class);
+                        intent.putExtra("nomeActivity","richiediTerapia");
+                        startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+
+        /*BottomNavigationView bottomNavigationView = findViewById(R.id.BottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem richiediTerapiaItem = menu.findItem(R.id.RichiediTerapia);
 
@@ -72,7 +111,7 @@ settings=findViewById(R.id.Impostazioni);
                 startActivity(intent);
                 return true;
             }
-        });
+        });*/
 
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,9 +120,7 @@ settings=findViewById(R.id.Impostazioni);
                 popupMenu.getMenuInflater().inflate(R.menu.menu_genitore, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(item -> {
 
-                    if(item.getItemId() == R.id.personalizza){
-                        startActivity(new Intent(HomeGenitore.this, Impostazioni.class));
-                    }else if (item.getItemId() == R.id.logout) {
+                    if (item.getItemId() == R.id.logout) {
                         new AlertDialog.Builder(HomeGenitore.this)
                                 .setTitle("Vuoi uscire?")
                                 .setPositiveButton("Sì", (dialog, which) -> {
@@ -93,15 +130,16 @@ settings=findViewById(R.id.Impostazioni);
                                 .setNegativeButton("No", (dialog, which) -> {
                                     dialog.dismiss();
                                 })
-                                .show();return true;
+                                .show();
+                        return true;
                     }
                     return false;
                 });
                 popupMenu.show();
             }
         });
-
-        risultati.setOnClickListener(new View.OnClickListener() {
+    }
+        /*risultati.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeGenitore.this, CorrezioneRisultati.class);
@@ -110,9 +148,9 @@ settings=findViewById(R.id.Impostazioni);
                 startActivity(intent);
             }
         });
+*/
 
-
-        MenuItem richiediAppuntamento=menu.findItem(R.id.RichiediAppuntamento);
+        /*MenuItem richiediAppuntamento=menu.findItem(R.id.RichiediAppuntamento);
 
         richiediAppuntamento.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -134,7 +172,7 @@ settings=findViewById(R.id.Impostazioni);
             startActivity(intent);
         }
     });
-    }
+ */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -144,4 +182,5 @@ settings=findViewById(R.id.Impostazioni);
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

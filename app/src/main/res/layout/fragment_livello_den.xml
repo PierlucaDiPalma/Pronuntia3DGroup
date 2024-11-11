@@ -39,19 +39,15 @@
             android:id="@+id/recordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#068CA8"
             android:text="Registra"/>
 
-        <TextView
-            android:id="@+id/contenuto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="contenuto"
-            android:textAlignment="center"
-            />
+
         <Button
             android:id="@+id/speakButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#068CA8"
             android:text="Parla"/>
 
 
@@ -62,7 +58,17 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:layout_marginTop="20dp"
+            android:backgroundTint="#E09E2F"
             android:text="Aiuto"
+            />
+
+        <TextView
+            android:id="@+id/contenuto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="25dp"
+            android:textAlignment="center"
             />
     </LinearLayout>
 </FrameLayout>

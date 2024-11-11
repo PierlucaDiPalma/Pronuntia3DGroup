@@ -343,15 +343,21 @@ public class LivelloSeq extends Fragment {
                     break;
                 }
             }
-
+            final MediaPlayer mediaPlayer;
             if(isRight){
                 punteggio += 10;
+                mediaPlayer =MediaPlayer.create(getActivity(), R.raw.victory);
                 isDone = true;
                 corretti++;
             }else{
                 punteggio -= 3;
+                mediaPlayer =MediaPlayer.create(getActivity(), R.raw.wrong);
                 isDone = true;
                 sbagliati++;
+            }
+
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
             }
 
             passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati, audioFilePath);

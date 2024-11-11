@@ -2,11 +2,13 @@ package com.uniba.pronuntia;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.Voice;
 import android.view.LayoutInflater;
@@ -176,8 +178,10 @@ public class LivelloCop extends Fragment {
     }
 
     private void checkAnswer(String selectedImageUrl, String correctImage, TextView giudizio) {
+        final MediaPlayer mediaPlayer;
         if (selectedImageUrl.equals(correctImage)) {
             giudizio.setText("Giusto!");
+            mediaPlayer = MediaPlayer.create(getActivity(), R.raw.victory);
             punteggio +=  10;
             immagine1.setClickable(false);
             immagine2.setClickable(false);
@@ -185,11 +189,16 @@ public class LivelloCop extends Fragment {
             corretti++;
         } else {
             giudizio.setText("Sbagliato!");
+            mediaPlayer = MediaPlayer.create(getActivity(), R.raw.wrong);
             punteggio -= 3;
             immagine1.setClickable(false);
             immagine2.setClickable(false);
             isDone = true;
             sbagliati++;
+        }
+
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
         }
 
         passResultToActivity(punteggio, isDone, numeroAiuti, corretti, sbagliati, null);

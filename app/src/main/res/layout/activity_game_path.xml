@@ -72,6 +72,7 @@
             android:id="@+id/fine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E09E2F"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"

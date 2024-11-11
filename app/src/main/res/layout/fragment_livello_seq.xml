@@ -69,18 +69,16 @@
             android:id="@+id/recordButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#068CA8"
             android:text="Registra"/>
 
-        <TextView
-            android:id="@+id/giudizio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Giudizio"/>
+
 
         <Button
             android:id="@+id/speakButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#068CA8"
             android:text="Parla"/>
 
 
@@ -90,7 +88,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:backgroundTint="#E09E2F"
             android:text="Aiuto"/>
+
+        <TextView
+            android:id="@+id/giudizio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:text=""/>
 
     </LinearLayout>
 
