@@ -35,7 +35,7 @@ public class HomeUtente extends AppCompatActivity {
 
         genitoreBTN = findViewById(R.id.pulsanteGenitore);
         linearLayout = findViewById(R.id.containerBambini);
-        risultati = findViewById(R.id.results);
+
 
         pulsanteAggiungiBambino = findViewById(R.id.pulsanteAggiungiBambino);
 
@@ -83,15 +83,7 @@ public class HomeUtente extends AppCompatActivity {
             }
         });
 
-        risultati.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeUtente.this, CorrezioneRisultati.class);
-                intent.putExtra("genitore", email);
 
-                startActivity(intent);
-            }
-        });
 
     }
 

@@ -511,7 +511,7 @@ if(isBambinoAmbientazioneExisting(nome_bambino,email_genitore)){
 
 public boolean isBambinoAmbientazioneExisting(String nome_bambino,String email_genitore){
 
-        String query="SELECT * FROM "+ PERSONALIZZA_AMBIENTAZIONE + " WHERE BAMBINO=? AND GENITORE=? ";
+        String query="SELECT 1 FROM "+ PERSONALIZZA_AMBIENTAZIONE + " WHERE BAMBINO=? AND GENITORE=?  limit 1";
 String [] valori={nome_bambino,email_genitore};
         try(SQLiteDatabase db=getReadableDatabase()){
 

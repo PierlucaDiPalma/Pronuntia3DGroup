@@ -85,16 +85,16 @@
         android:layout_height="100dp"
         android:layout_gravity="top|start"
         android:layout_margin="20dp"
-        android:src="@drawable/personaggio1" />
+         />
 
-    <!-- Immagine in basso a sinistra -->
+
     <ImageView
         android:id="@+id/imageViewPersonaggio2"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="bottom|start"
         android:layout_margin="20dp"
-        android:src="@drawable/personaggio2" />
+        />
 
 
     <ImageView
@@ -103,6 +103,6 @@
         android:layout_height="100dp"
         android:layout_gravity="top|end"
         android:layout_margin="20dp"
-        android:src="@drawable/personaggio2" />
+         />
 
 </FrameLayout>
