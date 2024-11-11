@@ -25,6 +25,9 @@ public class HomeGenitore extends AppCompatActivity {
     private DBHelper dbHelper;
 private ImageButton settings;
     private ImageView profile;
+    private Button risultati;
+    private String email;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +40,14 @@ private ImageButton settings;
         profile = findViewById(R.id.profile_image);
 
         String emailLogopedista=intent.getStringExtra("logopedista_email");
-
+        email = intent.getStringExtra("genitore");
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
 settings=findViewById(R.id.Impostazioni);
         ImageView backButton = findViewById(R.id.back_button);
+        risultati = findViewById(R.id.results);
         backButton.setOnClickListener(v -> {
 
             onBackPressed();
@@ -94,6 +98,17 @@ settings=findViewById(R.id.Impostazioni);
                 popupMenu.show();
             }
         });
+
+        risultati.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeGenitore.this, CorrezioneRisultati.class);
+                intent.putExtra("genitore", email);
+
+                startActivity(intent);
+            }
+        });
+
 
         MenuItem richiediAppuntamento=menu.findItem(R.id.RichiediAppuntamento);
 
