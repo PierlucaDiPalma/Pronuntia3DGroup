@@ -166,6 +166,22 @@ public class DenominazioneImmagini extends AppCompatActivity {
 
             }
         });
+
+
+        imgLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ActivityCompat.checkSelfPermission(DenominazioneImmagini.this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(DenominazioneImmagini.this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_REQUEST_CODE);
+
+                } else {
+
+                    choseImage();
+
+                }
+            }
+        });
         //registerImageResult(email);
         Log.d(TAG, "onPositiveButtonClick: " + day + " " + month + " " + year);
 
@@ -247,6 +263,8 @@ public class DenominazioneImmagini extends AppCompatActivity {
                 image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                 immagine.setImageBitmap(image);
                 imgLoad.setText("Cambia immagine");
+
+                immagine.setBackground(null);
 
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);

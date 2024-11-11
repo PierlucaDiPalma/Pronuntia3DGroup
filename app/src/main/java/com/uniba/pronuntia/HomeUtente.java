@@ -1,10 +1,12 @@
 package com.uniba.pronuntia;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +21,7 @@ public class HomeUtente extends AppCompatActivity {
     private DBHelper db;
     private Button genitoreBTN, risultati;
     private LinearLayout linearLayout;
-    private Button pulsanteAggiungiBambino;
+    private ImageView pulsanteAggiungiBambino;
     private String email;
     private ArrayList<Bambino> bambini;
 
@@ -103,6 +105,7 @@ public class HomeUtente extends AppCompatActivity {
         button.setBackgroundTintList(getResources().getColorStateList(android.R.color.holo_blue_light));
         button.setTextSize(16);
         button.setPadding(16, 16, 16, 16);
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

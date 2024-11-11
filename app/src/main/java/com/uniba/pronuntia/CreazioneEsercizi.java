@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +48,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
     private DBHelper db;
     private int day, month, year;
-    private int durata;
+    private int durata = 0;
     private String data;
     private ArrayList<String> dateList = new ArrayList<>();
 
@@ -71,12 +74,34 @@ public class CreazioneEsercizi extends AppCompatActivity {
             return insets;
         });
         Log.d(TAG, "onCreate: ");
+        Spinner spinnerDurata = findViewById(R.id.spinner_durata);
+
+        // Array degli elementi
+        String[] settimane = {"1 settimana", "2 settimane", "3 settimane", "4 settimane"};
+
+        // Adattatore per lo spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, settimane);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDurata.setAdapter(adapter);
+
+        // Imposta l'OnItemSelectedListener
+        spinnerDurata.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                durata = position + 1;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
         nomeText = (TextView) findViewById(R.id.nome);
         cognomeText = (TextView) findViewById(R.id.cognome);
         emailText = (TextView) findViewById(R.id.email);
         motivoText = (TextView) findViewById(R.id.motivo);
-        durataText = (TextView) findViewById(R.id.durata);
         dataText = (TextView) findViewById(R.id.date);
         calendario = findViewById(R.id.calendar);
 
@@ -84,12 +109,10 @@ public class CreazioneEsercizi extends AppCompatActivity {
         email = intent.getStringExtra("email");
         bambino = intent.getStringExtra("bambino");
         motivo = intent.getStringExtra("motivo");
-        durata = intent.getIntExtra("durata", 1);
+        //durata = intent.getIntExtra("durata", 1);
         logopedista = intent.getStringExtra("logopedista");
 
         source = intent.getStringExtra("source");
-
-
 
 
         String nome = intent.getStringExtra("nome");
@@ -102,19 +125,11 @@ public class CreazioneEsercizi extends AppCompatActivity {
         motivoText.setText(motivo);
 
 
-        if(durata>1) {
-            durataText.setText(durata + " settimane");
-        }else{
-            durataText.setText(durata + " settimana");
-        }
-
         addEsercizio = findViewById(R.id.add);
         sendTerapia = findViewById(R.id.send);
         recyclerView = findViewById(R.id.exercises);
 
         db = new DBHelper(this);
-
-
 
 
         customAdapter = new ExerciseAdapterLogopedista(CreazioneEsercizi.this, recyclerView, eserciziList, esercizi, durata);
@@ -194,14 +209,18 @@ public class CreazioneEsercizi extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(dataText.getText().toString().equals(data)){
-                    showExerciseTypeDialog(email);
-                    for(int i = 0;i<dateList.size();i++){
-                        Log.d(TAG, i+1 + " " + dateList.get(i));
-                    }
+                if(durata != 0) {
+                    if (dataText.getText().toString().equals(data)) {
+                        showExerciseTypeDialog(email);
+                        for (int i = 0; i < dateList.size(); i++) {
+                            Log.d(TAG, i + 1 + " " + dateList.get(i));
+                        }
 
+                    } else {
+                        Toast.makeText(CreazioneEsercizi.this, "Data non selezionata", Toast.LENGTH_SHORT).show();
+                    }
                 }else{
-                    Toast.makeText(CreazioneEsercizi.this, "Data non selezionata", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreazioneEsercizi.this, "Durata non selezionata", Toast.LENGTH_SHORT).show();
                 }
             }
         });

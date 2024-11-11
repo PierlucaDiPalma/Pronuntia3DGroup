@@ -1,10 +1,12 @@
 package com.uniba.pronuntia;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,9 +20,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -34,6 +39,7 @@ public class Logopedista extends AppCompatActivity {
     ArrayList<Utente> users;
     ArrayList<RichiestaTerapia> richieste;
     ListView listView;
+    ImageView profile;
 
 
     @Override
@@ -55,6 +61,52 @@ public class Logopedista extends AppCompatActivity {
     Menu menu=bnv.getMenu();
     MenuItem menuItem= menu.findItem(R.id.Appuntamento);
 
+    profile = findViewById(R.id.profile_image);
+    profile.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            PopupMenu popupMenu = new PopupMenu(Logopedista.this, view);
+            popupMenu.getMenuInflater().inflate(R.menu.bottom_nav_bar_logo, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(item -> {
+
+                if(item.getItemId() == R.id.Appuntamento){
+                    Intent intent=new Intent(Logopedista.this, AppuntamentiLogopedista.class);
+                    intent.putExtra("logopedista_email",emailLogopedista);
+                    startActivity(intent);
+
+                }else if (item.getItemId() == R.id.logout) {
+                    new AlertDialog.Builder(Logopedista.this)
+                            .setTitle("Vuoi uscire?")
+                            .setPositiveButton("Sì", (dialog, which) -> {
+                                startActivity(new Intent(Logopedista.this, Login.class));
+                                finish();
+                            })
+                            .setNegativeButton("No", (dialog, which) -> {
+                                dialog.dismiss();
+                            })
+                            .show();return true;
+                }
+                return false;
+            });
+            popupMenu.show();
+        }
+    });
+    /*logout.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            new AlertDialog.Builder(Logopedista.this)
+                    .setTitle("Vuoi uscire?")
+                    .setPositiveButton("Sì", (dialog, which) -> {
+                        startActivity(new Intent(Logopedista.this, Login.class));
+                        finish();
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        }
+    });*/
+
     menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
@@ -66,6 +118,8 @@ public class Logopedista extends AppCompatActivity {
             return true;
         }
     });
+
+
 
 
     db = new DBHelper(Logopedista.this);

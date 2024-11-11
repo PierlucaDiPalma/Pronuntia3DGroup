@@ -301,6 +301,7 @@ public class Coppia extends AppCompatActivity {
                     image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                     immagine1.setImageBitmap(image);
                     imageLoad1.setText("Cambia immagine");
+                    immagine1.setBackground(null);
 
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
@@ -318,7 +319,7 @@ public class Coppia extends AppCompatActivity {
                     image = MediaStore.Images.Media.getBitmap(getContentResolver(), imagePath);
                     immagine2.setImageBitmap(image);
                     imageLoad2.setText("Cambia immagine");
-
+                    immagine2.setBackground(null);
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
                     byte[] imageBytes = byteArrayOutputStream.toByteArray();

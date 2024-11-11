@@ -5,13 +5,16 @@
         <item
             android:id="@+id/Appuntamento"
             android:icon="@drawable/baseline_calendar_month_24"
-
             android:title="Appuntamenti"
 
             />
 
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/baseline_calendar_month_24"
 
+            android:title="Logout"
 
-
+            />
 
     </menu>

@@ -16,12 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
+        android:backgroundTint="#068CA8"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
 
 
         <TextView
@@ -40,9 +41,6 @@
             android:layout_gravity="end"
             android:padding="8dp"
             android:src="@drawable/baseline_account_circle_24" />
-
-
-
 
 
     </androidx.appcompat.widget.Toolbar>

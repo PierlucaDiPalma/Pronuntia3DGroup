@@ -117,6 +117,7 @@
         android:layout_height="wrap_content"
         android:text="Registrati"
         android:textAlignment="center"
+         android:backgroundTint="#068CA8"
         android:layout_marginStart="120dp"
         android:layout_marginEnd="120dp"
         android:layout_marginTop="15dp"/>

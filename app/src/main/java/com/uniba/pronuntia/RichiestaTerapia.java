@@ -22,19 +22,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 
 public class RichiestaTerapia extends AppCompatActivity {
-private int logopedistaId;
-private String nomeBambino;
-private String motivoRichiesta;
-private int durataTerapia;
-private String emailGenitore;
-private String getEmailLogopedista;
+    private int logopedistaId;
+    private String nomeBambino;
+    private String motivoRichiesta;
+    private int durataTerapia;
+    private String emailGenitore;
+    private String getEmailLogopedista;
 
     private EditText motivoRichiestaEditText;
     private Spinner durataSpinner;
     private String emailLogopedista;
     private Button inviaButton;
-private ImageView backBtn;
-private BottomNavigationView bottombar;
+    private ImageView backBtn;
+    private BottomNavigationView bottombar;
     private ArrayList<Bambino> bambini;
     private DBHelper databaseHelper;
     private Spinner spinner1;
@@ -97,8 +97,6 @@ private BottomNavigationView bottombar;
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-
-
 
 
         ArrayList<String> bambiniString=new ArrayList<>();

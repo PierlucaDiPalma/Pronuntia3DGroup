@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 public class HomeGenitore extends AppCompatActivity {
     private DBHelper dbHelper;
 private ImageButton settings;
+    private ImageView profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,8 @@ private ImageButton settings;
 
         dbHelper = new DBHelper(this);
         Intent intent=getIntent();
+        profile = findViewById(R.id.profile_image);
+
         String emailLogopedista=intent.getStringExtra("logopedista_email");
 
 
@@ -63,6 +68,32 @@ settings=findViewById(R.id.Impostazioni);
             }
         });
 
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu popupMenu = new PopupMenu(HomeGenitore.this, view);
+                popupMenu.getMenuInflater().inflate(R.menu.menu_genitore, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(item -> {
+
+                    if(item.getItemId() == R.id.personalizza){
+                        startActivity(new Intent(HomeGenitore.this, Impostazioni.class));
+                    }else if (item.getItemId() == R.id.logout) {
+                        new AlertDialog.Builder(HomeGenitore.this)
+                                .setTitle("Vuoi uscire?")
+                                .setPositiveButton("Sì", (dialog, which) -> {
+                                    startActivity(new Intent(HomeGenitore.this, Login.class));
+                                    finish();
+                                })
+                                .setNegativeButton("No", (dialog, which) -> {
+                                    dialog.dismiss();
+                                })
+                                .show();return true;
+                    }
+                    return false;
+                });
+                popupMenu.show();
+            }
+        });
 
         MenuItem richiediAppuntamento=menu.findItem(R.id.RichiediAppuntamento);
 
@@ -77,24 +108,7 @@ settings=findViewById(R.id.Impostazioni);
             }
         });
 
-        MenuItem logout = menu.findItem(R.id.logout);
 
-        logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem item) {
-                new AlertDialog.Builder(HomeGenitore.this)
-                        .setTitle("Vuoi uscire?")
-                        .setPositiveButton("Sì", (dialog, which) -> {
-                            startActivity(new Intent(HomeGenitore.this, Login.class));
-                            finish();
-                        })
-                        .setNegativeButton("No", (dialog, which) -> {
-                            dialog.dismiss();
-                        })
-                        .show();
-                return true;
-            }
-        });
 
     settings.setOnClickListener(new View.OnClickListener() {
         @Override
