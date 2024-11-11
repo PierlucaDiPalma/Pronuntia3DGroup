@@ -49,6 +49,8 @@ public class HomeBambino extends AppCompatActivity {
     private String nome;
     private String path;
 
+    private TextView trofeiText;
+    private int trofei;
     private TextView nomeBambinoTextView, punteggio;
 
     @Override
@@ -69,8 +71,7 @@ public class HomeBambino extends AppCompatActivity {
         nomeBambinoTextView = findViewById(R.id.textView);
 
         email = intent.getStringExtra("email");//email del genitore
-
-
+        trofeiText = findViewById(R.id.trofei);
 
         picPersonaggioView = findViewById(R.id.pic);
         frase = findViewById(R.id.frase);
@@ -127,6 +128,9 @@ public class HomeBambino extends AppCompatActivity {
         customAdapter = new ExerciseAdapter(HomeBambino.this, eserciziList);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(HomeBambino.this));
+
+        trofei = db.getPremi(bambino, email);
+        trofeiText.setText(String.valueOf(trofei));
 
 
         for(int i = 0; i<resoconti.size();i++){

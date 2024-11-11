@@ -45,6 +45,7 @@
         android:layout_marginEnd="24dp"
         android:text="Acquista"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="#068CA8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.46" />
@@ -59,6 +60,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"
+        android:backgroundTint="#E09E2F"
         app:layout_constraintVertical_bias="0.46" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

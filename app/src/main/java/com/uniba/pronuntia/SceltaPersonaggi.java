@@ -30,12 +30,11 @@ public class SceltaPersonaggi extends AppCompatActivity implements CharacterInte
     private TextView punteggioText;
     private TextView nomeText;
     private int punteggio;
-    private Button indietro;
     private String bambino;
     private String genitore;
     private String nomePersonaggio;
     private byte[] picPersonaggio;
-
+    private ImageView indietro;
     private static final String TAG = "SceltaPersonaggi";
     private DBHelper db;
 
