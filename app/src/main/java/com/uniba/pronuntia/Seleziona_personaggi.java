@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Seleziona_personaggi extends AppCompatActivity {
 private boolean isClicked1=false;
-
+private ImageButton back;
     private DBHelper db;
     private boolean isClicked2=false;
     private boolean isClicked3=false;
@@ -228,7 +228,13 @@ ok1=findViewById(R.id.personaggio1ok);
             }
         });
 
-
+        back=findViewById(R.id.back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               finish();
+            }
+        });
 
 
 

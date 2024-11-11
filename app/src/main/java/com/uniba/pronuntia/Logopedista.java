@@ -57,9 +57,9 @@ public class Logopedista extends AppCompatActivity {
 
     Intent intent=getIntent();
     String emailLogopedista=intent.getStringExtra("logopedista_email");
-    BottomNavigationView bnv =findViewById(R.id.BottomNavigationView);
-    Menu menu=bnv.getMenu();
-    MenuItem menuItem= menu.findItem(R.id.Appuntamento);
+
+
+
 
     profile = findViewById(R.id.profile_image);
     profile.setOnClickListener(new View.OnClickListener() {
@@ -107,17 +107,7 @@ public class Logopedista extends AppCompatActivity {
         }
     });*/
 
-    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
 
-            Intent intent=new Intent(Logopedista.this, AppuntamentiLogopedista.class);
-            intent.putExtra("logopedista_email",emailLogopedista);
-            startActivity(intent);
-
-            return true;
-        }
-    });
 
 
 

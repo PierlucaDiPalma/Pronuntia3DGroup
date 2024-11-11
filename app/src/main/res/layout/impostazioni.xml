@@ -11,19 +11,21 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#E09E2F"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/back_button"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="start"
             android:padding="8dp"
+            android:background="#E09E2F"
             android:src="@drawable/icons8_back_50" />
 
         <TextView
@@ -83,6 +85,7 @@
             android:layout_width="210dp"
             android:layout_height="wrap_content"
 android:layout_marginStart="10dp"
+            android:backgroundTint="#E09E2F"
             android:text="Seleziona ambientazione"
             >
 
@@ -116,6 +119,7 @@ android:layout_marginStart="10dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="Seleziona personaggi"
+            android:backgroundTint="#E09E2F"
             >
 
         </Button>
@@ -125,6 +129,7 @@ android:layout_marginStart="10dp"
             android:layout_height="60dp"
             android:layout_marginStart="10dp"
             android:id="@+id/personaggio1"
+
             ></ImageView>
 
         <ImageView

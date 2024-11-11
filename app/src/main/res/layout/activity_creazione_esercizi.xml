@@ -39,11 +39,12 @@ app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
+    android:textColor="#FFFFFF"
 
     android:text="Creazione esercizi"
     android:textSize="22dp"
     android:layout_marginStart="60dp"
-    android:textColor="@color/black"
+
 
     app:layout_constraintEnd_toEndOf="parent"
 
@@ -97,6 +98,7 @@ app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="25dp"
+        android:textColor="#FFFFFF"
         />
 
     <TextView

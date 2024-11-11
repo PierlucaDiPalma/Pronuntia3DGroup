@@ -9,7 +9,7 @@
         android:id="@+id/my_toolbarRichiestaTerapia"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#E09E2F"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +110,7 @@
         android:id="@+id/InviaRichiestabtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:backgroundTint="#E09E2F"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="96dp"
         android:text="Invia"
@@ -121,14 +121,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lineraLayoutEditText"></Button>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/BottomNavigationViewRichiestaTerapia"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_bar"
-        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

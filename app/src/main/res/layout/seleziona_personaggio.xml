@@ -11,19 +11,20 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="#E09E2F"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/back_button"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="start"
             android:padding="8dp"
+            android:background="#E09E2F"
             android:src="@drawable/icons8_back_50" />
 
         <TextView
@@ -57,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:stretchColumns="0,1"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="40dp"
 
 
         >
@@ -283,7 +284,9 @@
         android:layout_height="55dp"
         android:text="Conferma"
         android:textSize="25dp"
+        android:backgroundTint="#E09E2F"
         android:layout_marginStart="50dp"
+        android:layout_marginBottom="30dp"
 
         ></Button>
 

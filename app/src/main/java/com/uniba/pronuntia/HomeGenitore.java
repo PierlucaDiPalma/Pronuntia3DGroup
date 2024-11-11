@@ -54,7 +54,7 @@ public class HomeGenitore extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> {
 
-            onBackPressed();
+           finish();
         });
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -69,11 +69,11 @@ public class HomeGenitore extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        // Azione per la prima immagine
+
                         Intent intent = new Intent(HomeGenitore.this, CorrezioneRisultati.class);
                         intent.putExtra("genitore", email);
                         startActivity(intent);
-                        // Inserisci qui il codice per la prima azione
+
                         break;
                     case 1:
 

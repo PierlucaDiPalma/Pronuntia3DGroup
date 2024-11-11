@@ -133,23 +133,7 @@ backBtn.setOnClickListener(new View.OnClickListener() {
     }
 });
 
-        bottombar = findViewById(R.id.BottomNavigationViewRichiestaTerapia);
-        bottombar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                if (item.getItemId() == R.id.RichiediTerapia) {
-
-                    Intent intent = new Intent(RichiestaTerapia.this, SceltaLogopedista.class);
-                    intent.putExtra("nomeActivity","richiediTerapia");
-                    startActivity(intent);
-                    return true;
-                }
-
-
-                return false;
-            }
-        });
 
 
 

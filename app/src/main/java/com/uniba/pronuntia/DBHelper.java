@@ -181,6 +181,8 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + AIUTI + " INTEGER, "
                 + "PRIMARY KEY(" +GENITORE + "," + BAMBINO + ","+ LOGOPEDISTA + "," + TITOLO + "," + GIORNO +","+MESE+ ","+ANNO+")  )");
 
+
+
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
                 + BAMBINO + " TEXT, "
                 + GENITORE + " TEXT, "
@@ -201,6 +203,13 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + ")";
         db.execSQL(CREATE_TABLE_TERAPIE);
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + LUOGO_LAVORO_LOGOPEDISTA + "("
+                + EMAIL + " TEXT,"
+                + NOME_LUOGO +" TEXT,"
+                + INDIRIZZO +" TEXT,"
+                + "PRIMARY KEY (" + INDIRIZZO+"),"
+                + "FOREIGN KEY ("+ EMAIL + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                + ")");
 
         db.execSQL("CREATE TABLE " + TABLE_BAMBINI + " ("
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -215,7 +224,7 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + GENITORE + " TEXT, "
                 + CORRETTI + " INTEGER, "
                 + NUMERO_PREMI + " INTEGER, "
-                + "PRIMARY KEY (BAMBINO, GENITORE, NUMERO_PREMI))");
+                + "PRIMARY KEY (BAMBINO, GENITORE))");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_GIOCATORI + " ("
                 + BAMBINO + " TEXT, "
@@ -223,136 +232,6 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + LOGOPEDISTA + " TEXT, "
                 + PUNTEGGIO + " INTEGER, "
                 + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
-
-
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        if (oldVersion < 2) {
-
-
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
-                    + BAMBINO + " TEXT, "
-                    + GENITORE + " TEXT, "
-                    + PERSONAGGIO + " TEXT, "
-                    + VALORE + " INTEGER, "
-                    + IMMAGINE + " BLOB, "
-                    + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + ", " + PERSONAGGIO + "))");
-        }
-
-        if(oldVersion<5){
-
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
-                    + email_logopedista + " TEXT, "
-                    + email_genitore + " TEXT, "
-                    + DATA + " TEXT, "
-                    + ORA + " TEXT, "
-                    + ISBOOKED + " BOOLEAN, "
-                    + "PRIMARY KEY (" + DATA + ", " + ORA + "), "
-                    + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
-                    + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
-                    + ")");
-
-
-
-        }
-
-        if(oldVersion<8){
-
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACQUISTI + " ( "
-                    + BAMBINO + " TEXT, "
-                    + GENITORE + " TEXT, "
-                    + PERSONAGGIO + " TEXT, "
-                    + VALORE + " INTEGER, "
-                    + IMMAGINE + " BLOB, "
-                    + "PRIMARY KEY (" + BAMBINO + ", " + GENITORE + ", " + PERSONAGGIO + "))");
-
-            db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_PREMI + " ("
-                    + BAMBINO + " TEXT, "
-                    + GENITORE + " TEXT, "
-                    + CORRETTI + " INTEGER, "
-                    + NUMERO_PREMI + " INTEGER, "
-                    + "PRIMARY KEY (BAMBINO, GENITORE))");
-        }
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + APPUNTAMENTI_FISSATI + " ("
-                + email_logopedista + " TEXT, "
-                + email_genitore + " TEXT, "
-                + DATA + " TEXT, "
-                + ORA + " TEXT, "
-                + "PRIMARY KEY (" + DATA + ", " + ORA + "), "
-                + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "),"
-                + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
-                + ")");
-    if(oldVersion<11){
-
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + LUOGO_LAVORO_LOGOPEDISTA + "("
-                + EMAIL + " TEXT,"
-                + NOME_LUOGO +" TEXT,"
-                + INDIRIZZO +" TEXT,"
-                + "PRIMARY KEY (" + INDIRIZZO+"),"
-                + "FOREIGN KEY ("+ EMAIL + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
-                + ")");
-
-
-    }
-
-    if(oldVersion<12){
-        db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN LUOGO_INCONTRO TEXT");
-
-
-        db.execSQL("ALTER TABLE " + APPUNTAMENTI_FISSATI + " ADD COLUMN INDIRIZZO TEXT");
-    }
-
-    if(oldVersion<13){
-        db.execSQL("DROP TABLE IF EXISTS " + CALENDARIO);
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
-                + email_logopedista + " TEXT, "
-                + email_genitore + " TEXT, "
-                + DATA + " TEXT, "
-                + ORA + " TEXT, "
-                + ISBOOKED + " BOOLEAN, "
-                + "PRIMARY KEY (" + email_logopedista + ", " + DATA + ", " + ORA + "), "
-                + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "), "
-                + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
-                + ")");
-
-    }
-
-    if(oldVersion<14){
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_GIOCATORI + " ("
-                + BAMBINO + " TEXT, "
-                + GENITORE + " TEXT, "
-                + LOGOPEDISTA + " TEXT, "
-                + PUNTEGGIO + " INTEGER, "
-                + "PRIMARY KEY(BAMBINO, GENITORE, LOGOPEDISTA))");
-    }
-
-    if(oldVersion<16){
-
-
-        db.execSQL("CREATE TABLE " + TABLE_RESOCONTO
-                + " ( "
-                + GENITORE + " TEXT, "
-                + BAMBINO + " TEXT, "
-                + LOGOPEDISTA + " TEXT, "
-                + TITOLO + " TEXT, "
-                + TIPO + " TEXT, "
-                + AUDIO + " TEXT, "
-                + GIORNO + " INTEGER, "
-                + MESE + " INTEGER, "
-                + ANNO + " INTEGER, "
-                + PUNTEGGIO + " INTEGER, "
-                + CORRETTO + " INTEGER, "
-                + SBAGLIATO + " INTEGER, "
-                + AIUTI + " INTEGER, "
-                + "PRIMARY KEY(" +GENITORE + "," + BAMBINO + ","+ LOGOPEDISTA + "," + TITOLO + "," + GIORNO +","+MESE+ ","+ANNO+")  )");
-
-    }
-    if(oldVersion<18){
 
         db.execSQL("CREATE TABLE  " + PERSONALIZZA_AMBIENTAZIONE + " ("
                 + "ID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -365,8 +244,35 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + ");");
 
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + CALENDARIO + " ("
+                + email_logopedista + " TEXT, "
+                + email_genitore + " TEXT, "
+                + DATA + " TEXT, "
+                + ORA + " TEXT, "
+                + ISBOOKED + " BOOLEAN, "
+                + "PRIMARY KEY (" + email_logopedista + ", " + DATA + ", " + ORA + "), "
+                + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "), "
+                + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                + ")");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + APPUNTAMENTI_FISSATI + " ("
+                + email_logopedista + " TEXT, "
+                + email_genitore + " TEXT, "
+                + "LUOGO_INCONTRO TEXT, "
+                + "INDIRIZZO TEXT, "
+                + DATA + " TEXT, "
+                + ORA + " TEXT, "
+                + "PRIMARY KEY (" + DATA + ", " + ORA + "), "
+                + "FOREIGN KEY (" + email_logopedista + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + "), "
+                + "FOREIGN KEY (" + email_genitore + ") REFERENCES " + TABLE_NAME + "(" + EMAIL + ")"
+                + ")");
+
+
+
     }
 
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 
 

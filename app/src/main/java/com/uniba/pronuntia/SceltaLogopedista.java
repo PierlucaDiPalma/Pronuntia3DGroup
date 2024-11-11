@@ -1,6 +1,8 @@
 package com.uniba.pronuntia;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +42,7 @@ if(listalogopedisti!=null && !listalogopedisti.isEmpty()){
     for(Utente logopedista:listalogopedisti){
         Button pulsanteLogopedista=new Button(this);
 pulsanteLogopedista.setText(logopedista.getNome()+" "+logopedista.getCognome());
+        pulsanteLogopedista.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E09E2F")));
 
 pulsanteLogopedista.setOnClickListener(new View.OnClickListener() {
     @Override

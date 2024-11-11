@@ -48,7 +48,7 @@
         android:layout_height="45dp"
         android:layout_marginTop="12dp"
         android:text="Avanti"
-        android:backgroundTint="#00BFFF"
+        android:backgroundTint="#068CA8"
 
 
         android:contentDescription="Pulsante per avviare la creazione degli esercizi"

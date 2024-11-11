@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.ByteArrayOutputStream;
 
 public class Seleziona_ambientazione extends AppCompatActivity {
-
+private ImageButton back;
     private boolean ambSelected=false;
     private ImageButton amb1;
     private ImageButton amb2;
@@ -198,7 +198,13 @@ ambSelected=false;
 
             }
         });
-
+        back=findViewById(R.id.back_button);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               finish();
+            }
+        });
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override

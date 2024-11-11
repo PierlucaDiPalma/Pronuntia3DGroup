@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -17,7 +18,7 @@ import java.util.List;
 
 
 public class Impostazioni extends AppCompatActivity {
-
+private ImageButton back;
     private Spinner spinner;
     private List<Bambino> bambini;
     private DBHelper db;
@@ -37,6 +38,14 @@ SharedPreferences sharedPreferences=getSharedPreferences("UserPrefs",MODE_PRIVAT
            bamb.add(bambino.getNome());
 
        }
+
+       back=findViewById(R.id.back_button);
+       back.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+              finish();
+           }
+       });
 
 spinner=findViewById(R.id.spinnerbambini);
        ArrayAdapter<String> adapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,bamb);
