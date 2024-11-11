@@ -9,12 +9,15 @@
     android:gravity="center"
     tools:context=".Classifica">
 
+
+
     <TextView
         android:id="@+id/logopedista"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Classifica presso: "
         android:textSize="20dp"
+        android:layout_gravity="center"
         android:textStyle="bold"
         android:layout_marginBottom="20dp"
         />
@@ -22,6 +25,16 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/indietro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#E09E2F"
+        android:src="@drawable/baseline_arrow_back_24" />
 
 </LinearLayout>

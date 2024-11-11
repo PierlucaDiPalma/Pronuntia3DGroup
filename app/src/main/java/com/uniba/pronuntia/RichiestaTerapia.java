@@ -120,6 +120,7 @@ public class RichiestaTerapia extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 inserisciTerapiaNelDB();
+
                Intent intent=new Intent(RichiestaTerapia.this,HomeGenitore.class);
                startActivity(intent);
             }
@@ -132,10 +133,6 @@ backBtn.setOnClickListener(new View.OnClickListener() {
         onBackPressed();
     }
 });
-
-
-
-
 
     }
 
@@ -151,10 +148,11 @@ backBtn.setOnClickListener(new View.OnClickListener() {
             return;
         }
         SharedPreferences sdf = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-String emailGen=sdf.getString("userEmail", null);
+    String emailGen=sdf.getString("userEmail", null);
 
         databaseHelper.addTerapia(nomeBambino, motivoRichiesta, durata, emailGen, emailLogopedista);
         databaseHelper.addGiocatore(new Giocatore(nomeBambino, emailGen, emailLogopedista, 0));
+        databaseHelper.addPaziente(emailGen, nomeBambino, emailLogopedista);
         Toast.makeText(this, "Terapia inserita con successo", Toast.LENGTH_SHORT).show();
     }
 }

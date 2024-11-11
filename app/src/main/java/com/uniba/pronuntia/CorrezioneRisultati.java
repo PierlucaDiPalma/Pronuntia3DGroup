@@ -77,7 +77,7 @@ public class CorrezioneRisultati extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 bambino = spinner.getSelectedItem().toString();
-                logopedista = db.getLogopedista(bambino, genitore);
+                logopedista = db.getLogopedista(genitore, bambino);
 
                 resoconti = db.getResoconto(genitore, bambino);
                 for(int i = 0;i<resoconti.size();i++){

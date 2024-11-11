@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class CreazioneEsercizi extends AppCompatActivity {
     private TextView motivoText;
     private TextView durataText;
 private ImageButton back;
+
     private TextView dataText;
     private Button calendario;
 
@@ -303,6 +305,10 @@ back=findViewById(R.id.back_button);
         if(resultCode==1){
             Esercizio esercizio = data.getParcelableExtra("Esercizio");
             eserciziList.add(esercizio);
+
+            for(int i = 0 ;i<eserciziList.size();i++){
+                db.addExercises(eserciziList.get(i));
+            }
 
             for(int i = 0; i<dateList.size();i++){
 

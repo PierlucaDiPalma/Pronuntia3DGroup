@@ -99,6 +99,8 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
 
     private static final String AUDIO = "AUDIO";
 
+    private static final String TABLE_PAZIENTI = "PAZIENTI";
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 19);
     }
@@ -117,9 +119,16 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
                 + PASSWORD +" TEXT, "
                 + ISLOGOPEDISTA+ " INTEGER )");
 
+        db.execSQL("CREATE TABLE " + TABLE_PAZIENTI
+                + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + GENITORE + " TEXT, "
+                + BAMBINO + " TEXT, "
+                + LOGOPEDISTA +" TEXT) "
+                );
+
         db.execSQL("CREATE TABLE " + TABLE_ESERCIZI
                 + " ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + EMAIL + " TEXT, "
+                + GENITORE + " TEXT, "
                 + BAMBINO + " TEXT, "
                 + TITOLO +" TEXT, "
                 + TIPO +" TEXT )");
@@ -336,8 +345,30 @@ private  static  final String APPUNTAMENTI_FISSATI="APPUNTAMENTI_FISSATI";
     }
 
 
+    public void addPaziente(String genitore, String bambino, String logopedista){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
+        values.put(GENITORE, genitore);
+        values.put(BAMBINO, bambino);
+        values.put(LOGOPEDISTA, logopedista);
+        db.insert(TABLE_PAZIENTI, null, values);
+    }
 
+    public String getLogopedista(String genitore, String bambino){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String logopedista = null;
+
+        if(db!=null){
+            cursor = db.rawQuery("SELECT LOGOPEDISTA FROM " + TABLE_PAZIENTI + " WHERE BAMBINO = ? AND GENITORE = ?", new String[]{bambino, genitore});
+        }
+
+        while(cursor.moveToNext()){
+            logopedista = cursor.getString(0);
+        }
+        return logopedista;
+    }
 
 
     public void modificaAmbientazione(String nome_bambino,String email_genitore,byte[] immagine){
@@ -820,7 +851,7 @@ cursor.close();
 return infoAppuntamento;
 
     }
-
+/*
     public String getLogopedista(String bambino, String genitore){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -837,7 +868,7 @@ return infoAppuntamento;
 
         return logopedista;
     }
-
+*/
 
     public  void SetUnBooked(String data,String ora){
 
@@ -1193,7 +1224,7 @@ if(result!=-1){
 
         if(db!=null){
             Log.d(TAG, "readExercises: Entrato");
-            cursor = db.rawQuery("SELECT * FROM " + TABLE_ESERCIZI + " WHERE EMAIL = ? AND BAMBINO = ?", new String[]{user, child});
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_ESERCIZI + " WHERE GENITORE = ? AND BAMBINO = ?", new String[]{user, child});
 
             Log.d(TAG, "readExercises: Esecuzione query");
         }

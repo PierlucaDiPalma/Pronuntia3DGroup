@@ -1,7 +1,11 @@
 package com.uniba.pronuntia;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,7 +25,7 @@ import java.util.Comparator;
 public class Classifica extends AppCompatActivity {
 
     private TextView titolo;
-
+    private Button back;
     private ArrayList<Resoconto> resoconti;
     private ArrayList<Giocatore> giocatori;
 
@@ -62,6 +66,19 @@ public class Classifica extends AppCompatActivity {
         titolo.setText("Classifica presso: " + utente.getNome() + " " + utente.getCognome() );
 
         giocatori = db.getPlayers(logopedista);
+
+        back = findViewById(R.id.indietro);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Classifica.this, HomeBambino.class);
+                intent.putExtra("bambino", bambino);
+                intent.putExtra("email", genitore);
+                intent.putExtra("source", TAG);
+                startActivity(intent);
+            }
+        });
 
         for(int i=0;i<giocatori.size();i++){
 
