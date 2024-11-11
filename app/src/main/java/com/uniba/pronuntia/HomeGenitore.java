@@ -1,5 +1,6 @@
 package com.uniba.pronuntia;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,12 +24,13 @@ import java.util.ArrayList;
 
 public class HomeGenitore extends AppCompatActivity {
     private DBHelper dbHelper;
-private ImageButton settings;
+    private ImageButton settings;
     private ImageView profile;
     private Button risultati;
     private String email;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +49,7 @@ private ImageButton settings;
 
 settings=findViewById(R.id.Impostazioni);
         ImageView backButton = findViewById(R.id.back_button);
-        risultati = findViewById(R.id.results);
+        risultati =(Button) findViewById(R.id.risultati);
         backButton.setOnClickListener(v -> {
 
             onBackPressed();
