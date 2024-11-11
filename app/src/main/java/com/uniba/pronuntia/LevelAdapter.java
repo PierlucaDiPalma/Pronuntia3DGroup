@@ -56,7 +56,7 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
     public void onBindViewHolder(@NonNull LevelViewHolder holder, int position) {
         holder.levelText.setText(String.valueOf(getItemCount()-position));
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.levelButton.getLayoutParams();
-
+        LinearLayout.LayoutParams paramsText = (LinearLayout.LayoutParams) holder.levelText.getLayoutParams();
         int i = position;
 
         int[] positionX = { -400, -200, -0, 100, 200, 400, 600};
@@ -65,17 +65,21 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
             switch ((getItemCount()-position) % 6) {
                 case 0:
                     params.rightMargin = positionX[3];
+                    paramsText.rightMargin = positionX[3];
                     break;
                 case 1:
                 case 5:
                     params.rightMargin = positionX[2];
+                    paramsText.rightMargin = positionX[2];
                     break;
                 case 2:
                 case 4:
                     params.rightMargin = positionX[1];
+                    paramsText.rightMargin = positionX[1];
                     break;
                 case 3:
                     params.rightMargin = positionX[0];
+                    paramsText.rightMargin = positionX[0];
                     break;
                 default: break;
             }
@@ -83,17 +87,21 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
             switch (position % 6) {
                 case 0:
                     params.rightMargin = positionX[3];
+                    paramsText.rightMargin = positionX[3];
                     break;
                 case 1:
                 case 5:
                     params.rightMargin = positionX[4];
+                    paramsText.rightMargin = positionX[4];
                     break;
                 case 2:
                 case 4:
                     params.rightMargin = positionX[5];
+                    paramsText.rightMargin = positionX[5];
                     break;
                 case 3:
                     params.rightMargin = positionX[6];
+                    paramsText.rightMargin = positionX[6];
                     break;
                 default: break;
             }
