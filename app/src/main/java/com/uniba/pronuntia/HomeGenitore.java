@@ -49,7 +49,7 @@ public class HomeGenitore extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        settings = findViewById(R.id.Impostazioni);
+
         ImageView backButton = findViewById(R.id.back_button);
 
         backButton.setOnClickListener(v -> {

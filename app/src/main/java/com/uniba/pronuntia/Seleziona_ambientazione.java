@@ -217,6 +217,7 @@ ambSelected=false;
                         }
                     }
                 }
+                Toast.makeText(Seleziona_ambientazione.this, "Ambientazione impostata con successo", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Seleziona_ambientazione.this, Impostazioni.class);
                 startActivity(intent);
             }

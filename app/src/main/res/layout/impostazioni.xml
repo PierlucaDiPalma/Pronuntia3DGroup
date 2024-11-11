@@ -57,10 +57,10 @@
 
     <Spinner
         android:id="@+id/spinnerbambini"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="100dp"
         android:layout_marginTop="25dp"
-        android:layout_marginEnd="293dp"
+        android:layout_marginEnd="243dp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,19 +144,7 @@ android:layout_marginStart="10dp"
 
 
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
 
-        android:layout_marginTop="150dp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Conferma modifiche"
-        >
-
-    </Button>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -222,7 +222,7 @@ ok1=findViewById(R.id.personaggio1ok);
                     db.modificaPersonaggi(nomeBambino, emailGenitore, personaggiBytes);
                 }
 
-
+                Toast.makeText(Seleziona_personaggi.this,"Personaggi impostati con successo",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Seleziona_personaggi.this, Impostazioni.class);
                 startActivity(intent);
             }
