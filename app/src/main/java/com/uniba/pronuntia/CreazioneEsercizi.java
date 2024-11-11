@@ -45,7 +45,7 @@ private ImageButton back;
 
     private Button addEsercizio;
     private RecyclerView recyclerView;
-    private ExerciseAdapterLogopedista customAdapter;
+    private ExerciseAdapter customAdapter;
     private ArrayList<Esercizio> esercizi = new ArrayList<>();
     private DBHelper db;
     private int day, month, year;
@@ -133,7 +133,7 @@ private ImageButton back;
         db = new DBHelper(this);
 
 back=findViewById(R.id.back_button);
-        customAdapter = new ExerciseAdapterLogopedista(CreazioneEsercizi.this, recyclerView, eserciziList, esercizi, durata);
+        customAdapter = new ExerciseAdapter(CreazioneEsercizi.this, eserciziList);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(CreazioneEsercizi.this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
