@@ -27,7 +27,9 @@ import com.google.firebase.database.ValueEventListener;
 public class Login extends AppCompatActivity {
 
     private static final String TAG = "Login";
-
+    private Button defaultUser;
+    private TextView userDefault;
+    private TextView logopedistaDefault;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,10 @@ public class Login extends AppCompatActivity {
         final EditText passwordEdit = findViewById(R.id.password);
         final Button logBtn = findViewById(R.id.log);
         final TextView regLink = findViewById(R.id.regButton);
+
+        defaultUser = findViewById(R.id.userDefault);
+        userDefault = findViewById(R.id.userDefaultText);
+        logopedistaDefault = findViewById(R.id.logopedistaDefaultText);
 
         DBHelper db = new DBHelper(this);
 
@@ -94,6 +100,19 @@ public class Login extends AppCompatActivity {
                     }
 
                 }
+            }
+        });
+
+        defaultUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!db.checkUser("luigiverdi@gmail.com", "12345") && !db.checkUser("pietrorossi@gmail.com", "54321")) {
+                    db.addUser(new Utente("luigiverdi@gmail.com", "Luigi", "Verdi", "3453456890", "12345", false));
+                    db.addUser(new Utente("pietrorossi@gmail.com", "Pietro", "Rossi", "3678980976", "54321", true));
+                }
+                userDefault.setText("Genitore: luigiverdi@gmail.com, PWD: 12345");
+                logopedistaDefault.setText("Logopedista: pietrorossi@gmail.com, PWD: 54321 ");
+
             }
         });
 
